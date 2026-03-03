@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio_website_flutter/features/home/presentation/widgets/number_with_title.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/skill_card.dart';
+
+import '../widgets/skills_section.dart';
 
 class SectionThree extends StatelessWidget {
-  const SectionThree({super.key});
+  final bool isMobile;
+  final List<Map<String, dynamic>> skills;
+  const SectionThree({super.key,required this.isMobile,required this.skills});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +14,7 @@ class SectionThree extends StatelessWidget {
       children: [
         NumberWithTitle(number: "02", title: "Skills"),
         SizedBox(height: 40),
-        SkillCard(icon: "assets/icons/html_tag.png", title: "Flutter & Dart"),
+        SkillsSection(isMobile:isMobile,skills: skills),
       ],
     );
   }

@@ -12,7 +12,7 @@ class CardRow extends StatelessWidget {
       children: [
         CircleAvatar(radius: 5, backgroundColor: DColors.primaryLight),
         SizedBox(width: 10,),
-        Text(text),
+        Text(text,style:TextStyle(fontSize:14,fontWeight: FontWeight.w600,color: DColors.black)),
       ],
     );
   }

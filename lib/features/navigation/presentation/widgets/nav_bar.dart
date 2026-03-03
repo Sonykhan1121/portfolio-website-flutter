@@ -11,18 +11,33 @@ class NavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.navigationController;
-    return SizedBox(
+    return Container(
       width: Breakpoints.screenMaxWidth,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 18),
         child: Row(
           children: [
+            // Logo
             LogoWidget(text: "Dev"),
-            Spacer(),
+            const Spacer(),
+            // Navigation Items
             Row(
-              children:List.generate(
+              children: List.generate(
                 controller.menuItems.length,
-                    (index) => NavItem(title: controller.menuItems[index], index: index),
+                (index) => NavItem(
+                  title: controller.menuItems[index],
+                  index: index,
+                ),
               ),
             ),
           ],
