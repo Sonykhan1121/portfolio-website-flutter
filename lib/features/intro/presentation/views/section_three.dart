@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/number_with_title.dart';
-
+import '../widgets/number_with_title.dart';
 import '../widgets/skills_section.dart';
 
 class SectionThree extends StatelessWidget {

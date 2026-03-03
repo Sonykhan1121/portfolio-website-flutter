@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio_website_flutter/features/intro/presentation/widgets/project_topic.dart';
 import '../../../../core/constants/colors.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/project_topic.dart';
+
 
 class ProjectCard extends StatefulWidget {
   final String title;
   final String description;
   final List<String> listOfTopics;
   final String url;
+  final String projectImagePreview;
   final Map<String, dynamic>? projectData;
   final VoidCallback? onTap;
 
@@ -15,6 +17,7 @@ class ProjectCard extends StatefulWidget {
     required this.title,
     required this.description,
     required this.listOfTopics,
+    required this.projectImagePreview,
     required this.url,
     this.projectData,
     this.onTap,
@@ -134,7 +137,30 @@ class _ProjectCardState extends State<ProjectCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              // Project Image Preview
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 120,
+                  color: Colors.grey.withOpacity(0.1),
+                  child: Image.asset(
+                    widget.projectImagePreview,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Center(
+                        child: Icon(
+                          Icons.image_not_supported_outlined,
+                          color: Colors.grey.withOpacity(0.5),
+                          size: 40,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
               Expanded(
                 child: Text(
                   widget.description,
@@ -144,7 +170,7 @@ class _ProjectCardState extends State<ProjectCard> {
                     color: Colors.black.withValues(alpha: 0.7),
                     height: 1.6,
                   ),
-                  maxLines: 3,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

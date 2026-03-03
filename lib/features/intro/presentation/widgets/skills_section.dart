@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/break_points.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/skill_card.dart';
+import 'package:portfolio_website_flutter/features/intro/presentation/widgets/skill_card.dart';
 
 class SkillsSection extends StatelessWidget {
   final bool isMobile;

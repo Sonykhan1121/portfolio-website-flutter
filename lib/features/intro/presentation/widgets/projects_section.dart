@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/break_points.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/project_card.dart';
+import 'package:portfolio_website_flutter/features/intro/presentation/widgets/project_card.dart';
+
 
 class ProjectsSection extends StatelessWidget {
   final bool isMobile;
@@ -46,6 +47,7 @@ class ProjectsSection extends StatelessWidget {
                 listOfTopics: List<String>.from(project['listOfTopics']),
                 description: project['description'] as String,
                 url: project['url'] as String,
+                projectImagePreview:  project['projectImagePreview'],
                 projectData: project,
                 onTap: () {
                   Navigator.push(

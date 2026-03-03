@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/colors.dart';
 
 class MobileDrawer extends StatelessWidget {
-  const MobileDrawer({super.key});
+  final  Function() scrollToTop;
+  final  Function(int) scrollToSection;
+  const MobileDrawer({super.key,required this.scrollToTop,required this.scrollToSection});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,10 @@ class MobileDrawer extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    LogoWidget(text: "Dev"),
+                    InkWell(onTap:(){
+                      scrollToTop();
+                      Navigator.pop(context);
+                    } ,child: LogoWidget(text: "Dev"),),
                     IconButton(
                       icon: const Icon(Icons.close, color: DColors.primaryDark),
                       onPressed: () => Navigator.pop(context),
@@ -70,6 +75,7 @@ class MobileDrawer extends StatelessWidget {
                             )
                           : null,
                       onTap: () {
+                        scrollToSection(index + 1);
                         controller.selectIndex(index);
                         Navigator.pop(context);
                       },
@@ -88,7 +94,7 @@ class MobileDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  '© 2026 Sang Zi Jin\nBuilding the future, one widget at a time.',
+                  '© 2026 Sidratul Montaha\nBuilding the future, one widget at a time.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,

@@ -4,10 +4,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/shared/custom_button.dart';
 
-class SectionOne extends StatelessWidget {
+class IntroPage extends StatelessWidget {
   final dynamic dynamicRadius;
   final bool isMobile;
-  const SectionOne({super.key, required this.dynamicRadius, required this.isMobile});
+  const IntroPage({super.key, required this.dynamicRadius, required this.isMobile});
 
   Future<void> _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {

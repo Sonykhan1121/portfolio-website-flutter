@@ -10,7 +10,7 @@ class ExperienceItem {
     required this.companyName,
     required this.companyLogo,
     required this.description,
-    required this.location
+    required this.location,
   });
 
   final String period;
@@ -33,21 +33,21 @@ class ExperienceSection extends StatelessWidget {
       companyName: 'Tech Company',
       companyLogo: 'assets/icons/facebook_logo.png',
       description:
-      'Developing and maintaining cross-platform applications using Flutter '
+          'Developing and maintaining cross-platform applications using Flutter '
           'and Dart. Collaborating with design and backend teams to deliver '
           'high-quality user experiences.',
-      location: "dhaka"
+      location: "dhaka",
     ),
     ExperienceItem(
       period: '2024 — 2025',
       jobTitle: 'Junior Flutter Developer',
       companyName: 'Startup Inc.',
       description:
-      'Built mobile applications from scratch, implemented state management '
+          'Built mobile applications from scratch, implemented state management '
           'patterns, and integrated third-party APIs. Contributed to code '
           'reviews and technical documentation.',
-      location:  "UK",
-      companyLogo: "assets/icons/twitter.png"
+      location: "UK",
+      companyLogo: "assets/icons/twitter.png",
     ),
   ];
 
@@ -58,10 +58,7 @@ class ExperienceSection extends StatelessWidget {
       child: Column(
         children: List.generate(_items.length, (i) {
           final isLast = i == _items.length - 1;
-          return _TimelineRow(
-            item: _items[i],
-            isLast: isLast,
-          );
+          return _TimelineRow(item: _items[i], isLast: isLast);
         }),
       ),
     );
@@ -71,10 +68,7 @@ class ExperienceSection extends StatelessWidget {
 // ── Single timeline row ──────────────────────────────────────────────────────
 
 class _TimelineRow extends StatelessWidget {
-  const _TimelineRow({
-    required this.item,
-    required this.isLast,
-  });
+  const _TimelineRow({required this.item, required this.isLast});
 
   final ExperienceItem item;
   final bool isLast;
@@ -120,41 +114,43 @@ class _TimelineRow extends StatelessWidget {
                   // Title · Company
                   Row(
                     children: [
-                      Image.asset(item.companyLogo,height: 25,width: 25,),
-                      SizedBox(width: 10,),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: item.jobTitle,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.1,
+                      Image.asset(item.companyLogo, height: 25, width: 25),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: RichText(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: item.jobTitle,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.1,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: '  ·  ',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.8),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
+                              TextSpan(
+                                text: '  ·  ',
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.8),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: item.companyName,
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.8),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
+                              TextSpan(
+                                text: item.companyName,
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.8),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-
-
                     ],
                   ),
 
@@ -176,23 +172,14 @@ class _TimelineRow extends StatelessWidget {
                   // Location
                   Row(
                     children: [
-                      Icon(
-                        Icons.location_on,
-                        size: 16,
-                        color: Colors.black.withOpacity(0.6),
-                      ),
+                      Icon(Icons.location_on, size: 16, color: Colors.black.withOpacity(0.6)),
                       const SizedBox(width: 6),
                       Text(
                         item.location,
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.6),
-                          fontSize: 14,
-                          letterSpacing: 0.1,
-                        ),
+                        style: TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 14, letterSpacing: 0.1),
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),
@@ -230,22 +217,13 @@ class _TimelineSpine extends StatelessWidget {
               child: Container(
                 width: 4,
                 height: 4,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: DColors.primaryLight,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: DColors.primaryLight),
               ),
             ),
           ),
 
           // Vertical line
-          if (!isLast)
-            Expanded(
-              child: Container(
-                width: 1.5,
-                color: DColors.primaryLight.withValues(alpha: 0.25),
-              ),
-            ),
+          if (!isLast) Expanded(child: Container(width: 1.5, color: DColors.primaryLight.withValues(alpha: 0.25))),
         ],
       ),
     );

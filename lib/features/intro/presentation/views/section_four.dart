@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/number_with_title.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/projects_section.dart';
+import '../widgets/projects_section.dart';
 
 class SectionFour extends StatelessWidget {
   final bool isMobile;

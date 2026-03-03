@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/experience_section1.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/number_with_title.dart';
+import '../widgets/experience_section1.dart';
+import '../widgets/number_with_title.dart';
 
 
 class SectionFive extends StatelessWidget {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:portfolio_website_flutter/core/constants/colors.dart';
 import 'package:portfolio_website_flutter/core/shared/custom_button.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/experience_section1.dart';
-import 'package:portfolio_website_flutter/features/home/presentation/widgets/number_with_title.dart';
+
+import '../widgets/number_with_title.dart';
 
 class SectionSix extends StatefulWidget {
   const SectionSix({super.key});
