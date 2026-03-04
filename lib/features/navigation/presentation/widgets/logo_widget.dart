@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/sizes.dart';
 
 class LogoWidget extends StatefulWidget {
   final String text;
@@ -19,6 +20,7 @@ class _LogoWidgetState extends State<LogoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final logoSize = Sizes.h4(context);
     return GestureDetector(
       onTap: widget.onTap,
       child: MouseRegion(
@@ -36,7 +38,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                   style: TextStyle(
                     color: _isHovered ? DColors.primaryLight : DColors.primaryDark,
                     fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                    fontSize: logoSize,
                   ),
                 ),
                 TextSpan(
@@ -44,7 +46,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                   style: TextStyle(
                     color: _isHovered ? DColors.primaryLight : DColors.primaryDark,
                     fontWeight: FontWeight.w900,
-                    fontSize: 24,
+                    fontSize: logoSize,
                     letterSpacing: 1.2,
                   ),
                 ),
@@ -53,13 +55,13 @@ class _LogoWidgetState extends State<LogoWidget> {
                   style: TextStyle(
                     color: _isHovered ? DColors.primaryLight : DColors.primaryDark,
                     fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                    fontSize: logoSize,
                   ),
                 ),
               ],
               style: TextStyle(
                 fontFamily: 'monospace',
-                fontSize: 24,
+                fontSize: logoSize,
               ),
             ),
           ),

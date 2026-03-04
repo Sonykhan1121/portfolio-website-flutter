@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import '../widgets/action_status.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../widgets/social_icon_button.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/sizes.dart';
 import '../../../../core/shared/custom_button.dart';
+import '../../data/services/url_launcher_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class IntroPage extends StatelessWidget {
-  final dynamic dynamicRadius;
   final bool isMobile;
+  final dynamic dynamicRadius;
   const IntroPage({super.key, required this.dynamicRadius, required this.isMobile});
 
-  Future<void> _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 40),
+        SizedBox(height: context.elementSpacing * 0.5),
         // Profile Avatar with Border
         Container(
           decoration: BoxDecoration(
@@ -41,29 +39,33 @@ class IntroPage extends StatelessWidget {
             backgroundImage: const AssetImage('assets/images/profilepic.png'),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: context.elementSpacing),
         ActionStatus(title: 'Available for opportunities'),
-        const SizedBox(height: 40),
+        SizedBox(height: context.sectionSpacing),
         // Name
-        const Text(
+        Text(
           'Sidratul Montaha',
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+          style: TextStyle(
+            fontSize: Sizes.h1(context),
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.5,
+          ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: context.elementSpacing * 0.5),
         // Title
         Text(
           'Flutter Software Developer',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: Sizes.h4(context),
             fontWeight: FontWeight.w600,
             color: DColors.primaryLight,
             letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(height: 40),
+        SizedBox(height: context.sectionSpacing),
         // Description
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: context.horizontalPadding),
           child: Text.rich(
             TextSpan(
               children: [
@@ -104,54 +106,54 @@ class IntroPage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: context.descriptionFontSize,
               height: 1.6,
               color: Colors.black.withValues(alpha: 0.7),
             ),
           ),
         ),
-        const SizedBox(height: 40),
+        SizedBox(height: context.sectionSpacing),
         // Social Icons
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // GitHub
-            _SocialIconButton(
+            SocialIconButton(
               assetPath: 'assets/icons/git_tag.png',
               url: 'https://github.com',
               tooltip: 'GitHub',
-              onTap: () => _launchURL('https://github.com'),
+              onTap: () => UrlLauncherService.launchExternal('https://github.com/sonykhan1121'),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: context.elementSpacing),
             // LinkedIn
-            _SocialIconButton(
+            SocialIconButton(
               assetPath: 'assets/icons/linkedin.png',
               url: 'https://linkedin.com',
               tooltip: 'LinkedIn',
-              onTap: () => _launchURL('https://linkedin.com'),
+              onTap: () => UrlLauncherService.launchExternal('https://www.linkedin.com/in/sidratul-montaha-441b80175/'),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: context.elementSpacing),
             // Twitter
-            _SocialIconButton(
+            SocialIconButton(
               assetPath: 'assets/icons/twitter.png',
               url: 'https://twitter.com',
               tooltip: 'Twitter',
-              onTap: () => _launchURL('https://twitter.com'),
+              onTap: () => UrlLauncherService.launchExternal('https://twitter.com/sonykhan1121'),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: context.elementSpacing),
             // Facebook
-            _SocialIconButton(
+            SocialIconButton(
               assetPath: 'assets/icons/facebook_logo.png',
               url: 'https://facebook.com',
               tooltip: 'Facebook',
-              onTap: () => _launchURL('https://facebook.com'),
+              onTap: () => UrlLauncherService.launchExternal('https://facebook.com/sonykhan1121'),
             ),
           ],
         ),
-        const SizedBox(height: 50),
+        SizedBox(height: context.sectionSpacing * 1.25),
         // CTA Buttons
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: context.horizontalPadding),
           child: LayoutBuilder(
             builder: (context, constraints) {
               return Flex(
@@ -162,9 +164,9 @@ class IntroPage extends StatelessWidget {
                   CustomButton(
                     text: 'Download CV',
                     backgroundColor: DColors.primaryDark,
-                    sIcon: const Icon(Icons.download_for_offline_outlined, color: DColors.white),
+                    sIcon: const Icon(FontAwesomeIcons.download, color: DColors.white),
                     onTap: () {
-                      _launchURL('https://yourportfoliosite.com/cv.pdf');
+                      UrlLauncherService.launchExternal('https://drive.google.com/file/d/1WgFLjGiwo5w_KoTn1QmgA6JGBabGbfNv/view?usp=sharing');
                     },
                     width: 240,
                     shadows: [
@@ -175,7 +177,7 @@ class IntroPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  const SizedBox(width: 10, height: 10),
+                  SizedBox(width: context.elementSpacing * 0.5, height: context.elementSpacing * 0.5),
                   CustomButton(
                     text: 'Contact',
                     backgroundColor: Colors.transparent,
@@ -184,7 +186,7 @@ class IntroPage extends StatelessWidget {
                     textColor: DColors.primaryDark,
                     border: const BorderSide(color: DColors.primaryDark, width: 2),
                     onTap: () {
-                      _launchURL('mailto:your.email@example.com?subject=Let\'s Work Together');
+                      UrlLauncherService.launchExternal('mailto:sonykhan1121@gmail.com?subject=Let\'s Work Together');
                     },
                   ),
                 ],
@@ -192,68 +194,8 @@ class IntroPage extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: 80),
+        SizedBox(height: context.verticalPadding),
       ],
-    );
-  }
-}
-
-class _SocialIconButton extends StatefulWidget {
-  final String assetPath;
-  final String url;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  const _SocialIconButton({
-    required this.assetPath,
-    required this.url,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  @override
-  State<_SocialIconButton> createState() => _SocialIconButtonState();
-}
-
-class _SocialIconButtonState extends State<_SocialIconButton> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: _isHovered ? 1.15 : 1.0,
-            duration: const Duration(milliseconds: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: DColors.primaryDark.withValues(alpha: _isHovered ? 0.25 : 0.1),
-                    blurRadius: _isHovered ? 16 : 8,
-                    offset: const Offset(0, 4),
-                  )
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  widget.assetPath,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

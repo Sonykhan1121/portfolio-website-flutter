@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio_website_flutter/features/intro/presentation/widgets/project_topic.dart';
+import 'package:portfolio_website_flutter/features/projects/presentation/widgets/project_topic.dart';
 import '../../../../core/constants/colors.dart';
-
 
 class ProjectCard extends StatefulWidget {
   final String title;
   final String description;
   final List<String> listOfTopics;
   final String url;
-  final String projectImagePreview;
+  final String? projectImagePreview;
   final Map<String, dynamic>? projectData;
   final VoidCallback? onTap;
 
@@ -17,7 +16,7 @@ class ProjectCard extends StatefulWidget {
     required this.title,
     required this.description,
     required this.listOfTopics,
-    required this.projectImagePreview,
+    this.projectImagePreview,
     required this.url,
     this.projectData,
     this.onTap,
@@ -46,27 +45,29 @@ class _ProjectCardState extends State<ProjectCard> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               width: 1.5,
-              color: _isHovered
-                  ? DColors.primaryLight.withValues(alpha: 0.8)
-                  : DColors.primaryLight.withValues(alpha: 0.6),
+              color:
+                  _isHovered
+                      ? DColors.primaryLight.withValues(alpha: 0.8)
+                      : DColors.primaryLight.withValues(alpha: 0.6),
             ),
-            boxShadow: _isHovered
-                ? [
-                    BoxShadow(
-                      color: DColors.primaryLight.withValues(alpha: 0.2),
-                      blurRadius: 20,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: DColors.primaryLight.withValues(alpha: 0.08),
-                      blurRadius: 10,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+            boxShadow:
+                _isHovered
+                    ? [
+                      BoxShadow(
+                        color: DColors.primaryLight.withValues(alpha: 0.2),
+                        blurRadius: 20,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: DColors.primaryLight.withValues(alpha: 0.08),
+                        blurRadius: 10,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +78,7 @@ class _ProjectCardState extends State<ProjectCard> {
                   Expanded(
                     child: Text(
                       widget.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black,
-                      ),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.black),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -92,46 +89,28 @@ class _ProjectCardState extends State<ProjectCard> {
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: _isHovered
-                              ? DColors.primaryLight.withValues(alpha: 0.1)
-                              : Colors.transparent,
+                          color: _isHovered ? DColors.primaryLight.withValues(alpha: 0.1) : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: _isHovered
-                                ? DColors.primaryLight.withValues(alpha: 0.3)
-                                : Colors.transparent,
+                            color: _isHovered ? DColors.primaryLight.withValues(alpha: 0.3) : Colors.transparent,
                             width: 1,
                           ),
                         ),
-                        child: Image.asset(
-                          "assets/icons/git_tag.png",
-                          height: 20,
-                          width: 20,
-                          fit: BoxFit.contain,
-                        ),
+                        child: Image.asset("assets/icons/git_tag.png", height: 20, width: 20, fit: BoxFit.contain),
                       ),
                       const SizedBox(width: 8),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: _isHovered
-                              ? DColors.primaryLight.withValues(alpha: 0.1)
-                              : Colors.transparent,
+                          color: _isHovered ? DColors.primaryLight.withValues(alpha: 0.1) : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: _isHovered
-                                ? DColors.primaryLight.withValues(alpha: 0.3)
-                                : Colors.transparent,
+                            color: _isHovered ? DColors.primaryLight.withValues(alpha: 0.3) : Colors.transparent,
                             width: 1,
                           ),
                         ),
-                        child: Image.asset(
-                          "assets/icons/open_url.png",
-                          height: 20,
-                          width: 20,
-                          fit: BoxFit.contain,
-                        ),
+                        child: Image.asset("assets/icons/open_url.png", height: 20, width: 20, fit: BoxFit.contain),
                       ),
                     ],
                   ),
@@ -145,18 +124,12 @@ class _ProjectCardState extends State<ProjectCard> {
                   width: double.infinity,
                   height: 120,
                   color: Colors.grey.withOpacity(0.1),
-                  child: Image.asset(
-                    widget.projectImagePreview,
+                  child: (widget.projectImagePreview==null||widget.projectImagePreview!.isEmpty)
+                      ? _buildFallback()
+                      : Image.asset(
+                    widget.projectImagePreview!,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Icon(
-                          Icons.image_not_supported_outlined,
-                          color: Colors.grey.withOpacity(0.5),
-                          size: 40,
-                        ),
-                      );
-                    },
+                    errorBuilder: (context, error, stackTrace) => _buildFallback(),
                   ),
                 ),
               ),
@@ -182,5 +155,50 @@ class _ProjectCardState extends State<ProjectCard> {
       ),
     );
   }
-}
 
+  Widget _buildFallback() {
+    return Container(
+      width: double.infinity,
+      height: 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            DColors.primaryLight.withValues(alpha: 0.08),
+            DColors.primaryLight.withValues(alpha: 0.15),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: DColors.primaryLight.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.code_rounded,
+            size: 32,
+            color: DColors.primaryLight.withValues(alpha: 0.6),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: DColors.primaryLight.withValues(alpha: 0.7),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

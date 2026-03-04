@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/sizes.dart';
 
 class NavItem extends StatelessWidget {
   final String title;
@@ -20,10 +21,16 @@ class NavItem extends StatelessWidget {
             style: TextStyle(
               color: isActive ? DColors.primaryLight : DColors.primaryDark,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-              fontSize: 15,
+              fontSize: context.platformLabelFontSize,
               letterSpacing: 0.5,
             ),
-            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8), child: Text(title)),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.elementSpacing * 0.9,
+                vertical: context.elementSpacing * 0.4,
+              ),
+              child: Text(title),
+            ),
           ),
           // Animated underline
           AnimatedContainer(

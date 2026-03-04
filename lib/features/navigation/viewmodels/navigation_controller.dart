@@ -54,7 +54,7 @@ class NavigationController extends ChangeNotifier{
       "A productivity application with task management, reminders, categories, and analytics. Features offline-first architecture with local database sync.",
       "listOfTopics": ["Flutter", "Riverpod", "Isar", "Notifications"],
       "url": "https://github.com/sonykhan1121",
-      "projectImagePreview": "assets/images/ecommerce.png",
+      // "projectImagePreview": "",
     },
     {
       "title": "Weather Dashboard",
@@ -62,7 +62,7 @@ class NavigationController extends ChangeNotifier{
       "A beautifully designed weather app displaying real-time data, forecasts, and location-based suggestions with smooth animations and transitions.",
       "listOfTopics": ["Flutter", "Dart", "OpenWeather API", "BLoC"],
       "url": "https://github.com/sonykhan1121",
-      "projectImagePreview": "assets/images/ecommerce.png",
+      // "projectImagePreview": "",
     },
     {
       "title": "Chat Application",
@@ -70,7 +70,7 @@ class NavigationController extends ChangeNotifier{
       "A real-time messaging application with user authentication, group chats, media sharing, and push notifications across platforms.",
       "listOfTopics": ["Flutter", "Firebase", "WebSockets", "Provider"],
       "url": "https://github.com/sonykhan1121",
-      "projectImagePreview": "assets/images/ecommerce.png",
+      // "projectImagePreview": "",
     },
   ];
 

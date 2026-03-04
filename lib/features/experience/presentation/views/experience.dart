@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../widgets/experience_section1.dart';
-import '../widgets/number_with_title.dart';
+import '../widgets/experience_section.dart';
+import '../../../intro/presentation/widgets/number_with_title.dart';
 
 
-class SectionFive extends StatelessWidget {
-  const SectionFive({super.key});
+class Experience extends StatelessWidget {
+  const Experience({super.key});
 
   @override
   Widget build(BuildContext context) {

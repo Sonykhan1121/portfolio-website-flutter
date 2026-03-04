@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../intro/presentation/widgets/number_with_title.dart';
 import 'package:portfolio_website_flutter/core/constants/colors.dart';
 import 'package:portfolio_website_flutter/core/shared/custom_button.dart';
+import 'package:portfolio_website_flutter/features/intro/data/services/url_launcher_service.dart';
 
-import '../widgets/number_with_title.dart';
+import 'footer_social_icon.dart';
 
-class SectionSix extends StatefulWidget {
-  const SectionSix({super.key});
+
+class GetInTouch extends StatefulWidget {
+  const GetInTouch({super.key});
 
   @override
-  State<SectionSix> createState() => _SectionSixState();
+  State<GetInTouch> createState() => _GetInTouchState();
 }
 
-class _SectionSixState extends State<SectionSix> {
+class _GetInTouchState extends State<GetInTouch> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _messageController = TextEditingController();
 
-  Future<void> _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    }
-  }
 
   Future<void> _sendEmail() async {
     final name = _nameController.text;
@@ -83,47 +81,6 @@ class _SectionSixState extends State<SectionSix> {
                 ),
               ),
               const SizedBox(height: 50),
-              // // Social Icons Label
-              // Text(
-              //   'FIND ME ONLINE',
-              //   style: TextStyle(
-              //     fontSize: 12,
-              //     fontWeight: FontWeight.w600,
-              //     letterSpacing: 1.5,
-              //     color: Colors.black.withValues(alpha: 0.7),
-              //   ),
-              // ),
-              // const SizedBox(height: 20),
-              // // All Social Icons - Clickable
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     _SocialIconButton(
-              //       assetPath: 'assets/icons/git_tag.png',
-              //       tooltip: 'GitHub',
-              //       onTap: () => _launchURL('https://github.com'),
-              //     ),
-              //     const SizedBox(width: 20),
-              //     _SocialIconButton(
-              //       assetPath: 'assets/icons/linkedin.png',
-              //       tooltip: 'LinkedIn',
-              //       onTap: () => _launchURL('https://linkedin.com'),
-              //     ),
-              //     const SizedBox(width: 20),
-              //     _SocialIconButton(
-              //       assetPath: 'assets/icons/twitter.png',
-              //       tooltip: 'Twitter',
-              //       onTap: () => _launchURL('https://twitter.com'),
-              //     ),
-              //     const SizedBox(width: 20),
-              //     _SocialIconButton(
-              //       assetPath: 'assets/icons/facebook_logo.png',
-              //       tooltip: 'Facebook',
-              //       onTap: () => _launchURL('https://facebook.com'),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: 60),
               // Contact Form
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,28 +268,28 @@ class _SectionSixState extends State<SectionSix> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _FooterSocialIcon(
+                  FooterSocialIcon(
                     assetPath: 'assets/icons/git_tag.png',
                     tooltip: 'GitHub',
-                    onTap: () => _launchURL('https://github.com'),
+                    onTap: () => UrlLauncherService.launchExternal('https://github.com/sonykhan1121'),
                   ),
                   const SizedBox(width: 15),
-                  _FooterSocialIcon(
+                  FooterSocialIcon(
                     assetPath: 'assets/icons/linkedin.png',
                     tooltip: 'LinkedIn',
-                    onTap: () => _launchURL('https://linkedin.com'),
+                    onTap: () => UrlLauncherService.launchExternal('https://linkedin.com'),
                   ),
                   const SizedBox(width: 15),
-                  _FooterSocialIcon(
+                  FooterSocialIcon(
                     assetPath: 'assets/icons/twitter.png',
                     tooltip: 'Twitter',
-                    onTap: () => _launchURL('https://twitter.com'),
+                    onTap: () => UrlLauncherService.launchExternal('https://twitter.com'),
                   ),
                   const SizedBox(width: 15),
-                  _FooterSocialIcon(
+                  FooterSocialIcon(
                     assetPath: 'assets/icons/facebook_logo.png',
                     tooltip: 'Facebook',
-                    onTap: () => _launchURL('https://facebook.com'),
+                    onTap: () => UrlLauncherService.launchExternal('https://facebook.com'),
                   ),
                 ],
               ),
@@ -345,125 +302,6 @@ class _SectionSixState extends State<SectionSix> {
   }
 }
 
-// Social Icon Widget for Main Section
-class _SocialIconButton extends StatefulWidget {
-  final String assetPath;
-  final String tooltip;
-  final VoidCallback onTap;
 
-  const _SocialIconButton({
-    required this.assetPath,
-    required this.tooltip,
-    required this.onTap,
-  });
 
-  @override
-  State<_SocialIconButton> createState() => _SocialIconButtonState();
-}
-
-class _SocialIconButtonState extends State<_SocialIconButton> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: _isHovered ? 1.12 : 1.0,
-            duration: const Duration(milliseconds: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: DColors.primaryDark.withValues(
-                      alpha: _isHovered ? 0.2 : 0.1,
-                    ),
-                    blurRadius: _isHovered ? 12 : 6,
-                    offset: const Offset(0, 3),
-                  )
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  widget.assetPath,
-                  width: 45,
-                  height: 45,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Footer Social Icon Widget
-class _FooterSocialIcon extends StatefulWidget {
-  final String assetPath;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  const _FooterSocialIcon({
-    required this.assetPath,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  @override
-  State<_FooterSocialIcon> createState() => _FooterSocialIconState();
-}
-
-class _FooterSocialIconState extends State<_FooterSocialIcon> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: _isHovered ? 1.12 : 1.0,
-            duration: const Duration(milliseconds: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: DColors.primaryDark.withValues(
-                      alpha: _isHovered ? 0.2 : 0.1,
-                    ),
-                    blurRadius: _isHovered ? 10 : 5,
-                    offset: const Offset(0, 2),
-                  )
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  widget.assetPath,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio_website_flutter/core/extensions/provider_extension.dart';
 import 'package:provider/provider.dart';
 import '../widgets/sticky_nav_bar.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/break_points.dart';
-import '../../../intro/presentation/views/section_two.dart';
-import '../../../intro/presentation/views/section_one.dart';
-import '../../../intro/presentation/views/section_six.dart';
-import '../../../intro/presentation/views/section_five.dart';
-import '../../../intro/presentation/views/section_four.dart';
-import '../../../intro/presentation/views/section_three.dart';
+import '../../../about/presentation/views/about_me.dart';
+import '../../../intro/presentation/views/intro_page.dart';
+import '../../../get_in_touch/presentation/views/get_in_touch.dart';
+import '../../../experience/presentation/views/experience.dart';
+import '../../../projects/presentation/views/projects.dart';
+import '../../../skills/presentation/views/skills.dart';
 import 'package:portfolio_website_flutter/features/navigation/viewmodels/navigation_controller.dart';
 import 'package:portfolio_website_flutter/features/navigation/presentation/widgets/mobile_drawer.dart';
 import 'package:portfolio_website_flutter/features/navigation/presentation/widgets/mobile_app_bar.dart';
@@ -90,28 +91,25 @@ class _ResponsiveNavBarState extends State<ResponsiveNavBar> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             // Add top padding to account for fixed navbar
-                            if (!isMobile) const SizedBox(height: 200),
+                            if (!isMobile) const SizedBox(height: 100),
                             // Section One - Hero/Landing
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              child: IntroPage(dynamicRadius: dynamicRadius, isMobile: isMobile),
-                            ),
+                            IntroPage(dynamicRadius: dynamicRadius, isMobile: isMobile),
                             // Section Two - About
-                            Container(key: _sectionKeys[1], child: SectionTwo()),
+                            Container(key: _sectionKeys[1], child: AboutMe()),
                             // Section Three - Skills
                             Container(
                               key: _sectionKeys[2],
-                              child: SectionThree(isMobile: isMobile, skills: nvController.skillData),
+                              child: Skills(skills: nvController.skillData),
                             ),
                             // Section Four - Projects
                             Container(
                               key: _sectionKeys[3],
-                              child: SectionFour(isMobile: isMobile, projects: nvController.projectData),
+                              child: Projects(projects: nvController.projectData),
                             ),
                             // Section Five
-                            Container(key: _sectionKeys[4], child: SectionFive()),
+                            Container(key: _sectionKeys[4], child: Experience()),
                             // Section Six - Contact & Footer
-                            Container(key: _sectionKeys[5], child: SectionSix()),
+                            Container(key: _sectionKeys[5], child: GetInTouch()),
                           ],
                         ),
                       ),

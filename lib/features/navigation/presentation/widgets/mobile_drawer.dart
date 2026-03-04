@@ -4,6 +4,7 @@ import 'package:portfolio_website_flutter/features/navigation/viewmodels/navigat
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/sizes.dart';
 
 class MobileDrawer extends StatelessWidget {
   final  Function() scrollToTop;
@@ -22,14 +23,20 @@ class MobileDrawer extends StatelessWidget {
               // Drawer Header with Logo
               Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                padding: EdgeInsets.symmetric(
+                  vertical: context.elementSpacing * 0.6,
+                  horizontal: context.horizontalPadding,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(onTap:(){
-                      scrollToTop();
-                      Navigator.pop(context);
-                    } ,child: LogoWidget(text: "Dev"),),
+                    InkWell(
+                      onTap: () {
+                        scrollToTop();
+                        Navigator.pop(context);
+                      },
+                      child: LogoWidget(text: "Dev"),
+                    ),
                     IconButton(
                       icon: const Icon(Icons.close, color: DColors.primaryDark),
                       onPressed: () => Navigator.pop(context),
@@ -47,7 +54,10 @@ class MobileDrawer extends StatelessWidget {
                 (index) {
                   final isSelected = controller.currentIndex == index;
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: context.elementSpacing * 0.4,
+                      vertical: context.elementSpacing * 0.2,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? DColors.primaryLight.withValues(alpha: 0.1)
@@ -60,7 +70,7 @@ class MobileDrawer extends StatelessWidget {
                         style: TextStyle(
                           color: isSelected ? DColors.primaryLight : DColors.primaryDark,
                           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          fontSize: 15,
+                          fontSize: context.platformLabelFontSize,
                           letterSpacing: 0.3,
                         ),
                       ),
@@ -79,25 +89,28 @@ class MobileDrawer extends StatelessWidget {
                         controller.selectIndex(index);
                         Navigator.pop(context);
                       },
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: context.horizontalPadding,
+                        vertical: context.elementSpacing * 0.4,
+                      ),
                       hoverColor: Colors.black.withValues(alpha: 0.05),
                     ),
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: context.elementSpacing),
               Divider(
                 color: Colors.black.withValues(alpha: 0.1),
                 thickness: 1,
               ),
               // Footer text
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(context.horizontalPadding),
                 child: Text(
                   '© 2026 Sidratul Montaha\nBuilding the future, one widget at a time.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: context.caption,
                     color: Colors.black.withValues(alpha: 0.5),
                     height: 1.5,
                   ),
