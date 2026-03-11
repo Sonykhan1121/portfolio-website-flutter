@@ -15,10 +15,7 @@ class AboutMe extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.horizontalPadding,
-            vertical: context.verticalPadding,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: context.horizontalPadding, vertical: context.verticalPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -86,11 +83,7 @@ class AboutMe extends StatelessWidget {
                 Column(
                   children: [
                     PlatformButton(
-                      icon: Icon(
-                        FontAwesomeIcons.android,
-                        color: DColors.primaryColor,
-                        size: 24,
-                      ),
+                      icon: Icon(FontAwesomeIcons.android, color: DColors.primaryColor, size: 24),
                       label: 'Android',
                       onTap: () {
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/android");
@@ -100,11 +93,7 @@ class AboutMe extends StatelessWidget {
                     ),
                     SizedBox(height: context.platformSpacing),
                     PlatformButton(
-                      icon: Icon(
-                        FontAwesomeIcons.apple,
-                        color: DColors.primaryColor,
-                        size: 24,
-                      ),
+                      icon: Icon(FontAwesomeIcons.apple, color: DColors.primaryColor, size: 24),
                       label: 'iOS',
                       onTap: () {
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/ios");
@@ -114,11 +103,7 @@ class AboutMe extends StatelessWidget {
                     ),
                     SizedBox(height: context.platformSpacing),
                     PlatformButton(
-                      icon: Icon(
-                        FontAwesomeIcons.internetExplorer,
-                        color: DColors.primaryColor,
-                        size: 24,
-                      ),
+                      icon: Icon(FontAwesomeIcons.internetExplorer, color: DColors.primaryColor, size: 24),
                       label: 'Web',
                       onTap: () {
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/web");
@@ -128,11 +113,7 @@ class AboutMe extends StatelessWidget {
                     ),
                     SizedBox(height: context.platformSpacing),
                     PlatformButton(
-                      icon: Icon(
-                        FontAwesomeIcons.windows,
-                        color: DColors.primaryColor,
-                        size: 24,
-                      ),
+                      icon: Icon(FontAwesomeIcons.windows, color: DColors.primaryColor, size: 24),
                       label: 'Windows',
                       onTap: () {
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/windows");
@@ -142,11 +123,7 @@ class AboutMe extends StatelessWidget {
                     ),
                     SizedBox(height: context.platformSpacing),
                     PlatformButton(
-                      icon: Icon(
-                        FontAwesomeIcons.linux,
-                        color: DColors.primaryColor,
-                        size: 24,
-                      ),
+                      icon: Icon(FontAwesomeIcons.linux, color: DColors.primaryColor, size: 24),
                       label: 'Linux',
                       onTap: () {
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/Linux");
@@ -180,11 +157,7 @@ class AboutMe extends StatelessWidget {
                         SizedBox(width: context.platformSpacing),
                         Expanded(
                           child: PlatformButton(
-                            icon: Icon(
-                              Icons.phone_iphone,
-                              color: DColors.primaryColor,
-                              size: 24,
-                            ),
+                            icon: Icon(Icons.phone_iphone, color: DColors.primaryColor, size: 24),
                             label: 'iOS',
                             onTap: () {},
                             height: context.platformButtonHeight,
@@ -199,11 +172,7 @@ class AboutMe extends StatelessWidget {
                       children: [
                         Expanded(
                           child: PlatformButton(
-                            icon: Icon(
-                              Icons.language,
-                              color: DColors.primaryColor,
-                              size: 24,
-                            ),
+                            icon: Icon(Icons.language, color: DColors.primaryColor, size: 24),
                             label: 'Web',
                             onTap: () {},
                             height: context.platformButtonHeight,
@@ -213,11 +182,7 @@ class AboutMe extends StatelessWidget {
                         SizedBox(width: context.platformSpacing),
                         Expanded(
                           child: PlatformButton(
-                            icon: Icon(
-                              Icons.desktop_mac_outlined,
-                              color: DColors.primaryColor,
-                              size: 24,
-                            ),
+                            icon: Icon(Icons.desktop_mac_outlined, color: DColors.primaryColor, size: 24),
                             label: 'Desktop',
                             onTap: () {},
                             height: context.platformButtonHeight,
@@ -251,38 +216,14 @@ class AboutMe extends StatelessWidget {
                     runSpacing: context.isMobile ? 10.0 : 12.0,
                     alignment: WrapAlignment.center,
                     children: [
-                      CompetencyTag(
-                        label: 'Flutter',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'Dart',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'State Management',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'REST APIs',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'Firebase',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'SQL/NoSQL',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'Git/GitHub',
-                        fontSize: context.competencyFontSize,
-                      ),
-                      CompetencyTag(
-                        label: 'Clean Architecture',
-                        fontSize: context.competencyFontSize,
-                      ),
+                      CompetencyTag(label: 'Flutter', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'Dart', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'State Management', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'REST APIs', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'Firebase', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'SQL/NoSQL', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'Git/GitHub', fontSize: context.competencyFontSize),
+                      CompetencyTag(label: 'Clean Architecture', fontSize: context.competencyFontSize),
                     ],
                   ),
                 ],
@@ -294,4 +235,3 @@ class AboutMe extends StatelessWidget {
     );
   }
 }
-
