@@ -93,7 +93,7 @@ class _ResponsiveNavBarState extends State<ResponsiveNavBar> {
                             // Add top padding to account for fixed navbar
                             if (!isMobile) const SizedBox(height: 100),
                             // Section One - Hero/Landing
-                            IntroPage(dynamicRadius: dynamicRadius, isMobile: isMobile),
+                            IntroPage(dynamicRadius: dynamicRadius, isMobile: isMobile,scrollToSection: _scrollToSection,),
                             // Section Two - About
                             Container(key: _sectionKeys[1], child: AboutMe()),
                             // Section Three - Skills

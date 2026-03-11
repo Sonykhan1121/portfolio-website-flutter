@@ -42,7 +42,7 @@ class AboutMe extends StatelessWidget {
                   ),
                   SizedBox(height: context.elementSpacing),
                   Text(
-                    'With expertise in Dart and the Flutter framework, I specialize in developing applications that run seamlessly on Android, iOS, Web, and Desktop from a single codebase. I value clean architecture, reusable components, and maintainable code.',
+                    'I care a lot about how code is structured, not just whether it works. Good architecture, reusable components, and readable code aren\'t just nice-to-haves for me — they\'re how I respect the next developer who touches the project (sometimes that\'s future me).',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: context.descriptionFontSize,
@@ -93,9 +93,7 @@ class AboutMe extends StatelessWidget {
                       ),
                       label: 'Android',
                       onTap: () {
-                        // open this url : https://docs.flutter.dev/deployment/android
                         UrlLauncherService.launchExternal("https://docs.flutter.dev/deployment/android");
-
                       },
                       height: context.platformButtonHeight,
                       fontSize: context.platformLabelFontSize,

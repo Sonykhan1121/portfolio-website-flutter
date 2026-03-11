@@ -10,7 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class IntroPage extends StatelessWidget {
   final bool isMobile;
   final dynamic dynamicRadius;
-  const IntroPage({super.key, required this.dynamicRadius, required this.isMobile});
+  final Function(int) scrollToSection;
+  const IntroPage({super.key, required this.dynamicRadius, required this.isMobile,required this.scrollToSection});
 
 
   @override
@@ -36,7 +37,7 @@ class IntroPage extends StatelessWidget {
           ),
           child: CircleAvatar(
             radius: dynamicRadius.clamp(50.0, 100.0),
-            backgroundImage: const AssetImage('assets/images/profilepic.png'),
+            backgroundImage: const AssetImage('assets/images/me_edit.png'),
           ),
         ),
         SizedBox(height: context.elementSpacing),
@@ -161,33 +162,37 @@ class IntroPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CustomButton(
-                    text: 'Download CV',
-                    backgroundColor: DColors.primaryDark,
-                    sIcon: const Icon(FontAwesomeIcons.download, color: DColors.white),
-                    onTap: () {
-                      UrlLauncherService.launchExternal('https://drive.google.com/file/d/1WgFLjGiwo5w_KoTn1QmgA6JGBabGbfNv/view?usp=sharing');
-                    },
-                    width: 240,
-                    shadows: [
-                      BoxShadow(
-                        color: DColors.primaryDark.withValues(alpha: 0.5),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: CustomButton(
+                      text: 'Download CV',
+                      backgroundColor: DColors.primaryDark,
+                      sIcon: const Icon(FontAwesomeIcons.download, color: DColors.white),
+                      onTap: () {
+                        UrlLauncherService.launchExternal('https://drive.google.com/file/d/1WgFLjGiwo5w_KoTn1QmgA6JGBabGbfNv/view?usp=sharing');
+                      },
+                      width: 240,
+                      shadows: [
+                        BoxShadow(
+                          color: DColors.primaryDark.withValues(alpha: 0.5),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(width: context.elementSpacing * 0.5, height: context.elementSpacing * 0.5),
-                  CustomButton(
-                    text: 'Contact',
-                    backgroundColor: Colors.transparent,
-                    width: 240,
-                    sIcon: const Icon(Icons.send, color: DColors.primaryDark),
-                    textColor: DColors.primaryDark,
-                    border: const BorderSide(color: DColors.primaryDark, width: 2),
-                    onTap: () {
-                      UrlLauncherService.launchExternal('mailto:sonykhan1121@gmail.com?subject=Let\'s Work Together');
-                    },
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: CustomButton(
+                      text: 'Send Message',
+                      backgroundColor: Colors.transparent,
+                      width: 240,
+                      sIcon: const Icon(Icons.send, color: DColors.primaryDark),
+                      textColor: DColors.primaryDark,
+                      border: const BorderSide(color: DColors.primaryDark, width: 2),
+                      onTap: ()=>scrollToSection(5),
+                    ),
                   ),
                 ],
               );
