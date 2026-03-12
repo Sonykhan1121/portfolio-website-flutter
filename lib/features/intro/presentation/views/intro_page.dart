@@ -169,7 +169,7 @@ class IntroPage extends StatelessWidget {
                       backgroundColor: DColors.primaryDark,
                       sIcon: const Icon(FontAwesomeIcons.download, color: DColors.white),
                       onTap: () {
-                        UrlLauncherService.launchExternal('https://drive.google.com/file/d/1WgFLjGiwo5w_KoTn1QmgA6JGBabGbfNv/view?usp=sharing');
+                        UrlLauncherService.launchExternal('https://drive.google.com/file/d/1XjZ2kmgI1k1DLG87sAyArOjTcd1m9OW5/view?usp=sharing');
                       },
                       width: 240,
                       shadows: [
