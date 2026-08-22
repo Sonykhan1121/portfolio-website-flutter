@@ -40,7 +40,7 @@ const RESOURCES = {"version.json": "6c9c33a00862dd1e5b5e7f4bc4d6f9e7",
 "assets/assets/images/projects/grozziie/ios_01.jpg": "832a1b1978655bc0909794808ca968ed",
 "assets/assets/images/projects/grozziie/play_03.webp": "e623f5c3d8639e0f7b56f679887618be",
 "assets/assets/images/projects/grozziie/ios_02.jpg": "7f80f53551c38a527c81f7b45dd0dda3",
-"assets/assets/images/me_edit.png": "9143b6bb91a3bcab2ce3b9b666bc135f",
+"assets/assets/images/me_edit.png": "a069cb2ab3db48a0d7edfbd0a711c804",
 "assets/assets/images/profilepic.png": "d3fd19a8a679c6d8c39b7d4784d75fe5",
 "assets/assets/icons/api_tag.png": "4ae61ef57be36a64fbfcbd7b1282f8ba",
 "assets/assets/icons/linkedin.png": "d492efc706db983e74258dbd348f2208",
@@ -62,7 +62,7 @@ const RESOURCES = {"version.json": "6c9c33a00862dd1e5b5e7f4bc4d6f9e7",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "269f971cec0d5dc864fe9ae080b19e23",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
 "main.dart.js": "e66d951cd9897a46bc9fe89700b65a93",
-"flutter_bootstrap.js": "ae9454409f26f8ed70b08c6ade3f2749",
+"flutter_bootstrap.js": "716ed7edd0c6c8588cb944e2fff6fb56",
 "manifest.json": "d74cfef0069014eb2dadb6036c20179f"};
 // The application shell files that are downloaded before a service worker can
 // start.
