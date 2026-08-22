@@ -79258,7 +79258,7 @@ A.O4.prototype={
 H(a){var s=null,r=t.p
 return A.c8(A.b([B.Xz,B.ye,A.bi("I ship mobile products\nthat work in the real world.",s,s,s,A.eI(s,s,B.ae,s,s,s,s,s,s,s,s,Math.min(68,Math.max(43,A.bu(a,B.bw,t.w).w.a.a*0.054)),s,s,B.a1,s,1.03,!0,s,-2.1,s,s,s,s,s,s),s,s),B.ke,new A.ee(B.A6,B.VI,s),B.hN,A.ic(B.b1,A.b([new A.C4("Explore my work",B.EL,this.c,!1,s),new A.tV("Download CV",B.EQ,new A.aeA(),!1,s)],r),B.bu,12,12),B.yf,A.ic(B.b1,A.b([new A.ua("GitHub",B.mF,new A.aeB(),s),new A.ua("LinkedIn",B.je,new A.aeC(),s),new A.ua("Email",B.mI,A.aop(),s)],r),B.kC,10,10)],r),B.L,B.v)}}
 A.aeA.prototype={
-$0(){return A.hs("https://drive.google.com/file/d/1XjZ2kmgI1k1DLG87sAyArOjTcd1m9OW5/view?usp=sharing")},
+$0(){return A.hs("https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing")},
 $S:0}
 A.aeB.prototype={
 $0(){return A.hs("https://github.com/Sonykhan1121")},
