@@ -21,6 +21,36 @@ const _deviceFrame = Color(0xFF111827);
 const _deviceMuted = Color(0xFFB7C2D0);
 const _contentWidth = 1180.0;
 
+const _cardShadow = <BoxShadow>[
+  BoxShadow(
+    color: Color(0x1A0F172A),
+    blurRadius: 30,
+    spreadRadius: -5,
+    offset: Offset(0, 14),
+  ),
+  BoxShadow(
+    color: Color(0x100F172A),
+    blurRadius: 8,
+    spreadRadius: -2,
+    offset: Offset(0, 3),
+  ),
+];
+
+const _softShadow = <BoxShadow>[
+  BoxShadow(
+    color: Color(0x160F172A),
+    blurRadius: 18,
+    spreadRadius: -4,
+    offset: Offset(0, 8),
+  ),
+  BoxShadow(
+    color: Color(0x0C0F172A),
+    blurRadius: 5,
+    spreadRadius: -1,
+    offset: Offset(0, 2),
+  ),
+];
+
 const _githubUrl = 'https://github.com/Sonykhan1121';
 const _linkedinUrl = 'https://www.linkedin.com/in/sidratul-montaha-441b80175/';
 const _cvUrl =
@@ -749,6 +779,7 @@ class _MetricStrip extends StatelessWidget {
                         color: _inkSoft,
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: _line),
+                        boxShadow: _softShadow,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -826,6 +857,7 @@ class _GrozziieSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: const Color(0xFFB9DED5)),
                 boxShadow: [
+                  ..._cardShadow,
                   BoxShadow(
                     color: _mint.withValues(alpha: 0.10),
                     blurRadius: 48,
@@ -1039,6 +1071,7 @@ class _GrozziieMetrics extends StatelessWidget {
               color: _inkSoft,
               borderRadius: BorderRadius.circular(17),
               border: Border.all(color: _line),
+              boxShadow: _softShadow,
             ),
             child: Row(
               children: [
@@ -1083,6 +1116,7 @@ class _GrozziieMetrics extends StatelessWidget {
             color: _mint.withValues(alpha: 0.09),
             borderRadius: BorderRadius.circular(17),
             border: Border.all(color: _mint.withValues(alpha: 0.3)),
+            boxShadow: _softShadow,
           ),
           child: const Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1185,6 +1219,7 @@ class _FeatureGrid extends StatelessWidget {
                         color: _inkSoft,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: _line),
+                        boxShadow: _softShadow,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,6 +1286,7 @@ class _StoreScreenshot extends StatelessWidget {
         color: _deviceFrame,
         borderRadius: BorderRadius.circular(27),
         border: Border.all(color: const Color(0xFF2D394A)),
+        boxShadow: _cardShadow,
       ),
       child: Column(
         children: [
@@ -1371,6 +1407,7 @@ class _FeaturedProjectCard extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: colorA.withValues(alpha: 0.23)),
+            boxShadow: _cardShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1505,6 +1542,7 @@ class _RepositorySection extends StatelessWidget {
               color: _panel,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: _line),
+              boxShadow: _cardShadow,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1606,6 +1644,7 @@ class _RepositorySection extends StatelessWidget {
                 color: _panel,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: _line),
+                boxShadow: _cardShadow,
               ),
               child: const Column(
                 children: [
@@ -1700,6 +1739,7 @@ class _RepositoryCard extends StatelessWidget {
             color: _panel,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: _line),
+            boxShadow: _cardShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1861,6 +1901,7 @@ class _CapabilityGrid extends StatelessWidget {
                         color: _panel,
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(color: _line),
+                        boxShadow: _cardShadow,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1976,6 +2017,7 @@ class _JourneySection extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: _line),
+                boxShadow: _softShadow,
               ),
               child: const Wrap(
                 alignment: WrapAlignment.spaceAround,
@@ -2021,6 +2063,7 @@ class _JourneyCard extends StatelessWidget {
         color: _panel,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: _line),
+        boxShadow: _cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2133,6 +2176,7 @@ class _ContactSection extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: const Color(0xFFBDDCD5)),
+                boxShadow: _cardShadow,
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
