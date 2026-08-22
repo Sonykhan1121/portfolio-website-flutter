@@ -79300,7 +79300,7 @@ o=A.an4(6,A.bo(p,p,B.m,p,p,new A.b3(p,p,p,A.ba(42),p,new A.fy(B.bI,B.dY,B.b_,s,p
 s=A.ba(38)
 r=A.d8(B.k.c5(0.18),2)
 q=A.b([new A.cM(0,B.c0,B.I.c5(0.14),B.KB,60)],t.sq)
-return A.j5(B.cz,A.b([o,A.an4(28,A.bo(p,A.am0(A.ba(36),A.amI("assets/images/me_edit.png",B.ia,B.l3,p,p)),B.m,p,p,new A.b3(B.BG,p,r,s,q,p,B.z),p,p,p,p,p,p,p,p),0,30,0),A.y4(p,new A.Bc(B.EW,"Production Flutter","Android + iOS",B.cI,p),p,p,p,0,4,p),A.y4(4,new A.Bc(B.mG,"Device experiences","Bluetooth \u2022 IoT",B.I,p),p,p,0,p,p,p)],t.p),B.m,B.bV)},
+return A.j5(B.cz,A.b([o,A.an4(28,A.bo(p,A.am0(A.ba(36),A.amI("assets/images/hero_portrait_2026.png",B.ia,B.l3,p,p)),B.m,p,p,new A.b3(B.BG,p,r,s,q,p,B.z),p,p,p,p,p,p,p,p),0,30,0),A.y4(p,new A.Bc(B.EW,"Production Flutter","Android + iOS",B.cI,p),p,p,p,0,4,p),A.y4(4,new A.Bc(B.mG,"Device experiences","Bluetooth \u2022 IoT",B.I,p),p,p,0,p,p,p)],t.p),B.m,B.bV)},
 $S:494}
 A.Bc.prototype={
 H(a){var s=this,r=null,q=B.c4.c5(0.97),p=A.ba(17),o=s.f,n=A.d8(o.c5(0.42),1),m=A.b([new A.cM(0,B.c0,B.l.c5(0.32),B.Kw,26)],t.sq),l=o.c5(0.15),k=A.ba(11),j=t.p
