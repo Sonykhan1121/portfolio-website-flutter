@@ -609,7 +609,7 @@ class _ProfileVisualState extends State<_ProfileVisual>
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(36),
                     child: Image.asset(
-                      'assets/images/me_edit.png',
+                      'assets/images/hero_portrait_2026.png',
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     ),
