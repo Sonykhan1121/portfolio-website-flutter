@@ -1,16 +1,28 @@
-# portfolio_website_flutter
+# Sidratul Montaha — Portfolio
 
-A new Flutter project.
+A responsive Flutter web portfolio focused on production mobile engineering.
 
-## Getting Started
+The site leads with the live Grozziie Android and iOS product, presents selected
+engineering work, and includes a searchable archive of every public GitHub
+repository.
 
-This project is a starting point for a Flutter application.
+## Highlights
 
-A few resources to get you started if this is your first Flutter project:
+- Production Grozziie case study with official Google Play and App Store imagery
+- Selected Flutter, Android, desktop, package, and ML projects
+- Searchable and filterable public GitHub repository archive
+- Responsive layouts for desktop, tablet, and mobile
+- Accurate experience, education, contact, and profile information
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Run locally
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run -d chrome
+```
+
+## Build for GitHub Pages
+
+```bash
+flutter build web --base-href /portfolio-website-flutter/
+```

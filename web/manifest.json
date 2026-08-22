@@ -1,12 +1,12 @@
 {
-    "name": "portfolio_website_flutter",
-    "short_name": "portfolio_website_flutter",
+    "name": "Sidratul Montaha — Flutter Software Engineer",
+    "short_name": "Sidratul Montaha",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#07111F",
+    "theme_color": "#07111F",
+    "description": "Flutter software engineering portfolio for Sidratul Montaha.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
