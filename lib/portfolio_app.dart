@@ -7,14 +7,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'data/portfolio_data.dart';
 import 'models/repository_item.dart';
 
-const _ink = Color(0xFF07111F);
-const _inkSoft = Color(0xFF0B1728);
-const _panel = Color(0xFF101F32);
-const _mint = Color(0xFF55D6BE);
-const _sky = Color(0xFF7C9CFF);
-const _text = Color(0xFFF6F8FF);
-const _muted = Color(0xFFA5B4C8);
-const _line = Color(0xFF263951);
+const _ink = Color(0xFFFFFFFF);
+const _inkSoft = Color(0xFFF6F8FB);
+const _panel = Color(0xFFFFFFFF);
+const _mint = Color(0xFF087F6B);
+const _sky = Color(0xFF3158C9);
+const _text = Color(0xFF111827);
+const _muted = Color(0xFF5E6B7D);
+const _line = Color(0xFFDCE3EC);
+const _onAccent = Color(0xFFFFFFFF);
+const _softFill = Color(0xFFF2F5F9);
+const _deviceFrame = Color(0xFF111827);
+const _deviceMuted = Color(0xFFB7C2D0);
 const _contentWidth = 1180.0;
 
 const _githubUrl = 'https://github.com/Sonykhan1121';
@@ -50,7 +54,7 @@ class PortfolioApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = ColorScheme.fromSeed(
       seedColor: _mint,
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       surface: _ink,
     );
 
@@ -58,11 +62,11 @@ class PortfolioApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sidratul Montaha — Flutter Software Engineer',
       theme: ThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         colorScheme: scheme,
         scaffoldBackgroundColor: _ink,
         useMaterial3: true,
-        textTheme: ThemeData.dark().textTheme.apply(
+        textTheme: ThemeData.light().textTheme.apply(
           bodyColor: _text,
           displayColor: _text,
           fontFamily: 'Arial',
@@ -266,11 +270,11 @@ class _NavigationBar extends StatelessWidget {
     return Container(
       height: 76,
       decoration: BoxDecoration(
-        color: _ink.withValues(alpha: 0.94),
+        color: _ink.withValues(alpha: 0.97),
         border: const Border(bottom: BorderSide(color: _line)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 24,
             offset: const Offset(0, 10),
           ),
@@ -309,7 +313,7 @@ class _NavigationBar extends StatelessWidget {
                               child: const Text(
                                 'SM',
                                 style: TextStyle(
-                                  color: _ink,
+                                  color: _onAccent,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 13,
                                 ),
@@ -408,7 +412,7 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SectionShell(
       background: const LinearGradient(
-        colors: [_ink, Color(0xFF0A1829), _ink],
+        colors: [_ink, Color(0xFFF0FAF7), Color(0xFFF5F7FF)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -592,12 +596,9 @@ class _ProfileVisualState extends State<_ProfileVisual>
                 bottom: 28,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEAF2FA),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(38),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.18),
-                      width: 2,
-                    ),
+                    border: Border.all(color: _line, width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: _mint.withValues(alpha: 0.14),
@@ -662,13 +663,13 @@ class _FloatingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
-        color: _panel.withValues(alpha: 0.97),
+        color: _panel.withValues(alpha: 0.98),
         borderRadius: BorderRadius.circular(17),
         border: Border.all(color: color.withValues(alpha: 0.42)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.32),
-            blurRadius: 26,
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 22,
             offset: const Offset(0, 12),
           ),
         ],
@@ -745,7 +746,7 @@ class _MetricStrip extends StatelessWidget {
                       constraints: const BoxConstraints(minHeight: 102),
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.035),
+                        color: _inkSoft,
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: _line),
                       ),
@@ -818,16 +819,16 @@ class _GrozziieSection extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF12283A), Color(0xFF111D32)],
+                  colors: [Color(0xFFFFFFFF), Color(0xFFF0FAF7)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: const Color(0xFF2B5260)),
+                border: Border.all(color: const Color(0xFFB9DED5)),
                 boxShadow: [
                   BoxShadow(
-                    color: _mint.withValues(alpha: 0.07),
-                    blurRadius: 60,
+                    color: _mint.withValues(alpha: 0.10),
+                    blurRadius: 48,
                     offset: const Offset(0, 24),
                   ),
                 ],
@@ -892,7 +893,7 @@ class _GrozziieSection extends StatelessWidget {
                           vertical: 7,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: _softFill,
                           borderRadius: BorderRadius.circular(999),
                           border: Border.all(color: _line),
                         ),
@@ -1035,7 +1036,7 @@ class _GrozziieMetrics extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.045),
+              color: _inkSoft,
               borderRadius: BorderRadius.circular(17),
               border: Border.all(color: _line),
             ),
@@ -1181,7 +1182,7 @@ class _FeatureGrid extends StatelessWidget {
                       constraints: const BoxConstraints(minHeight: 126),
                       padding: const EdgeInsets.all(17),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.035),
+                        color: _inkSoft,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: _line),
                       ),
@@ -1247,9 +1248,9 @@ class _StoreScreenshot extends StatelessWidget {
       width: compact ? 190 : 232,
       padding: const EdgeInsets.fromLTRB(9, 11, 9, 9),
       decoration: BoxDecoration(
-        color: const Color(0xFF07101D),
+        color: _deviceFrame,
         borderRadius: BorderRadius.circular(27),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.13)),
+        border: Border.all(color: const Color(0xFF2D394A)),
       ),
       child: Column(
         children: [
@@ -1262,14 +1263,14 @@ class _StoreScreenshot extends StatelessWidget {
                   label == 'App Store'
                       ? FontAwesomeIcons.apple
                       : FontAwesomeIcons.googlePlay,
-                  color: _muted,
+                  color: _deviceMuted,
                   size: 11,
                 ),
                 const SizedBox(width: 7),
                 Text(
                   label,
                   style: const TextStyle(
-                    color: _muted,
+                    color: _deviceMuted,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
@@ -1392,7 +1393,7 @@ class _FeaturedProjectCard extends StatelessWidget {
                     height: 38,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.055),
+                      color: _softFill,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: _line),
                     ),
@@ -1518,7 +1519,7 @@ class _RepositorySection extends StatelessWidget {
                     hintStyle: const TextStyle(color: _muted),
                     prefixIcon: const Icon(Icons.search_rounded, color: _mint),
                     filled: true,
-                    fillColor: _ink.withValues(alpha: 0.6),
+                    fillColor: _inkSoft,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 16,
@@ -1561,7 +1562,7 @@ class _RepositorySection extends StatelessWidget {
                                   labelStyle: TextStyle(
                                     color:
                                         selectedFilter == filter
-                                            ? _ink
+                                            ? _onAccent
                                             : _muted,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 12,
@@ -2126,12 +2127,12 @@ class _ContactSection extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF183B46), Color(0xFF172742)],
+                  colors: [Color(0xFFE8F8F4), Color(0xFFEEF3FF)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: const Color(0xFF31626A)),
+                border: Border.all(color: const Color(0xFFBDDCD5)),
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -2462,7 +2463,7 @@ class _PrimaryButton extends StatelessWidget {
       label: Text(label),
       style: FilledButton.styleFrom(
         backgroundColor: _mint,
-        foregroundColor: _ink,
+        foregroundColor: _onAccent,
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
         textStyle: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -2515,7 +2516,7 @@ class _SmallCta extends StatelessWidget {
       onPressed: onTap,
       style: FilledButton.styleFrom(
         backgroundColor: _mint,
-        foregroundColor: _ink,
+        foregroundColor: _onAccent,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
@@ -2544,7 +2545,7 @@ class _SocialPill extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.035),
+          color: _inkSoft,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(color: _line),
         ),
@@ -2614,7 +2615,7 @@ class _Tag extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: Color.lerp(color, Colors.white, 0.22),
+          color: Color.lerp(color, _text, 0.42),
           fontSize: 10,
           fontWeight: FontWeight.w800,
         ),
