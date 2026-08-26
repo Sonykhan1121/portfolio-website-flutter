@@ -8,7 +8,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:portfolio_website_flutter/main.dart';
+import 'package:portfolio_website_flutter/models/repository_item.dart';
+import 'package:portfolio_website_flutter/portfolio_app.dart';
+import 'package:portfolio_website_flutter/services/github_repository_service.dart';
+
+class _FallbackRepositoryService extends GitHubRepositoryService {
+  _FallbackRepositoryService() : super(username: 'Sonykhan1121');
+
+  @override
+  Future<List<RepositoryItem>> fetchPublicRepositories({
+    required List<RepositoryItem> fallbackRepositories,
+  }) async {
+    return fallbackRepositories;
+  }
+}
 
 void main() {
   testWidgets('portfolio surfaces production work', (tester) async {
@@ -17,7 +30,9 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      PortfolioApp(repositoryService: _FallbackRepositoryService()),
+    );
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Grozziie'), findsWidgets);

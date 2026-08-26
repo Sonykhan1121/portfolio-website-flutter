@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'data/portfolio_data.dart';
 import 'models/repository_item.dart';
+import 'services/github_repository_service.dart';
 
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
@@ -78,7 +79,9 @@ Future<void> _emailMe() async {
 }
 
 class PortfolioApp extends StatelessWidget {
-  const PortfolioApp({super.key});
+  const PortfolioApp({super.key, this.repositoryService});
+
+  final GitHubRepositoryService? repositoryService;
 
   @override
   Widget build(BuildContext context) {
@@ -105,19 +108,22 @@ class PortfolioApp extends StatelessWidget {
           selectionColor: Color(0x6655D6BE),
         ),
       ),
-      home: const PortfolioHome(),
+      home: PortfolioHome(repositoryService: repositoryService),
     );
   }
 }
 
 class PortfolioHome extends StatefulWidget {
-  const PortfolioHome({super.key});
+  const PortfolioHome({super.key, this.repositoryService});
+
+  final GitHubRepositoryService? repositoryService;
 
   @override
   State<PortfolioHome> createState() => _PortfolioHomeState();
 }
 
 class _PortfolioHomeState extends State<PortfolioHome> {
+  late final GitHubRepositoryService _repositoryService;
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
   final _heroKey = GlobalKey();
@@ -129,6 +135,19 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   String _filter = 'All';
   String _query = '';
   bool _showAllRepositories = false;
+  late List<RepositoryItem> _repositories;
+  bool _isSyncingRepositories = true;
+  bool _repositorySyncFailed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _repositoryService =
+        widget.repositoryService ??
+        GitHubRepositoryService(username: 'Sonykhan1121');
+    _repositories = List<RepositoryItem>.of(repositories);
+    _syncRepositories();
+  }
 
   @override
   void dispose() {
@@ -146,6 +165,32 @@ class _PortfolioHomeState extends State<PortfolioHome> {
       curve: Curves.easeOutCubic,
       alignment: 0.02,
     );
+  }
+
+  Future<void> _syncRepositories() async {
+    try {
+      final liveRepositories = await _repositoryService.fetchPublicRepositories(
+        fallbackRepositories: repositories,
+      );
+      if (!mounted) return;
+      setState(() {
+        _repositories = liveRepositories;
+        _isSyncingRepositories = false;
+        _repositorySyncFailed = false;
+        if (_filter != 'All' &&
+            !_repositories.any(
+              (repository) => repository.language == _filter,
+            )) {
+          _filter = 'All';
+        }
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isSyncingRepositories = false;
+        _repositorySyncFailed = true;
+      });
+    }
   }
 
   void _openMobileMenu() {
@@ -204,7 +249,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
   List<RepositoryItem> get _filteredRepositories {
     final normalized = _query.trim().toLowerCase();
-    return repositories.where((repo) {
+    return _repositories.where((repo) {
       final matchesFilter = _filter == 'All' || repo.language == _filter;
       final haystack =
           '${repo.name} ${repo.description} ${repo.language} ${repo.category}'
@@ -212,6 +257,28 @@ class _PortfolioHomeState extends State<PortfolioHome> {
       return matchesFilter &&
           (normalized.isEmpty || haystack.contains(normalized));
     }).toList();
+  }
+
+  List<String> get _repositoryLanguages {
+    const preferredOrder = [
+      'Dart',
+      'Kotlin',
+      'Java',
+      'C++',
+      'Python',
+      'HTML',
+      'JavaScript',
+      'TypeScript',
+      'Liquid',
+      'Other',
+    ];
+    final languages = _repositories.map((repo) => repo.language).toSet();
+    final ordered = preferredOrder.where(languages.contains).toList();
+    ordered.addAll(
+      languages.where((language) => !preferredOrder.contains(language)).toList()
+        ..sort(),
+    );
+    return ordered;
   }
 
   @override
@@ -227,7 +294,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                   const SizedBox(height: 76),
                   Container(
                     key: _heroKey,
-                    child: _HeroSection(onExplore: () => _scrollTo(_workKey)),
+                    child: _HeroSection(
+                      repositoryCount: _repositories.length,
+                      onExplore: () => _scrollTo(_workKey),
+                    ),
                   ),
                   Container(key: _workKey, child: const _GrozziieSection()),
                   _FeaturedProjectsSection(key: _projectsKey),
@@ -235,7 +305,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     searchController: _searchController,
                     selectedFilter: _filter,
                     repositories: _filteredRepositories,
+                    repositoryLanguages: _repositoryLanguages,
                     showAll: _showAllRepositories,
+                    isSyncing: _isSyncingRepositories,
+                    syncFailed: _repositorySyncFailed,
                     onSearch: (value) {
                       setState(() {
                         _query = value;
@@ -434,8 +507,9 @@ class _MobileNavItem extends StatelessWidget {
 }
 
 class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.onExplore});
+  const _HeroSection({required this.repositoryCount, required this.onExplore});
 
+  final int repositoryCount;
   final VoidCallback onExplore;
 
   @override
@@ -471,7 +545,7 @@ class _HeroSection extends StatelessWidget {
                 visual,
               ],
               const SizedBox(height: 54),
-              const _MetricStrip(),
+              _MetricStrip(repositoryCount: repositoryCount),
             ],
           );
         },
@@ -747,15 +821,17 @@ class _FloatingBadge extends StatelessWidget {
 }
 
 class _MetricStrip extends StatelessWidget {
-  const _MetricStrip();
+  const _MetricStrip({required this.repositoryCount});
+
+  final int repositoryCount;
 
   @override
   Widget build(BuildContext context) {
-    const metrics = [
-      ('50K+', 'Grozziie Android downloads'),
-      ('32', 'Public GitHub repositories'),
-      ('2', 'Live mobile platforms'),
-      ('2024', 'Production engineering since'),
+    final metrics = [
+      const ('50K+', 'Grozziie Android downloads'),
+      ('$repositoryCount', 'Public GitHub repositories'),
+      const ('2', 'Live mobile platforms'),
+      const ('2024', 'Production engineering since'),
     ];
 
     return LayoutBuilder(
@@ -1495,7 +1571,10 @@ class _RepositorySection extends StatelessWidget {
     required this.searchController,
     required this.selectedFilter,
     required this.repositories,
+    required this.repositoryLanguages,
     required this.showAll,
+    required this.isSyncing,
+    required this.syncFailed,
     required this.onSearch,
     required this.onFilter,
     required this.onToggleAll,
@@ -1504,23 +1583,17 @@ class _RepositorySection extends StatelessWidget {
   final TextEditingController searchController;
   final String selectedFilter;
   final List<RepositoryItem> repositories;
+  final List<String> repositoryLanguages;
   final bool showAll;
+  final bool isSyncing;
+  final bool syncFailed;
   final ValueChanged<String> onSearch;
   final ValueChanged<String> onFilter;
   final VoidCallback onToggleAll;
 
   @override
   Widget build(BuildContext context) {
-    const filters = [
-      'All',
-      'Dart',
-      'Kotlin',
-      'Java',
-      'C++',
-      'Python',
-      'HTML',
-      'Other',
-    ];
+    final filters = ['All', ...repositoryLanguages];
     final visible = showAll ? repositories : repositories.take(12).toList();
 
     return _SectionShell(
@@ -1628,10 +1701,43 @@ class _RepositorySection extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const Spacer(),
-              const Text(
-                'Updated from public GitHub data',
-                style: TextStyle(color: _muted, fontSize: 11),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (isSyncing)
+                      const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: _mint,
+                        ),
+                      )
+                    else
+                      Icon(
+                        syncFailed
+                            ? Icons.cloud_off_rounded
+                            : Icons.cloud_done_rounded,
+                        color: syncFailed ? _muted : _mint,
+                        size: 15,
+                      ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        isSyncing
+                            ? 'Syncing with GitHub…'
+                            : syncFailed
+                            ? 'Showing saved data'
+                            : 'Live from GitHub',
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(color: _muted, fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
