@@ -10,13 +10,14 @@ repository.
 
 - Production Grozziie case study with official Google Play and App Store imagery
 - Selected Flutter, Android, desktop, package, and ML projects
-- Searchable and filterable public GitHub repository archive
+- Searchable public GitHub repository archive refreshed hourly by GitHub Actions
 - Responsive layouts for desktop, tablet, and mobile
 - Accurate experience, education, contact, and profile information
 
 ## Run locally
 
 ```bash
+bash tool/sync_github_repositories.sh
 flutter pub get
 flutter run -d chrome
 ```

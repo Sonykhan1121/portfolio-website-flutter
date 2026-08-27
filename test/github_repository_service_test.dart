@@ -1,17 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
 import 'package:portfolio_website_flutter/models/repository_item.dart';
 import 'package:portfolio_website_flutter/services/github_repository_service.dart';
 
 void main() {
   test('maps public GitHub repositories and preserves curated copy', () async {
-    final client = MockClient((request) async {
-      expect(request.url.host, 'api.github.com');
-      expect(request.url.path, '/users/Sonykhan1121/repos');
-      expect(request.url.queryParameters['per_page'], '100');
-      return http.Response(
-        '''
+    final service = GitHubRepositoryService(
+      username: 'Sonykhan1121',
+      repositoryJsonLoader:
+          () async => '''
         [
           {
             "name": "known-project",
@@ -35,13 +31,6 @@ void main() {
           }
         ]
         ''',
-        200,
-        headers: {'content-type': 'application/json'},
-      );
-    });
-    final service = GitHubRepositoryService(
-      username: 'Sonykhan1121',
-      client: client,
     );
     const fallback = RepositoryItem(
       name: 'known-project',
@@ -64,10 +53,10 @@ void main() {
     expect(repositories.last.description, 'A newly published API project');
   });
 
-  test('throws a readable exception when GitHub is unavailable', () async {
+  test('throws when the generated snapshot is invalid', () async {
     final service = GitHubRepositoryService(
       username: 'Sonykhan1121',
-      client: MockClient((_) async => http.Response('rate limited', 403)),
+      repositoryJsonLoader: () async => '{"message":"invalid snapshot"}',
     );
 
     expect(

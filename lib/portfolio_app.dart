@@ -1727,10 +1727,10 @@ class _RepositorySection extends StatelessWidget {
                     Flexible(
                       child: Text(
                         isSyncing
-                            ? 'Syncing with GitHub…'
+                            ? 'Loading repository data…'
                             : syncFailed
                             ? 'Showing saved data'
-                            : 'Live from GitHub',
+                            : 'Auto-synced from GitHub',
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.right,
                         style: const TextStyle(color: _muted, fontSize: 11),

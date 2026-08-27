@@ -1,75 +1,41 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 import '../models/repository_item.dart';
 
 class GitHubRepositoryService {
-  GitHubRepositoryService({required this.username, http.Client? client})
-    : _client = client;
+  GitHubRepositoryService({
+    required this.username,
+    Future<String> Function()? repositoryJsonLoader,
+  }) : _repositoryJsonLoader =
+           repositoryJsonLoader ??
+           (() => rootBundle.loadString(_repositoryAssetPath));
 
-  static const _pageSize = 100;
-  static const _requestTimeout = Duration(seconds: 12);
+  static const _repositoryAssetPath = 'assets/data/github_repositories.json';
 
   final String username;
-  final http.Client? _client;
+  final Future<String> Function() _repositoryJsonLoader;
 
   Future<List<RepositoryItem>> fetchPublicRepositories({
     required List<RepositoryItem> fallbackRepositories,
   }) async {
-    final client = _client ?? http.Client();
-    final liveRepositories = <Map<String, dynamic>>[];
-
-    try {
-      var page = 1;
-      while (true) {
-        final uri = Uri.https('api.github.com', '/users/$username/repos', {
-          'type': 'owner',
-          'sort': 'updated',
-          'direction': 'desc',
-          'per_page': '$_pageSize',
-          'page': '$page',
-        });
-        final response = await client
-            .get(
-              uri,
-              headers: const {
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
-              },
-            )
-            .timeout(_requestTimeout);
-
-        if (response.statusCode != 200) {
-          throw GitHubRepositoryException(
-            'GitHub returned status ${response.statusCode}.',
-          );
-        }
-
-        final decoded = jsonDecode(response.body);
-        if (decoded is! List) {
-          throw const GitHubRepositoryException(
-            'GitHub returned an unexpected response.',
-          );
-        }
-
-        final pageRepositories =
-            decoded.whereType<Map<String, dynamic>>().toList();
-        liveRepositories.addAll(pageRepositories);
-
-        if (pageRepositories.length < _pageSize) break;
-        page += 1;
-      }
-    } finally {
-      if (_client == null) client.close();
+    final decoded = jsonDecode(await _repositoryJsonLoader());
+    if (decoded is! List) {
+      throw const GitHubRepositoryException(
+        'The repository snapshot has an unexpected format.',
+      );
     }
+    final syncedRepositories = decoded.whereType<Map<String, dynamic>>().toList(
+      growable: false,
+    );
 
     final curatedByName = {
       for (final repository in fallbackRepositories)
         repository.name.toLowerCase(): repository,
     };
 
-    return liveRepositories
+    return syncedRepositories
         .map(
           (repository) => _toRepositoryItem(
             repository,
