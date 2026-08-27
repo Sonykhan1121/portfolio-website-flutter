@@ -66,6 +66,43 @@ const featuredProjects = <FeaturedProject>[
   ),
 ];
 
+const projectDemos = <ProjectDemo>[
+  ProjectDemo(
+    title: 'Gesture-Controlled Mobile Stand',
+    kicker: 'COMPUTER VISION + IOT',
+    description:
+        'A Flutter controller that turns hand gestures into touch-free camera movement, recording, zoom, face detection, and object-follow actions.',
+    duration: '1:12',
+    thumbnail: 'assets/images/projects/demos/gesture_mobile_stand.jpg',
+    thumbnailAlignment: Alignment.center,
+    url:
+        'https://www.linkedin.com/feed/update/urn:li:activity:7478326601756123136/',
+    tags: ['Flutter', 'Gestures', 'Computer vision'],
+  ),
+  ProjectDemo(
+    title: 'Face Recognition AI in Action',
+    kicker: 'LIVE PRODUCT DEMO',
+    description:
+        'A fast, card-free attendance flow that recognizes a face, records attendance, and synchronizes the result to the cloud.',
+    duration: '0:55',
+    thumbnail: 'assets/images/projects/demos/face_recognition_ai.jpg',
+    url:
+        'https://www.linkedin.com/feed/update/urn:li:activity:7414153747473526784/',
+    tags: ['ML Kit', 'TensorFlow Lite', 'Cloud sync'],
+  ),
+  ProjectDemo(
+    title: 'Smart Face Attendance System',
+    kicker: 'END-TO-END SHOWCASE',
+    description:
+        'An offline-first Flutter attendance system with real-time recognition, mobile punch-in/out, cloud sync, and a REST-powered admin workflow.',
+    duration: '1:13',
+    thumbnail: 'assets/images/projects/demos/smart_attendance.jpg',
+    url:
+        'https://www.linkedin.com/feed/update/urn:li:activity:7400496353233203200/',
+    tags: ['Flutter', 'SQLite', 'REST API'],
+  ),
+];
+
 const repositories = <RepositoryItem>[
   RepositoryItem(
     name: 'Sonykhan1121',

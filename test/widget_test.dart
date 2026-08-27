@@ -38,5 +38,7 @@ void main() {
     expect(find.text('Grozziie'), findsWidgets);
     expect(find.textContaining('50K+'), findsWidgets);
     expect(find.text('Explore my work'), findsOneWidget);
+    expect(find.text('See the engineering\nin motion.'), findsOneWidget);
+    expect(find.text('Gesture-Controlled Mobile Stand'), findsOneWidget);
   });
 }

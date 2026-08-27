@@ -35,6 +35,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/projects/
+    - assets/images/projects/demos/
     - assets/images/projects/grozziie/
     - assets/icons/
     - assets/data/

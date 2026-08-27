@@ -53,7 +53,9 @@ const _softShadow = <BoxShadow>[
 ];
 
 const _githubUrl = 'https://github.com/Sonykhan1121';
-const _linkedinUrl = 'https://www.linkedin.com/in/sidratul-montaha-441b80175/';
+const _linkedinUrl = 'https://www.linkedin.com/in/sidratul-montaha-flutter/';
+const _linkedinVideosUrl =
+    'https://www.linkedin.com/in/sidratul-montaha-flutter/recent-activity/videos/';
 const _cvUrl =
     'https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing';
 const _playStoreUrl =
@@ -129,6 +131,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   final _heroKey = GlobalKey();
   final _workKey = GlobalKey();
   final _projectsKey = GlobalKey();
+  final _demosKey = GlobalKey();
   final _aboutKey = GlobalKey();
   final _contactKey = GlobalKey();
 
@@ -227,6 +230,13 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     },
                   ),
                   _MobileNavItem(
+                    label: 'Demos',
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _scrollTo(_demosKey);
+                    },
+                  ),
+                  _MobileNavItem(
                     label: 'About',
                     onTap: () {
                       Navigator.pop(sheetContext);
@@ -301,6 +311,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                   ),
                   Container(key: _workKey, child: const _GrozziieSection()),
                   _FeaturedProjectsSection(key: _projectsKey),
+                  Container(
+                    key: _demosKey,
+                    child: const _ProjectDemosSection(),
+                  ),
                   _RepositorySection(
                     searchController: _searchController,
                     selectedFilter: _filter,
@@ -339,6 +353,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 onHome: () => _scrollTo(_heroKey),
                 onWork: () => _scrollTo(_workKey),
                 onProjects: () => _scrollTo(_projectsKey),
+                onDemos: () => _scrollTo(_demosKey),
                 onAbout: () => _scrollTo(_aboutKey),
                 onContact: () => _scrollTo(_contactKey),
                 onMenu: _openMobileMenu,
@@ -356,6 +371,7 @@ class _NavigationBar extends StatelessWidget {
     required this.onHome,
     required this.onWork,
     required this.onProjects,
+    required this.onDemos,
     required this.onAbout,
     required this.onContact,
     required this.onMenu,
@@ -364,6 +380,7 @@ class _NavigationBar extends StatelessWidget {
   final VoidCallback onHome;
   final VoidCallback onWork;
   final VoidCallback onProjects;
+  final VoidCallback onDemos;
   final VoidCallback onAbout;
   final VoidCallback onContact;
   final VoidCallback onMenu;
@@ -441,6 +458,7 @@ class _NavigationBar extends StatelessWidget {
                     if (!compact) ...[
                       _NavLink(label: 'Grozziie', onTap: onWork),
                       _NavLink(label: 'Projects', onTap: onProjects),
+                      _NavLink(label: 'Demos', onTap: onDemos),
                       _NavLink(label: 'About', onTap: onAbout),
                       const SizedBox(width: 10),
                       _SmallCta(label: 'Let’s talk', onTap: onContact),
@@ -1566,6 +1584,290 @@ class _FeaturedProjectCard extends StatelessWidget {
   }
 }
 
+class _ProjectDemosSection extends StatelessWidget {
+  const _ProjectDemosSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionShell(
+      color: _inkSoft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '03',
+            eyebrow: 'PROJECT DEMOS',
+            title: 'See the engineering\nin motion.',
+            description:
+                'Short, real-world demonstrations of computer vision, on-device AI, and Flutter products. Each preview opens the full video on LinkedIn.',
+          ),
+          const SizedBox(height: 42),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns =
+                  constraints.maxWidth >= 980
+                      ? 3
+                      : constraints.maxWidth >= 650
+                      ? 2
+                      : 1;
+              const gap = 20.0;
+              final itemWidth =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children:
+                    projectDemos
+                        .map(
+                          (demo) => SizedBox(
+                            width: itemWidth,
+                            height: 446,
+                            child: _ProjectDemoCard(demo: demo),
+                          ),
+                        )
+                        .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 30),
+          Center(
+            child: _OutlineButton(
+              label: 'View all demos on LinkedIn',
+              icon: Icons.video_library_outlined,
+              onTap: () => _launch(_linkedinVideosUrl),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProjectDemoCard extends StatelessWidget {
+  const _ProjectDemoCard({required this.demo});
+
+  final ProjectDemo demo;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HoverLift(
+      child: Semantics(
+        button: true,
+        label: 'Watch ${demo.title} demo on LinkedIn',
+        child: InkWell(
+          onTap: () => _launch(demo.url),
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: _panel,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: _line),
+              boxShadow: _cardShadow,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 202,
+                  width: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        demo.thumbnail,
+                        fit: BoxFit.cover,
+                        alignment: demo.thumbnailAlignment,
+                        semanticLabel: '${demo.title} video preview',
+                      ),
+                      const DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0x29000000),
+                              Color(0x00000000),
+                              Color(0x8F000000),
+                            ],
+                            stops: [0, 0.52, 1],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 11,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0A66C2),
+                            borderRadius: BorderRadius.circular(999),
+                            boxShadow: _softShadow,
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.linkedinIn,
+                                size: 12,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 7),
+                              Text(
+                                'VIDEO',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xD9111827),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            demo.duration,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Container(
+                          width: 62,
+                          height: 62,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.94),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.8),
+                              width: 2,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x4D000000),
+                                blurRadius: 24,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow_rounded,
+                            color: _mint,
+                            size: 34,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 20, 22, 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          demo.kicker,
+                          style: const TextStyle(
+                            color: _mint,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.15,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          demo.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: _text,
+                            fontSize: 20,
+                            height: 1.18,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.35,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Expanded(
+                          child: Text(
+                            demo.description,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: _muted,
+                              fontSize: 13.5,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                demo.tags.join('  •  '),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: _muted,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'WATCH DEMO',
+                              style: TextStyle(
+                                color: _text,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(
+                              Icons.north_east_rounded,
+                              color: _mint,
+                              size: 17,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _RepositorySection extends StatelessWidget {
   const _RepositorySection({
     required this.searchController,
@@ -1602,7 +1904,7 @@ class _RepositorySection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '03',
+            number: '04',
             eyebrow: 'COMPLETE GITHUB ARCHIVE',
             title: 'Every public repository,\norganized in one place.',
             description:
@@ -1940,7 +2242,7 @@ class _AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '04',
+            number: '05',
             eyebrow: 'ABOUT & CAPABILITIES',
             title: 'Engineering across the\nwhole product journey.',
             description:

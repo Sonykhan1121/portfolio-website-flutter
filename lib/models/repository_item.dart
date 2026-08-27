@@ -37,3 +37,25 @@ class FeaturedProject {
   final String url;
   final List<int> colors;
 }
+
+class ProjectDemo {
+  const ProjectDemo({
+    required this.title,
+    required this.kicker,
+    required this.description,
+    required this.duration,
+    required this.thumbnail,
+    required this.url,
+    required this.tags,
+    this.thumbnailAlignment = Alignment.center,
+  });
+
+  final String title;
+  final String kicker;
+  final String description;
+  final String duration;
+  final String thumbnail;
+  final String url;
+  final List<String> tags;
+  final Alignment thumbnailAlignment;
+}
