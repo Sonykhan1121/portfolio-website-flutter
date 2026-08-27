@@ -130,6 +130,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   final _searchController = TextEditingController();
   final _heroKey = GlobalKey();
   final _workKey = GlobalKey();
+  final _teamKey = GlobalKey();
   final _projectsKey = GlobalKey();
   final _demosKey = GlobalKey();
   final _aboutKey = GlobalKey();
@@ -223,6 +224,13 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     },
                   ),
                   _MobileNavItem(
+                    label: 'Team',
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _scrollTo(_teamKey);
+                    },
+                  ),
+                  _MobileNavItem(
                     label: 'Projects',
                     onTap: () {
                       Navigator.pop(sheetContext);
@@ -310,6 +318,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     ),
                   ),
                   Container(key: _workKey, child: const _GrozziieSection()),
+                  Container(key: _teamKey, child: const _TeamSection()),
                   _FeaturedProjectsSection(key: _projectsKey),
                   Container(
                     key: _demosKey,
@@ -352,6 +361,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               child: _NavigationBar(
                 onHome: () => _scrollTo(_heroKey),
                 onWork: () => _scrollTo(_workKey),
+                onTeam: () => _scrollTo(_teamKey),
                 onProjects: () => _scrollTo(_projectsKey),
                 onDemos: () => _scrollTo(_demosKey),
                 onAbout: () => _scrollTo(_aboutKey),
@@ -370,6 +380,7 @@ class _NavigationBar extends StatelessWidget {
   const _NavigationBar({
     required this.onHome,
     required this.onWork,
+    required this.onTeam,
     required this.onProjects,
     required this.onDemos,
     required this.onAbout,
@@ -379,6 +390,7 @@ class _NavigationBar extends StatelessWidget {
 
   final VoidCallback onHome;
   final VoidCallback onWork;
+  final VoidCallback onTeam;
   final VoidCallback onProjects;
   final VoidCallback onDemos;
   final VoidCallback onAbout;
@@ -457,6 +469,7 @@ class _NavigationBar extends StatelessWidget {
                     const Spacer(),
                     if (!compact) ...[
                       _NavLink(label: 'Grozziie', onTap: onWork),
+                      _NavLink(label: 'Team', onTap: onTeam),
                       _NavLink(label: 'Projects', onTap: onProjects),
                       _NavLink(label: 'Demos', onTap: onDemos),
                       _NavLink(label: 'About', onTap: onAbout),
@@ -1426,6 +1439,181 @@ class _StoreScreenshot extends StatelessWidget {
   }
 }
 
+class _TeamSection extends StatelessWidget {
+  const _TeamSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionShell(
+      color: _inkSoft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '02',
+            eyebrow: 'CURRENT COMPANY · THT-SPACE',
+            title: 'The team behind\nthe work.',
+            description:
+                'The people I collaborate with to design, build, test, and ship dependable products across mobile, web, design, quality, and backend engineering.',
+          ),
+          const SizedBox(height: 42),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns =
+                  constraints.maxWidth >= 980
+                      ? 3
+                      : constraints.maxWidth >= 650
+                      ? 2
+                      : 1;
+              const gap = 20.0;
+              final itemWidth =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (var index = 0; index < currentTeam.length; index++)
+                    SizedBox(
+                      width: itemWidth,
+                      height: 320,
+                      child: _TeamMemberCard(
+                        member: currentTeam[index],
+                        index: index + 1,
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TeamMemberCard extends StatelessWidget {
+  const _TeamMemberCard({required this.member, required this.index});
+
+  final TeamMember member;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HoverLift(
+      child: Semantics(
+        container: true,
+        label: '${member.name}, ${member.role}, THT-Space team member',
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
+          decoration: BoxDecoration(
+            color: _panel,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: _line),
+            boxShadow: _cardShadow,
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 34,
+                  height: 34,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: _softFill,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: _line),
+                  ),
+                  child: Text(
+                    index.toString().padLeft(2, '0'),
+                    style: const TextStyle(
+                      color: _muted,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(colors: [_mint, _sky]),
+                        shape: BoxShape.circle,
+                        boxShadow: _softShadow,
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          member.image,
+                          fit: BoxFit.cover,
+                          semanticLabel: '${member.name} portrait',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      member.name,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: _text,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      member.role,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: _muted,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _mint.withValues(alpha: 0.09),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: _mint.withValues(alpha: 0.2)),
+                      ),
+                      child: const Text(
+                        'THT-SPACE',
+                        style: TextStyle(
+                          color: _mint,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _FeaturedProjectsSection extends StatelessWidget {
   const _FeaturedProjectsSection({super.key});
 
@@ -1437,7 +1625,7 @@ class _FeaturedProjectsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '02',
+            number: '03',
             eyebrow: 'SELECTED ENGINEERING WORK',
             title: 'Products, packages,\nand practical experiments.',
             description:
@@ -1595,7 +1783,7 @@ class _ProjectDemosSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '03',
+            number: '04',
             eyebrow: 'PROJECT DEMOS',
             title: 'See the engineering\nin motion.',
             description:
@@ -1904,7 +2092,7 @@ class _RepositorySection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '04',
+            number: '05',
             eyebrow: 'COMPLETE GITHUB ARCHIVE',
             title: 'Every public repository,\norganized in one place.',
             description:
@@ -2242,7 +2430,7 @@ class _AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '05',
+            number: '06',
             eyebrow: 'ABOUT & CAPABILITIES',
             title: 'Engineering across the\nwhole product journey.',
             description:

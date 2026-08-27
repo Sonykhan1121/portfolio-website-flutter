@@ -103,6 +103,39 @@ const projectDemos = <ProjectDemo>[
   ),
 ];
 
+const currentTeam = <TeamMember>[
+  TeamMember(
+    name: 'Zubayar Ahmed',
+    role: 'Full Stack Web Developer',
+    image: 'assets/images/team/zubayar-ahmed.jpg',
+  ),
+  TeamMember(
+    name: 'Pias',
+    role: 'UI/UX Designer',
+    image: 'assets/images/team/pias.jpg',
+  ),
+  TeamMember(
+    name: 'Dolon Mondol',
+    role: 'Software Developer',
+    image: 'assets/images/team/dolon-mondol.jpg',
+  ),
+  TeamMember(
+    name: 'Shuvo',
+    role: 'Software Developer',
+    image: 'assets/images/team/shuvo.jpg',
+  ),
+  TeamMember(
+    name: 'Mir Sultan',
+    role: 'SQA',
+    image: 'assets/images/team/mir-sultan.jpg',
+  ),
+  TeamMember(
+    name: 'Obaidul Haque',
+    role: 'Backend Developer',
+    image: 'assets/images/team/obaidul-haque.jpg',
+  ),
+];
+
 const repositories = <RepositoryItem>[
   RepositoryItem(
     name: 'Sonykhan1121',

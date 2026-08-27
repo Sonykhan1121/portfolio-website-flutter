@@ -59,3 +59,15 @@ class ProjectDemo {
   final List<String> tags;
   final Alignment thumbnailAlignment;
 }
+
+class TeamMember {
+  const TeamMember({
+    required this.name,
+    required this.role,
+    required this.image,
+  });
+
+  final String name;
+  final String role;
+  final String image;
+}
