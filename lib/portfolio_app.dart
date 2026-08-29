@@ -224,13 +224,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     },
                   ),
                   _MobileNavItem(
-                    label: 'Team',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_teamKey);
-                    },
-                  ),
-                  _MobileNavItem(
                     label: 'Projects',
                     onTap: () {
                       Navigator.pop(sheetContext);
@@ -249,6 +242,13 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     onTap: () {
                       Navigator.pop(sheetContext);
                       _scrollTo(_aboutKey);
+                    },
+                  ),
+                  _MobileNavItem(
+                    label: 'Team',
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _scrollTo(_teamKey);
                     },
                   ),
                   _MobileNavItem(
@@ -318,7 +318,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     ),
                   ),
                   Container(key: _workKey, child: const _GrozziieSection()),
-                  Container(key: _teamKey, child: const _TeamSection()),
                   _FeaturedProjectsSection(key: _projectsKey),
                   Container(
                     key: _demosKey,
@@ -350,6 +349,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                         ),
                   ),
                   Container(key: _aboutKey, child: const _AboutSection()),
+                  Container(key: _teamKey, child: const _TeamSection()),
                   Container(key: _contactKey, child: const _ContactSection()),
                 ],
               ),
@@ -469,10 +469,10 @@ class _NavigationBar extends StatelessWidget {
                     const Spacer(),
                     if (!compact) ...[
                       _NavLink(label: 'Grozziie', onTap: onWork),
-                      _NavLink(label: 'Team', onTap: onTeam),
                       _NavLink(label: 'Projects', onTap: onProjects),
                       _NavLink(label: 'Demos', onTap: onDemos),
                       _NavLink(label: 'About', onTap: onAbout),
+                      _NavLink(label: 'Team', onTap: onTeam),
                       const SizedBox(width: 10),
                       _SmallCta(label: 'Let’s talk', onTap: onContact),
                     ] else
@@ -1445,133 +1445,253 @@ class _TeamSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _SectionShell(
-      color: _inkSoft,
+      background: const LinearGradient(
+        colors: [Color(0xFF020617), Color(0xFF07162C), Color(0xFF041224)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionHeader(
-            number: '02',
-            eyebrow: 'LEADERSHIP & TEAM · THT-SPACE',
-            title: 'Leadership at the center.\nTeamwork all around.',
-            description:
-                'Zhang Geng leads our current-company team, supported by specialists across mobile, web, design, quality, and backend engineering.',
-          ),
-          const SizedBox(height: 42),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              if (constraints.maxWidth >= 860) {
-                return const _TeamOrbitLayout();
-              }
-              return _TeamMobileLayout(maxWidth: constraints.maxWidth);
-            },
-          ),
+          const _GalaxySectionHeader(),
+          const SizedBox(height: 46),
+          const _SolarTeamLayout(),
         ],
       ),
     );
   }
 }
 
-class _TeamMobileLayout extends StatelessWidget {
-  const _TeamMobileLayout({required this.maxWidth});
-
-  final double maxWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    final columns = maxWidth >= 650 ? 2 : 1;
-    const gap = 20.0;
-    final itemWidth = (maxWidth - gap * (columns - 1)) / columns;
-    return Column(
-      children: [
-        const SizedBox(
-          width: double.infinity,
-          height: 405,
-          child: _LeadershipCard(member: teamLeader),
-        ),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: [
-            for (var index = 0; index < currentTeam.length; index++)
-              SizedBox(
-                width: itemWidth,
-                height: 320,
-                child: _TeamMemberCard(
-                  member: currentTeam[index],
-                  index: index + 1,
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _TeamOrbitLayout extends StatelessWidget {
-  const _TeamOrbitLayout();
+class _GalaxySectionHeader extends StatelessWidget {
+  const _GalaxySectionHeader();
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 820;
+        final heading = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text(
+                  '07',
+                  style: TextStyle(
+                    color: Color(0xFFFFC857),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(width: 32, height: 1, color: const Color(0xFFFFC857)),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'OUR COMPANY GALAXY · THT-SPACE',
+                    style: TextStyle(
+                      color: Color(0xFF9FB2CE),
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'One vision at the center.\nEvery specialist in orbit.',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: wide ? 48 : 37,
+                height: 1.08,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -1.25,
+              ),
+            ),
+          ],
+        );
+        const body = Text(
+          'Zhang Geng is the guiding force at the center, while our web, design, software, quality, and backend specialists move together around one shared mission.',
+          style: TextStyle(
+            color: Color(0xFFB6C4D8),
+            fontSize: 16,
+            height: 1.65,
+          ),
+        );
+        return wide
+            ? Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(flex: 11, child: heading),
+                const SizedBox(width: 54),
+                const Expanded(flex: 7, child: body),
+              ],
+            )
+            : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [heading, const SizedBox(height: 20), body],
+            );
+      },
+    );
+  }
+}
+
+class _SolarTeamLayout extends StatefulWidget {
+  const _SolarTeamLayout();
+
+  @override
+  State<_SolarTeamLayout> createState() => _SolarTeamLayoutState();
+}
+
+class _SolarTeamLayoutState extends State<_SolarTeamLayout>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _orbitController;
+
+  @override
+  void initState() {
+    super.initState();
+    _orbitController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 72),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      _orbitController.stop();
+    } else if (!_orbitController.isAnimating) {
+      _orbitController.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _orbitController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 760) {
+          return const _MobileSolarSystem();
+        }
+        return _DesktopSolarSystem(animation: _orbitController);
+      },
+    );
+  }
+}
+
+class _DesktopSolarSystem extends StatelessWidget {
+  const _DesktopSolarSystem({required this.animation});
+
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const height = 840.0;
+        const planetWidth = 164.0;
+        const planetHeight = 148.0;
+        const sunWidth = 276.0;
+        const sunHeight = 314.0;
         final width = constraints.maxWidth;
-        const nodeWidth = 220.0;
-        const nodeHeight = 190.0;
-        const leaderWidth = 350.0;
-        const leaderHeight = 405.0;
-        final positions = <Offset>[
-          const Offset(10, 8),
-          Offset(width - nodeWidth - 10, 8),
-          const Offset(0, 270),
-          Offset(width - nodeWidth, 270),
-          Offset(width * 0.2 - nodeWidth / 2, 532),
-          Offset(width * 0.8 - nodeWidth / 2, 532),
+        final center = Offset(width / 2, height / 2);
+        final orbitRadii = <Size>[
+          Size(math.min(width * 0.23, 250), 235),
+          Size(math.min(width * 0.34, 370), 285),
+          Size(math.min(width * 0.43, 480), 335),
         ];
-        return SizedBox(
-          height: 740,
+        const phases = <double>[
+          0,
+          math.pi,
+          math.pi * 2 / 3,
+          math.pi * 5 / 3,
+          math.pi / 3,
+          math.pi * 4 / 3,
+        ];
+
+        return Container(
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(36),
+            gradient: const RadialGradient(
+              center: Alignment(0.05, 0.02),
+              radius: 0.9,
+              colors: [Color(0xFF15345D), Color(0xFF08172B), Color(0xFF020817)],
+              stops: [0, 0.48, 1],
+            ),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x66000000),
+                blurRadius: 50,
+                spreadRadius: -12,
+                offset: Offset(0, 24),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
           child: Stack(
-            clipBehavior: Clip.none,
             children: [
-              Positioned(
-                left: (width - 490) / 2,
-                top: 120,
-                width: 490,
-                height: 490,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        _mint.withValues(alpha: 0.12),
-                        _sky.withValues(alpha: 0.035),
-                        Colors.transparent,
-                      ],
-                      stops: const [0, 0.62, 1],
-                    ),
-                    border: Border.all(
-                      color: _mint.withValues(alpha: 0.13),
-                      width: 2,
-                    ),
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _GalaxyPainter(
+                    center: center,
+                    orbitRadii: orbitRadii,
                   ),
                 ),
               ),
               Positioned(
-                left: (width - leaderWidth) / 2,
-                top: 166,
-                width: leaderWidth,
-                height: leaderHeight,
-                child: const _LeadershipCard(member: teamLeader),
+                left: center.dx - sunWidth / 2,
+                top: center.dy - sunHeight / 2,
+                width: sunWidth,
+                height: sunHeight,
+                child: const _SunLeader(member: teamLeader),
               ),
-              for (var index = 0; index < currentTeam.length; index++)
-                Positioned(
-                  left: positions[index].dx,
-                  top: positions[index].dy,
-                  width: nodeWidth,
-                  height: nodeHeight,
-                  child: _OrbitMemberNode(member: currentTeam[index]),
-                ),
+              AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return Stack(
+                    children: [
+                      for (var index = 0; index < currentTeam.length; index++)
+                        Builder(
+                          builder: (context) {
+                            final orbitIndex = index ~/ 2;
+                            final angle =
+                                phases[index] + animation.value * math.pi * 2;
+                            final radius = orbitRadii[orbitIndex];
+                            return Positioned(
+                              left:
+                                  center.dx +
+                                  math.cos(angle) * radius.width -
+                                  planetWidth / 2,
+                              top:
+                                  center.dy +
+                                  math.sin(angle) * radius.height -
+                                  planetHeight / 2,
+                              width: planetWidth,
+                              height: planetHeight,
+                              child: _PlanetNode(
+                                member: currentTeam[index],
+                                index: index,
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  );
+                },
+              ),
+              const Positioned(left: 24, bottom: 20, child: _OrbitLegend()),
             ],
           ),
         );
@@ -1580,349 +1700,493 @@ class _TeamOrbitLayout extends StatelessWidget {
   }
 }
 
-class _LeadershipCard extends StatelessWidget {
-  const _LeadershipCard({required this.member});
+class _MobileSolarSystem extends StatelessWidget {
+  const _MobileSolarSystem();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 28, 16, 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF102D51), Color(0xFF061328), Color(0xFF020817)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x55000000),
+            blurRadius: 32,
+            spreadRadius: -8,
+            offset: Offset(0, 18),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          const Positioned.fill(
+            child: CustomPaint(painter: _MobileStarsPainter()),
+          ),
+          Column(
+            children: [
+              const SizedBox(
+                width: 244,
+                height: 286,
+                child: _SunLeader(member: teamLeader),
+              ),
+              const SizedBox(height: 18),
+              const _OrbitLegend(),
+              const SizedBox(height: 24),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final columns = constraints.maxWidth >= 330 ? 2 : 1;
+                  const gap = 12.0;
+                  final itemWidth =
+                      (constraints.maxWidth - gap * (columns - 1)) / columns;
+                  return Wrap(
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: [
+                      for (var index = 0; index < currentTeam.length; index++)
+                        SizedBox(
+                          width: itemWidth,
+                          height: 192,
+                          child: _MobilePlanetCard(
+                            member: currentTeam[index],
+                            index: index,
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SunLeader extends StatelessWidget {
+  const _SunLeader({required this.member});
 
   final TeamMember member;
 
   @override
   Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      label:
+          '${member.name}, ${member.role}, center of the THT-Space team galaxy',
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFC857).withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: const Color(0xFFFFD978).withValues(alpha: 0.48),
+              ),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.wb_sunny_rounded,
+                  color: Color(0xFFFFD56A),
+                  size: 15,
+                ),
+                SizedBox(width: 7),
+                Text(
+                  'CENTER OF OUR GALAXY',
+                  style: TextStyle(
+                    color: Color(0xFFFFE4A3),
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.05,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            width: 192,
+            height: 192,
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  Color(0xFFFFFFFF),
+                  Color(0xFFFFD45F),
+                  Color(0xFFFF7A18),
+                ],
+                stops: [0, 0.62, 1],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x99FFB21C),
+                  blurRadius: 46,
+                  spreadRadius: 5,
+                ),
+                BoxShadow(
+                  color: Color(0x66FF6B00),
+                  blurRadius: 90,
+                  spreadRadius: 12,
+                ),
+              ],
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.8),
+                shape: BoxShape.circle,
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  member.image,
+                  fit: BoxFit.cover,
+                  semanticLabel: '${member.name} portrait',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 13),
+          Text(
+            member.name,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 27,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            member.role,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFFFFDA7D),
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PlanetNode extends StatelessWidget {
+  const _PlanetNode({required this.member, required this.index});
+
+  final TeamMember member;
+  final int index;
+
+  static const palettes = <List<Color>>[
+    [Color(0xFF57D7FF), Color(0xFF3158C9)],
+    [Color(0xFFFF8DC7), Color(0xFF8B5CF6)],
+    [Color(0xFF7CF2B6), Color(0xFF087F6B)],
+    [Color(0xFFFFD66B), Color(0xFFFF7A18)],
+    [Color(0xFFA8B5FF), Color(0xFF4F46E5)],
+    [Color(0xFFFF9F7A), Color(0xFFEC4899)],
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = palettes[index % palettes.length];
     return _HoverLift(
       child: Semantics(
         container: true,
-        label: '${member.name}, ${member.role}, THT-Space leadership',
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF0D2841), Color(0xFF087F6B)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        label: '${member.name}, ${member.role}, orbiting THT-Space team member',
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _PlanetPortrait(
+              member: member,
+              palette: palette,
+              showRing: index == 1 || index == 4,
+              size: 82,
             ),
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x3D087F6B),
-                blurRadius: 38,
-                spreadRadius: -6,
-                offset: Offset(0, 18),
+            const SizedBox(height: 7),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xE6132238),
+                borderRadius: BorderRadius.circular(13),
+                border: Border.all(
+                  color: palette.first.withValues(alpha: 0.42),
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    blurRadius: 12,
+                    offset: Offset(0, 6),
+                  ),
+                ],
               ),
-              BoxShadow(
-                color: Color(0x260F172A),
-                blurRadius: 14,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Stack(
-            children: [
-              Positioned(
-                top: -75,
-                right: -55,
-                child: Container(
-                  width: 190,
-                  height: 190,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.09),
-                      width: 28,
+              child: Column(
+                children: [
+                  Text(
+                    member.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(28, 22, 28, 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 13,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.13),
-                          borderRadius: BorderRadius.circular(999),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.24),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.workspace_premium_rounded,
-                              size: 15,
-                              color: Color(0xFFFFD66B),
-                            ),
-                            SizedBox(width: 7),
-                            Text(
-                              'TEAM LEADERSHIP',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 17),
-                      Container(
-                        width: 205,
-                        height: 205,
-                        padding: const EdgeInsets.all(7),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [Color(0xFFFFD66B), Colors.white, _mint],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0x55000000),
-                              blurRadius: 28,
-                              offset: Offset(0, 12),
-                            ),
-                          ],
-                        ),
-                        child: ClipOval(
-                          child: Image.asset(
-                            member.image,
-                            fit: BoxFit.cover,
-                            semanticLabel: '${member.name} portrait',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        member.name,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        member.role,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Color(0xFFD6ECE8),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 2),
+                  Text(
+                    member.role,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xFFB9C7DB),
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _OrbitMemberNode extends StatelessWidget {
-  const _OrbitMemberNode({required this.member});
-
-  final TeamMember member;
-
-  @override
-  Widget build(BuildContext context) {
-    return _HoverLift(
-      child: Semantics(
-        container: true,
-        label: '${member.name}, ${member.role}, THT-Space team member',
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
-          decoration: BoxDecoration(
-            color: _panel,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: _line),
-            boxShadow: _softShadow,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [_mint, _sky]),
-                  shape: BoxShape.circle,
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    member.image,
-                    fit: BoxFit.cover,
-                    semanticLabel: '${member.name} portrait',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                member.name,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: _text,
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                member.role,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: _muted,
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TeamMemberCard extends StatelessWidget {
-  const _TeamMemberCard({required this.member, required this.index});
+class _MobilePlanetCard extends StatelessWidget {
+  const _MobilePlanetCard({required this.member, required this.index});
 
   final TeamMember member;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    return _HoverLift(
-      child: Semantics(
-        container: true,
-        label: '${member.name}, ${member.role}, THT-Space team member',
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
-          decoration: BoxDecoration(
-            color: _panel,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: _line),
-            boxShadow: _cardShadow,
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  width: 34,
-                  height: 34,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: _softFill,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: _line),
-                  ),
-                  child: Text(
-                    index.toString().padLeft(2, '0'),
-                    style: const TextStyle(
-                      color: _muted,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
+    final palette = _PlanetNode.palettes[index % _PlanetNode.palettes.length];
+    return Semantics(
+      container: true,
+      label: '${member.name}, ${member.role}, orbiting THT-Space team member',
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 13, 10, 11),
+        decoration: BoxDecoration(
+          color: const Color(0xB30E2038),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: palette.first.withValues(alpha: 0.42)),
+        ),
+        child: Column(
+          children: [
+            _PlanetPortrait(
+              member: member,
+              palette: palette,
+              showRing: index == 1 || index == 4,
+              size: 94,
+            ),
+            const SizedBox(height: 9),
+            Text(
+              member.name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: [_mint, _sky]),
-                        shape: BoxShape.circle,
-                        boxShadow: _softShadow,
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          member.image,
-                          fit: BoxFit.cover,
-                          semanticLabel: '${member.name} portrait',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Text(
-                      member.name,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: _text,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                    Text(
-                      member.role,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: _muted,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 7,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _mint.withValues(alpha: 0.09),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: _mint.withValues(alpha: 0.2)),
-                      ),
-                      child: const Text(
-                        'THT-SPACE',
-                        style: TextStyle(
-                          color: _mint,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              member.role,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Color(0xFFB9C7DB),
+                fontSize: 10.5,
+                height: 1.25,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class _PlanetPortrait extends StatelessWidget {
+  const _PlanetPortrait({
+    required this.member,
+    required this.palette,
+    required this.showRing,
+    required this.size,
+  });
+
+  final TeamMember member;
+  final List<Color> palette;
+  final bool showRing;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size + 22,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (showRing)
+            Transform.rotate(
+              angle: -0.18,
+              child: Container(
+                width: size + 20,
+                height: size * 0.34,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: palette.first.withValues(alpha: 0.75),
+                    width: 3,
+                  ),
+                ),
+              ),
+            ),
+          Container(
+            width: size,
+            height: size,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(colors: palette),
+              boxShadow: [
+                BoxShadow(
+                  color: palette.first.withValues(alpha: 0.48),
+                  blurRadius: 24,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                member.image,
+                fit: BoxFit.cover,
+                semanticLabel: '${member.name} portrait',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrbitLegend extends StatelessWidget {
+  const _OrbitLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.13)),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.blur_circular_rounded, color: Color(0xFF7DD3FC), size: 15),
+          SizedBox(width: 7),
+          Text(
+            '6 SPECIALISTS · 3 ORBITS · 1 SHARED MISSION',
+            style: TextStyle(
+              color: Color(0xFFC5D4E8),
+              fontSize: 9.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.75,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GalaxyPainter extends CustomPainter {
+  const _GalaxyPainter({required this.center, required this.orbitRadii});
+
+  final Offset center;
+  final List<Size> orbitRadii;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var index = 0; index < 78; index++) {
+      final x = ((index * 83) % 997) / 997 * size.width;
+      final y = ((index * 149 + 37) % 701) / 701 * size.height;
+      final radius = 0.7 + (index % 4) * 0.42;
+      final opacity = 0.28 + (index % 3) * 0.16;
+      canvas.drawCircle(
+        Offset(x, y),
+        radius,
+        Paint()..color = Colors.white.withValues(alpha: opacity),
+      );
+    }
+
+    for (var orbit = 0; orbit < orbitRadii.length; orbit++) {
+      final radius = orbitRadii[orbit];
+      final rect = Rect.fromCenter(
+        center: center,
+        width: radius.width * 2,
+        height: radius.height * 2,
+      );
+      final paint =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = orbit == 1 ? 1.25 : 1
+            ..color = const Color(
+              0xFF78D7FF,
+            ).withValues(alpha: orbit == 1 ? 0.34 : 0.22);
+      for (var angle = 0.0; angle < math.pi * 2; angle += 0.17) {
+        canvas.drawArc(rect, angle, 0.105, false, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _GalaxyPainter oldDelegate) =>
+      oldDelegate.center != center || oldDelegate.orbitRadii != orbitRadii;
+}
+
+class _MobileStarsPainter extends CustomPainter {
+  const _MobileStarsPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var index = 0; index < 52; index++) {
+      final x = ((index * 61) % 383) / 383 * size.width;
+      final y = ((index * 113 + 29) % 617) / 617 * size.height;
+      canvas.drawCircle(
+        Offset(x, y),
+        0.7 + (index % 3) * 0.35,
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.2 + (index % 3) * 0.12),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _FeaturedProjectsSection extends StatelessWidget {

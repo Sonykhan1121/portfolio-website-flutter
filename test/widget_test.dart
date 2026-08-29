@@ -39,7 +39,7 @@ void main() {
     expect(find.textContaining('50K+'), findsWidgets);
     expect(find.text('Explore my work'), findsOneWidget);
     expect(
-      find.text('Leadership at the center.\nTeamwork all around.'),
+      find.text('One vision at the center.\nEvery specialist in orbit.'),
       findsOneWidget,
     );
     expect(find.text('Zhang Geng'), findsOneWidget);
