@@ -80051,7 +80051,7 @@ this.Zs()},
 G(a){return new A.dJ(new A.ajP(this),null)}}
 A.ajP.prototype={
 $2(a,b){var s
-if(b.b<760)return B.a_N
+if(b.b<960)return B.a_N
 s=this.a.d
 s===$&&A.a()
 return new A.NA(s,null)},
@@ -80059,8 +80059,8 @@ $S:504}
 A.NA.prototype={
 G(a){return new A.dJ(new A.aek(this),null)}}
 A.aek.prototype={
-$2(a,b){var s=null,r=b.b,q=r/2,p=new A.h(q,420),o=A.b([new A.A(Math.min(r*0.23,250),235),new A.A(Math.min(r*0.34,370),285),new A.A(Math.min(r*0.43,480),335)],t.X4),n=A.aU(36),m=A.cd(B.i.bD(0.12),1),l=this.a
-return A.aT(s,A.eO(B.bD,A.b([A.a5V(0,A.iJ(s,s,s,new A.Op(p,o,s),B.D),0,0,0),A.kc(s,B.zQ,314,s,q-138,s,263,276),A.hB(l.c,new A.aej(l,o,p),s),B.On],t.p),B.W,B.bc),B.bj,s,s,new A.aJ(s,s,m,n,B.JW,B.Ou,B.w),s,840,s,s,s,s,s,s)},
+$2(a,b){var s=null,r=b.b,q=r/2,p=new A.h(q,450),o=A.b([new A.A(Math.min(r*0.31,330),275),new A.A(Math.min(r*0.39,420),320),new A.A(Math.min((r-164-20)/2,500),370)],t.X4),n=A.aU(36),m=A.cd(B.i.bD(0.12),1),l=this.a
+return A.aT(s,A.eO(B.bD,A.b([A.a5V(0,A.iJ(s,s,s,new A.Op(p,o,s),B.D),0,0,0),A.kc(s,B.zQ,314,s,q-138,s,293,276),A.hB(l.c,new A.aej(l,o,p),s),B.On],t.p),B.W,B.bc),B.bj,s,s,new A.aJ(s,s,m,n,B.JW,B.Ou,B.w),s,900,s,s,s,s,s,s)},
 $S:505}
 A.aej.prototype={
 $2(a,b){var s,r,q,p,o=A.b([],t.p)
