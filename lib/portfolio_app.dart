@@ -1580,7 +1580,7 @@ class _SolarTeamLayoutState extends State<_SolarTeamLayout>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 760) {
+        if (constraints.maxWidth < 960) {
           return const _MobileSolarSystem();
         }
         return _DesktopSolarSystem(animation: _orbitController);
@@ -1598,17 +1598,18 @@ class _DesktopSolarSystem extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        const height = 840.0;
+        const height = 900.0;
         const planetWidth = 164.0;
         const planetHeight = 148.0;
         const sunWidth = 276.0;
         const sunHeight = 314.0;
         final width = constraints.maxWidth;
         final center = Offset(width / 2, height / 2);
+        final outerRadius = (width - planetWidth - 20) / 2;
         final orbitRadii = <Size>[
-          Size(math.min(width * 0.23, 250), 235),
-          Size(math.min(width * 0.34, 370), 285),
-          Size(math.min(width * 0.43, 480), 335),
+          Size(math.min(width * 0.31, 330), 275),
+          Size(math.min(width * 0.39, 420), 320),
+          Size(math.min(outerRadius, 500), 370),
         ];
         const phases = <double>[
           0,
