@@ -136,6 +136,12 @@ const currentTeam = <TeamMember>[
   ),
 ];
 
+const teamLeader = TeamMember(
+  name: 'Zhang Geng',
+  role: 'Company Leadership',
+  image: 'assets/images/team/zhang-geng.jpg',
+);
+
 const repositories = <RepositoryItem>[
   RepositoryItem(
     name: 'Sonykhan1121',

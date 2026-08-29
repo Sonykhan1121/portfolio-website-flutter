@@ -1451,41 +1451,352 @@ class _TeamSection extends StatelessWidget {
         children: [
           const _SectionHeader(
             number: '02',
-            eyebrow: 'CURRENT COMPANY · THT-SPACE',
-            title: 'The team behind\nthe work.',
+            eyebrow: 'LEADERSHIP & TEAM · THT-SPACE',
+            title: 'Leadership at the center.\nTeamwork all around.',
             description:
-                'The people I collaborate with to design, build, test, and ship dependable products across mobile, web, design, quality, and backend engineering.',
+                'Zhang Geng leads our current-company team, supported by specialists across mobile, web, design, quality, and backend engineering.',
           ),
           const SizedBox(height: 42),
           LayoutBuilder(
             builder: (context, constraints) {
-              final columns =
-                  constraints.maxWidth >= 980
-                      ? 3
-                      : constraints.maxWidth >= 650
-                      ? 2
-                      : 1;
-              const gap = 20.0;
-              final itemWidth =
-                  (constraints.maxWidth - gap * (columns - 1)) / columns;
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: [
-                  for (var index = 0; index < currentTeam.length; index++)
-                    SizedBox(
-                      width: itemWidth,
-                      height: 320,
-                      child: _TeamMemberCard(
-                        member: currentTeam[index],
-                        index: index + 1,
-                      ),
-                    ),
-                ],
-              );
+              if (constraints.maxWidth >= 860) {
+                return const _TeamOrbitLayout();
+              }
+              return _TeamMobileLayout(maxWidth: constraints.maxWidth);
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TeamMobileLayout extends StatelessWidget {
+  const _TeamMobileLayout({required this.maxWidth});
+
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final columns = maxWidth >= 650 ? 2 : 1;
+    const gap = 20.0;
+    final itemWidth = (maxWidth - gap * (columns - 1)) / columns;
+    return Column(
+      children: [
+        const SizedBox(
+          width: double.infinity,
+          height: 405,
+          child: _LeadershipCard(member: teamLeader),
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (var index = 0; index < currentTeam.length; index++)
+              SizedBox(
+                width: itemWidth,
+                height: 320,
+                child: _TeamMemberCard(
+                  member: currentTeam[index],
+                  index: index + 1,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _TeamOrbitLayout extends StatelessWidget {
+  const _TeamOrbitLayout();
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        const nodeWidth = 220.0;
+        const nodeHeight = 190.0;
+        const leaderWidth = 350.0;
+        const leaderHeight = 405.0;
+        final positions = <Offset>[
+          const Offset(10, 8),
+          Offset(width - nodeWidth - 10, 8),
+          const Offset(0, 270),
+          Offset(width - nodeWidth, 270),
+          Offset(width * 0.2 - nodeWidth / 2, 532),
+          Offset(width * 0.8 - nodeWidth / 2, 532),
+        ];
+        return SizedBox(
+          height: 740,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: (width - 490) / 2,
+                top: 120,
+                width: 490,
+                height: 490,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        _mint.withValues(alpha: 0.12),
+                        _sky.withValues(alpha: 0.035),
+                        Colors.transparent,
+                      ],
+                      stops: const [0, 0.62, 1],
+                    ),
+                    border: Border.all(
+                      color: _mint.withValues(alpha: 0.13),
+                      width: 2,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: (width - leaderWidth) / 2,
+                top: 166,
+                width: leaderWidth,
+                height: leaderHeight,
+                child: const _LeadershipCard(member: teamLeader),
+              ),
+              for (var index = 0; index < currentTeam.length; index++)
+                Positioned(
+                  left: positions[index].dx,
+                  top: positions[index].dy,
+                  width: nodeWidth,
+                  height: nodeHeight,
+                  child: _OrbitMemberNode(member: currentTeam[index]),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LeadershipCard extends StatelessWidget {
+  const _LeadershipCard({required this.member});
+
+  final TeamMember member;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HoverLift(
+      child: Semantics(
+        container: true,
+        label: '${member.name}, ${member.role}, THT-Space leadership',
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF0D2841), Color(0xFF087F6B)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x3D087F6B),
+                blurRadius: 38,
+                spreadRadius: -6,
+                offset: Offset(0, 18),
+              ),
+              BoxShadow(
+                color: Color(0x260F172A),
+                blurRadius: 14,
+                offset: Offset(0, 5),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Stack(
+            children: [
+              Positioned(
+                top: -75,
+                right: -55,
+                child: Container(
+                  width: 190,
+                  height: 190,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.09),
+                      width: 28,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 22, 28, 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 13,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.13),
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.24),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.workspace_premium_rounded,
+                              size: 15,
+                              color: Color(0xFFFFD66B),
+                            ),
+                            SizedBox(width: 7),
+                            Text(
+                              'TEAM LEADERSHIP',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 17),
+                      Container(
+                        width: 205,
+                        height: 205,
+                        padding: const EdgeInsets.all(7),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFFFD66B), Colors.white, _mint],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x55000000),
+                              blurRadius: 28,
+                              offset: Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            member.image,
+                            fit: BoxFit.cover,
+                            semanticLabel: '${member.name} portrait',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        member.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        member.role,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFFD6ECE8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OrbitMemberNode extends StatelessWidget {
+  const _OrbitMemberNode({required this.member});
+
+  final TeamMember member;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HoverLift(
+      child: Semantics(
+        container: true,
+        label: '${member.name}, ${member.role}, THT-Space team member',
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+          decoration: BoxDecoration(
+            color: _panel,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: _line),
+            boxShadow: _softShadow,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: [_mint, _sky]),
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    member.image,
+                    fit: BoxFit.cover,
+                    semanticLabel: '${member.name} portrait',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                member.name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: _text,
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                member.role,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
