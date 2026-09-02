@@ -62,6 +62,12 @@ const _playStoreUrl =
     'https://play.google.com/store/apps/details?id=com.grozziie.printer';
 const _appStoreUrl = 'https://apps.apple.com/us/app/grozziie/id6476171035';
 const _email = 'sonykhan1121@gmail.com';
+const _thtSpaceRoute = '/professional-journey/tht-space';
+const _thtWebsiteUrl = 'https://www.printernoble.com';
+const _thtLinkedInUrl = 'https://www.linkedin.com/company/thtuepz';
+const _thtMapUrl =
+    'https://www.google.com/maps/search/?api=1&query=Uttara+Export+Processing+Zone+Nilphamari+Bangladesh';
+const _grozziieYoutubeUrl = 'https://www.youtube.com/@grozziie/videos';
 
 Future<void> _launch(String value) async {
   final uri = Uri.parse(value);
@@ -110,7 +116,11 @@ class PortfolioApp extends StatelessWidget {
           selectionColor: Color(0x6655D6BE),
         ),
       ),
-      home: PortfolioHome(repositoryService: repositoryService),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => PortfolioHome(repositoryService: repositoryService),
+        _thtSpaceRoute: (context) => const ThtSpacePage(),
+      },
     );
   }
 }
@@ -130,7 +140,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   final _searchController = TextEditingController();
   final _heroKey = GlobalKey();
   final _workKey = GlobalKey();
-  final _teamKey = GlobalKey();
   final _projectsKey = GlobalKey();
   final _demosKey = GlobalKey();
   final _aboutKey = GlobalKey();
@@ -245,13 +254,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     },
                   ),
                   _MobileNavItem(
-                    label: 'Team',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_teamKey);
-                    },
-                  ),
-                  _MobileNavItem(
                     label: 'Contact',
                     onTap: () {
                       Navigator.pop(sheetContext);
@@ -349,7 +351,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                         ),
                   ),
                   Container(key: _aboutKey, child: const _AboutSection()),
-                  Container(key: _teamKey, child: const _TeamSection()),
                   Container(key: _contactKey, child: const _ContactSection()),
                 ],
               ),
@@ -361,7 +362,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               child: _NavigationBar(
                 onHome: () => _scrollTo(_heroKey),
                 onWork: () => _scrollTo(_workKey),
-                onTeam: () => _scrollTo(_teamKey),
                 onProjects: () => _scrollTo(_projectsKey),
                 onDemos: () => _scrollTo(_demosKey),
                 onAbout: () => _scrollTo(_aboutKey),
@@ -380,7 +380,6 @@ class _NavigationBar extends StatelessWidget {
   const _NavigationBar({
     required this.onHome,
     required this.onWork,
-    required this.onTeam,
     required this.onProjects,
     required this.onDemos,
     required this.onAbout,
@@ -390,7 +389,6 @@ class _NavigationBar extends StatelessWidget {
 
   final VoidCallback onHome;
   final VoidCallback onWork;
-  final VoidCallback onTeam;
   final VoidCallback onProjects;
   final VoidCallback onDemos;
   final VoidCallback onAbout;
@@ -472,7 +470,6 @@ class _NavigationBar extends StatelessWidget {
                       _NavLink(label: 'Projects', onTap: onProjects),
                       _NavLink(label: 'Demos', onTap: onDemos),
                       _NavLink(label: 'About', onTap: onAbout),
-                      _NavLink(label: 'Team', onTap: onTeam),
                       const SizedBox(width: 10),
                       _SmallCta(label: 'Let’s talk', onTap: onContact),
                     ] else
@@ -1439,6 +1436,1166 @@ class _StoreScreenshot extends StatelessWidget {
   }
 }
 
+class ThtSpacePage extends StatelessWidget {
+  const ThtSpacePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < 620;
+    return Title(
+      title: 'THT-Space Journey — Sidratul Montaha',
+      color: _mint,
+      child: Scaffold(
+        backgroundColor: _ink,
+        appBar: AppBar(
+          backgroundColor: _ink.withValues(alpha: 0.98),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 2,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          leading: IconButton(
+            tooltip: 'Back to portfolio',
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back_rounded, color: _text),
+          ),
+          titleSpacing: 4,
+          title: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'THT-SPACE',
+                style: TextStyle(
+                  color: _text,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.25,
+                ),
+              ),
+              Text(
+                'PROFESSIONAL JOURNEY',
+                style: TextStyle(
+                  color: _muted,
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            if (compact)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: IconButton(
+                  tooltip: 'Company website',
+                  onPressed: () => _launch(_thtWebsiteUrl),
+                  icon: const Icon(Icons.language_rounded, color: _mint),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: TextButton.icon(
+                  onPressed: () => _launch(_thtWebsiteUrl),
+                  icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                  label: const Text('Company website'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: _mint,
+                    textStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        body: const SelectionArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _ThtSpaceHero(),
+                _ThtCompanyOverview(),
+                _ThtProductsSection(),
+                _ThtImpactSection(),
+                _ThtVideoSection(),
+                _TeamSection(),
+                _ThtPageFooter(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThtSpaceHero extends StatelessWidget {
+  const _ThtSpaceHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: const Color(0xFF020617),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1440),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final wide = constraints.maxWidth >= 760;
+              return SizedBox(
+                height: wide ? 650 : 540,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      'assets/images/company/tht-space-team-cover.jpg',
+                      fit: BoxFit.cover,
+                      alignment: const Alignment(0, -0.08),
+                      semanticLabel: 'THT-Space software team',
+                    ),
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: [0, 0.45, 1],
+                          colors: [
+                            Color(0x14020617),
+                            Color(0x65020617),
+                            Color(0xF5020617),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: wide ? 54 : 22,
+                      right: wide ? 54 : 22,
+                      bottom: wide ? 54 : 34,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(
+                                0xFF0C1D31,
+                              ).withValues(alpha: 0.84),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            child: const Text(
+                              'CURRENT COMPANY · DEC 2024 — PRESENT',
+                              style: TextStyle(
+                                color: Color(0xFF8EE7D6),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.05,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 17),
+                          Text(
+                            'Building connected products\nwith the THT-Space team.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: wide ? 58 : 39,
+                              height: 1.05,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: wide ? -1.8 : -1.0,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'My professional journey as a Software Engineer at Bangladesh’s first printer manufacturer.',
+                            style: TextStyle(
+                              color: const Color(0xFFD6E1EF),
+                              fontSize: wide ? 17 : 14,
+                              height: 1.55,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThtCompanyOverview extends StatelessWidget {
+  const _ThtCompanyOverview();
+
+  @override
+  Widget build(BuildContext context) {
+    const facts = [
+      ('2019', 'Founded'),
+      ('201–500', 'Company size'),
+      ('100%', 'Export oriented'),
+      ('Nilphamari', 'Uttara EPZ'),
+    ];
+    return _SectionShell(
+      color: _ink,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '01',
+            eyebrow: 'ABOUT THT-SPACE',
+            title: 'Hardware manufacturing,\nstrengthened by software.',
+            description:
+                'THT-Space Electrical Company Ltd. manufactures printing and attendance equipment in Bangladesh for customers across international markets.',
+          ),
+          const SizedBox(height: 38),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns = constraints.maxWidth >= 820 ? 4 : 2;
+              const gap = 14.0;
+              final width =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children:
+                    facts
+                        .map(
+                          (fact) => Container(
+                            width: width,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: _panel,
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: _line),
+                              boxShadow: _softShadow,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fact.$1,
+                                  style: const TextStyle(
+                                    color: _text,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  fact.$2,
+                                  style: const TextStyle(
+                                    color: _muted,
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 28),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _PrimaryButton(
+                label: 'Visit company website',
+                icon: Icons.language_rounded,
+                onTap: () => _launch(_thtWebsiteUrl),
+              ),
+              _OutlineButton(
+                label: 'Follow on LinkedIn',
+                icon: FontAwesomeIcons.linkedinIn,
+                onTap: () => _launch(_thtLinkedInUrl),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThtProductsSection extends StatelessWidget {
+  const _ThtProductsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const products = [
+      (
+        Icons.receipt_long_rounded,
+        'Thermal printers',
+        'Compact printing equipment for retail, logistics, and everyday business operations.',
+      ),
+      (
+        Icons.print_rounded,
+        'Dot-matrix printers',
+        'Reliable printing hardware designed for high-volume and operational environments.',
+      ),
+      (
+        Icons.fact_check_rounded,
+        'Attendance systems',
+        'Connected attendance devices supported by mobile and cloud-based workflows.',
+      ),
+      (
+        Icons.menu_book_rounded,
+        'Binding equipment',
+        'Practical finishing equipment for office, education, and document workflows.',
+      ),
+    ];
+    return _SectionShell(
+      color: _inkSoft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '02',
+            eyebrow: 'WHAT THE COMPANY BUILDS',
+            title: 'Printing, attendance,\nand connected equipment.',
+            description:
+                'The company combines manufacturing experience with software-enabled products and exports equipment to markets across Asia.',
+          ),
+          const SizedBox(height: 40),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns = constraints.maxWidth >= 900 ? 4 : 2;
+              final mobile = constraints.maxWidth < 620;
+              final actualColumns = mobile ? 1 : columns;
+              const gap = 16.0;
+              final width =
+                  (constraints.maxWidth - gap * (actualColumns - 1)) /
+                  actualColumns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children:
+                    products
+                        .map(
+                          (product) => Container(
+                            width: width,
+                            constraints: const BoxConstraints(minHeight: 235),
+                            padding: const EdgeInsets.all(23),
+                            decoration: BoxDecoration(
+                              color: _panel,
+                              borderRadius: BorderRadius.circular(22),
+                              border: Border.all(color: _line),
+                              boxShadow: _cardShadow,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFF087F6B), _sky],
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Icon(
+                                    product.$1,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(height: 18),
+                                Text(
+                                  product.$2,
+                                  style: const TextStyle(
+                                    color: _text,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  product.$3,
+                                  style: const TextStyle(
+                                    color: _muted,
+                                    fontSize: 13.5,
+                                    height: 1.55,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+            decoration: BoxDecoration(
+              color: _sky.withValues(alpha: 0.07),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: _sky.withValues(alpha: 0.18)),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.public_rounded, color: _sky, size: 22),
+                SizedBox(width: 13),
+                Expanded(
+                  child: Text(
+                    'Export reach includes markets such as China, Malaysia, Thailand, Indonesia, Singapore, and the Philippines.',
+                    style: TextStyle(
+                      color: _text,
+                      fontSize: 13.5,
+                      height: 1.55,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThtImpactSection extends StatelessWidget {
+  const _ThtImpactSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionShell(
+      background: const LinearGradient(
+        colors: [Color(0xFFF3FAF8), Color(0xFFF5F7FF)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '03',
+            eyebrow: 'MY ROLE & PRODUCT IMPACT',
+            title: 'Software that connects\npeople, printers, and data.',
+            description:
+                'My work focuses on production Flutter applications, device communication, reliable business workflows, and releases across Android and iOS.',
+          ),
+          const SizedBox(height: 42),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final wide = constraints.maxWidth >= 900;
+              final role = Container(
+                padding: const EdgeInsets.all(28),
+                decoration: BoxDecoration(
+                  color: _panel,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: _line),
+                  boxShadow: _cardShadow,
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _Eyebrow(label: 'SOFTWARE ENGINEER'),
+                    SizedBox(height: 22),
+                    Text(
+                      'What I contribute',
+                      style: TextStyle(
+                        color: _text,
+                        fontSize: 27,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.6,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _ThtImpactPoint(
+                      icon: Icons.phone_android_rounded,
+                      title: 'Cross-platform delivery',
+                      description:
+                          'Production Flutter features for Android and iOS, from reusable UI to release workflows.',
+                    ),
+                    _ThtImpactPoint(
+                      icon: Icons.bluetooth_connected_rounded,
+                      title: 'Hardware integration',
+                      description:
+                          'Bluetooth, IoT, printer communication, real-time connections, and device-focused workflows.',
+                    ),
+                    _ThtImpactPoint(
+                      icon: Icons.face_retouching_natural_rounded,
+                      title: 'Attendance intelligence',
+                      description:
+                          'Face-attendance experiences, REST APIs, WebSockets, Firebase, and offline-aware data flows.',
+                    ),
+                    _ThtImpactPoint(
+                      icon: Icons.account_tree_rounded,
+                      title: 'Maintainable engineering',
+                      description:
+                          'Clean boundaries, state management, testing, Git workflows, and CI/CD practices.',
+                      isLast: true,
+                    ),
+                  ],
+                ),
+              );
+              const product = _GrozziieCompanyCard();
+              return wide
+                  ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 9, child: role),
+                      const SizedBox(width: 18),
+                      const Expanded(flex: 11, child: product),
+                    ],
+                  )
+                  : Column(
+                    children: [role, const SizedBox(height: 18), product],
+                  );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThtImpactPoint extends StatelessWidget {
+  const _ThtImpactPoint({
+    required this.icon,
+    required this.title,
+    required this.description,
+    this.isLast = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 39,
+            height: 39,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: _mint.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: _mint, size: 20),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: _text,
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: _muted,
+                    fontSize: 12.5,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GrozziieCompanyCard extends StatelessWidget {
+  const _GrozziieCompanyCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: const Color(0xFF101827),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFF2B3A50)),
+        boxShadow: _cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  'assets/images/projects/grozziie/icon.webp',
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.cover,
+                  semanticLabel: 'Grozziie app icon',
+                ),
+              ),
+              const SizedBox(width: 15),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Grozziie',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      'FLAGSHIP MOBILE PRODUCT',
+                      style: TextStyle(
+                        color: Color(0xFF8EE7D6),
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.05,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 22),
+          const Text(
+            'A production printing companion for connected devices, business workflows, and everyday users across Android and iOS.',
+            style: TextStyle(
+              color: Color(0xFFC4D1E2),
+              fontSize: 14,
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: 22),
+          const Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _DarkMetric(value: '50K+', label: 'Users'),
+              _DarkMetric(value: '2', label: 'Platforms'),
+              _DarkMetric(value: 'Live', label: 'Production'),
+            ],
+          ),
+          const SizedBox(height: 24),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const assets = [
+                'assets/images/projects/grozziie/play_01.webp',
+                'assets/images/projects/grozziie/play_03.webp',
+                'assets/images/projects/grozziie/ios_01.jpg',
+              ];
+              const gap = 10.0;
+              final width = (constraints.maxWidth - gap * 2) / 3;
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    assets
+                        .map(
+                          (asset) => Padding(
+                            padding: EdgeInsets.only(
+                              right: asset == assets.last ? 0 : gap,
+                            ),
+                            child: SizedBox(
+                              width: width,
+                              child: AspectRatio(
+                                aspectRatio: 0.52,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(13),
+                                  child: Image.asset(
+                                    asset,
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.topCenter,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 22),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _DarkStoreButton(
+                label: 'Google Play',
+                icon: FontAwesomeIcons.googlePlay,
+                onTap: () => _launch(_playStoreUrl),
+              ),
+              _DarkStoreButton(
+                label: 'App Store',
+                icon: FontAwesomeIcons.apple,
+                onTap: () => _launch(_appStoreUrl),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DarkMetric extends StatelessWidget {
+  const _DarkMetric({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(width: 7),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFFAEBED2),
+              fontSize: 10.5,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DarkStoreButton extends StatelessWidget {
+  const _DarkStoreButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 16),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 15),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+      ),
+    );
+  }
+}
+
+class _ThtVideoSection extends StatelessWidget {
+  const _ThtVideoSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const videos = [
+      (
+        '2-Inch Label Printer in Action',
+        'PRODUCT DEMO · SHORT',
+        'A quick look at compact label printing for product labels, price tags, and small businesses.',
+        'assets/images/company/video-label-printer.jpg',
+        'https://www.youtube.com/shorts/FRF4ZpNvxOM',
+      ),
+      (
+        'More Than Shipping Labels',
+        '4-INCH THERMAL PRINTER · SHORT',
+        'See one printer handle shipping labels, product labels, stickers, barcodes, images, and more.',
+        'assets/images/company/video-thermal-printer.jpg',
+        'https://www.youtube.com/shorts/4kbaYefjaTc',
+      ),
+      (
+        'Grozziie Software on macOS',
+        'SOFTWARE WORKFLOW · GUIDE',
+        'A complete product workflow covering software setup, printer configuration, and printing on macOS.',
+        'assets/images/company/video-grozziie-macos.jpg',
+        'https://www.youtube.com/watch?v=dH5zu0Sn2xc',
+      ),
+    ];
+    return _SectionShell(
+      color: _ink,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionHeader(
+            number: '04',
+            eyebrow: 'OFFICIAL PRODUCT VIDEOS',
+            title: 'See Grozziie\nin motion.',
+            description:
+                'Official product demonstrations and software guides show how Grozziie’s connected printing experience works beyond static screenshots.',
+          ),
+          const SizedBox(height: 40),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns =
+                  constraints.maxWidth >= 940
+                      ? 3
+                      : constraints.maxWidth >= 620
+                      ? 2
+                      : 1;
+              const gap = 16.0;
+              final width =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children:
+                    videos
+                        .map(
+                          (video) => _ThtVideoCard(
+                            width: width,
+                            title: video.$1,
+                            kicker: video.$2,
+                            description: video.$3,
+                            thumbnail: video.$4,
+                            url: video.$5,
+                          ),
+                        )
+                        .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 28),
+          FilledButton.icon(
+            onPressed: () => _launch(_grozziieYoutubeUrl),
+            icon: const Icon(FontAwesomeIcons.youtube, size: 17),
+            label: const Text('Explore all Grozziie videos'),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFFF0033),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+              textStyle: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w900,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThtVideoCard extends StatelessWidget {
+  const _ThtVideoCard({
+    required this.width,
+    required this.title,
+    required this.kicker,
+    required this.description,
+    required this.thumbnail,
+    required this.url,
+  });
+
+  final double width;
+  final String title;
+  final String kicker;
+  final String description;
+  final String thumbnail;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(22),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => _launch(url),
+          child: Container(
+            decoration: BoxDecoration(
+              color: _panel,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: _line),
+              boxShadow: _cardShadow,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        thumbnail,
+                        fit: BoxFit.cover,
+                        semanticLabel: '$title video preview',
+                      ),
+                      const DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Color(0x70000000)],
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Container(
+                          width: 58,
+                          height: 58,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF0033),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 18,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 3),
+                            child: Icon(
+                              Icons.play_arrow_rounded,
+                              color: Colors.white,
+                              size: 33,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        kicker,
+                        style: const TextStyle(
+                          color: _mint,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      const SizedBox(height: 9),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: _text,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          color: _muted,
+                          fontSize: 13,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.youtube,
+                            color: Color(0xFFFF0033),
+                            size: 15,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'WATCH ON YOUTUBE',
+                            style: TextStyle(
+                              color: _text,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_outward_rounded,
+                            color: _muted,
+                            size: 17,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThtPageFooter extends StatelessWidget {
+  const _ThtPageFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionShell(
+      color: _inkSoft,
+      topPadding: 72,
+      bottomPadding: 72,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(
+          MediaQuery.sizeOf(context).width < 650 ? 25 : 42,
+        ),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFE7F7F3), Color(0xFFEDF2FF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: const Color(0xFFBFDCD6)),
+          boxShadow: _cardShadow,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth >= 760;
+            final copy = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _Eyebrow(label: 'VERIFIED COMPANY LINKS'),
+                const SizedBox(height: 17),
+                Text(
+                  'Discover THT-Space\nand the work behind it.',
+                  style: TextStyle(
+                    color: _text,
+                    fontSize: wide ? 37 : 31,
+                    height: 1.08,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.9,
+                  ),
+                ),
+                const SizedBox(height: 13),
+                const Text(
+                  'Uttara Export Processing Zone, Nilphamari, Bangladesh',
+                  style: TextStyle(color: _muted, fontSize: 14, height: 1.55),
+                ),
+              ],
+            );
+            final links = Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _PrimaryButton(
+                  label: 'Company website',
+                  icon: Icons.language_rounded,
+                  onTap: () => _launch(_thtWebsiteUrl),
+                ),
+                _OutlineButton(
+                  label: 'LinkedIn',
+                  icon: FontAwesomeIcons.linkedinIn,
+                  onTap: () => _launch(_thtLinkedInUrl),
+                ),
+                _OutlineButton(
+                  label: 'YouTube',
+                  icon: FontAwesomeIcons.youtube,
+                  onTap: () => _launch(_grozziieYoutubeUrl),
+                ),
+                _OutlineButton(
+                  label: 'View location',
+                  icon: Icons.location_on_outlined,
+                  onTap: () => _launch(_thtMapUrl),
+                ),
+                _OutlineButton(
+                  label: 'Back to portfolio',
+                  icon: Icons.arrow_back_rounded,
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+            return wide
+                ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(flex: 7, child: copy),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 8, child: links),
+                  ],
+                )
+                : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [copy, const SizedBox(height: 24), links],
+                );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class _TeamSection extends StatelessWidget {
   const _TeamSection();
 
@@ -1476,7 +2633,7 @@ class _GalaxySectionHeader extends StatelessWidget {
             Row(
               children: [
                 const Text(
-                  '07',
+                  '05',
                   style: TextStyle(
                     color: Color(0xFFFFC857),
                     fontSize: 11,
@@ -3136,13 +4293,15 @@ class _JourneySection extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 860;
-        const work = _JourneyCard(
+        final work = _JourneyCard(
           icon: Icons.work_outline_rounded,
           eyebrow: 'DEC 2024 — PRESENT',
           title: 'Software Engineer',
           subtitle: 'THT-Space Electrical Company Ltd. • Bangladesh',
           description:
               'Developing and maintaining production Flutter features across Android and iOS. My work spans Bluetooth and IoT, face-attendance workflows, REST APIs, WebSockets, Firebase, reusable UI, and CI/CD practices.',
+          actionLabel: 'Explore THT-Space journey',
+          onTap: () => Navigator.of(context).pushNamed(_thtSpaceRoute),
         );
         const education = _JourneyCard(
           icon: Icons.school_outlined,
@@ -3166,16 +4325,16 @@ class _JourneySection extends StatelessWidget {
             ),
             const SizedBox(height: 22),
             if (wide)
-              const Row(
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: work),
-                  SizedBox(width: 16),
-                  Expanded(child: education),
+                  const SizedBox(width: 16),
+                  const Expanded(child: education),
                 ],
               )
             else
-              const Column(children: [work, SizedBox(height: 16), education]),
+              Column(children: [work, const SizedBox(height: 16), education]),
             const SizedBox(height: 18),
             Container(
               width: double.infinity,
@@ -3218,6 +4377,8 @@ class _JourneyCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.description,
+    this.actionLabel,
+    this.onTap,
   });
 
   final IconData icon;
@@ -3225,16 +4386,18 @@ class _JourneyCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String description;
+  final String? actionLabel;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 304),
+    final card = Container(
+      constraints: const BoxConstraints(minHeight: 346),
       padding: const EdgeInsets.all(26),
       decoration: BoxDecoration(
         color: _panel,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: _line),
+        border: Border.all(color: onTap == null ? _line : _sky),
         boxShadow: _cardShadow,
       ),
       child: Column(
@@ -3284,7 +4447,36 @@ class _JourneyCard extends StatelessWidget {
             description,
             style: const TextStyle(color: _muted, height: 1.58, fontSize: 13.5),
           ),
+          if (actionLabel != null) ...[
+            const SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  actionLabel!,
+                  style: const TextStyle(
+                    color: _sky,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(width: 7),
+                const Icon(Icons.arrow_forward_rounded, color: _sky, size: 18),
+              ],
+            ),
+          ],
         ],
+      ),
+    );
+    if (onTap == null) return card;
+    return Semantics(
+      button: true,
+      label: actionLabel,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(22),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(onTap: onTap, child: card),
       ),
     );
   }

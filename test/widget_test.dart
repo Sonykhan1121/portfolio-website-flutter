@@ -38,6 +38,24 @@ void main() {
     expect(find.text('Grozziie'), findsWidgets);
     expect(find.textContaining('50K+'), findsWidgets);
     expect(find.text('Explore my work'), findsOneWidget);
+    expect(find.text('Explore THT-Space journey'), findsOneWidget);
+    expect(
+      find.text('One vision at the center.\nEvery specialist in orbit.'),
+      findsNothing,
+    );
+    expect(find.text('See the engineering\nin motion.'), findsOneWidget);
+    expect(find.text('Gesture-Controlled Mobile Stand'), findsOneWidget);
+
+    final journeyLink = find.text('Explore THT-Space journey');
+    final journeyCard = find.ancestor(
+      of: journeyLink,
+      matching: find.byType(InkWell),
+    );
+    tester.widget<InkWell>(journeyCard).onTap!();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('THT-SPACE'), findsOneWidget);
     expect(
       find.text('One vision at the center.\nEvery specialist in orbit.'),
       findsOneWidget,
@@ -45,7 +63,5 @@ void main() {
     expect(find.text('Zhang Geng'), findsOneWidget);
     expect(find.text('Zubayar Ahmed'), findsOneWidget);
     expect(find.text('Obaidul Haque'), findsOneWidget);
-    expect(find.text('See the engineering\nin motion.'), findsOneWidget);
-    expect(find.text('Gesture-Controlled Mobile Stand'), findsOneWidget);
   });
 }
