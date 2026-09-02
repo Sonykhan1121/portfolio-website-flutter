@@ -304,73 +304,68 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SelectionArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  const SizedBox(height: 76),
-                  Container(
-                    key: _heroKey,
-                    child: _HeroSection(
-                      repositoryCount: _repositories.length,
-                      onExplore: () => _scrollTo(_workKey),
-                    ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                const SizedBox(height: 76),
+                Container(
+                  key: _heroKey,
+                  child: _HeroSection(
+                    repositoryCount: _repositories.length,
+                    onExplore: () => _scrollTo(_workKey),
                   ),
-                  Container(key: _workKey, child: const _GrozziieSection()),
-                  _FeaturedProjectsSection(key: _projectsKey),
-                  Container(
-                    key: _demosKey,
-                    child: const _ProjectDemosSection(),
-                  ),
-                  _RepositorySection(
-                    searchController: _searchController,
-                    selectedFilter: _filter,
-                    repositories: _filteredRepositories,
-                    repositoryLanguages: _repositoryLanguages,
-                    showAll: _showAllRepositories,
-                    isSyncing: _isSyncingRepositories,
-                    syncFailed: _repositorySyncFailed,
-                    onSearch: (value) {
-                      setState(() {
-                        _query = value;
-                        _showAllRepositories = false;
-                      });
-                    },
-                    onFilter: (value) {
-                      setState(() {
-                        _filter = value;
-                        _showAllRepositories = false;
-                      });
-                    },
-                    onToggleAll:
-                        () => setState(
-                          () => _showAllRepositories = !_showAllRepositories,
-                        ),
-                  ),
-                  Container(key: _aboutKey, child: const _AboutSection()),
-                  Container(key: _contactKey, child: const _ContactSection()),
-                ],
-              ),
+                ),
+                Container(key: _workKey, child: const _GrozziieSection()),
+                _FeaturedProjectsSection(key: _projectsKey),
+                Container(key: _demosKey, child: const _ProjectDemosSection()),
+                _RepositorySection(
+                  searchController: _searchController,
+                  selectedFilter: _filter,
+                  repositories: _filteredRepositories,
+                  repositoryLanguages: _repositoryLanguages,
+                  showAll: _showAllRepositories,
+                  isSyncing: _isSyncingRepositories,
+                  syncFailed: _repositorySyncFailed,
+                  onSearch: (value) {
+                    setState(() {
+                      _query = value;
+                      _showAllRepositories = false;
+                    });
+                  },
+                  onFilter: (value) {
+                    setState(() {
+                      _filter = value;
+                      _showAllRepositories = false;
+                    });
+                  },
+                  onToggleAll:
+                      () => setState(
+                        () => _showAllRepositories = !_showAllRepositories,
+                      ),
+                ),
+                Container(key: _aboutKey, child: const _AboutSection()),
+                Container(key: _contactKey, child: const _ContactSection()),
+              ],
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _NavigationBar(
-                onHome: () => _scrollTo(_heroKey),
-                onWork: () => _scrollTo(_workKey),
-                onProjects: () => _scrollTo(_projectsKey),
-                onDemos: () => _scrollTo(_demosKey),
-                onAbout: () => _scrollTo(_aboutKey),
-                onContact: () => _scrollTo(_contactKey),
-                onMenu: _openMobileMenu,
-              ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: _NavigationBar(
+              onHome: () => _scrollTo(_heroKey),
+              onWork: () => _scrollTo(_workKey),
+              onProjects: () => _scrollTo(_projectsKey),
+              onDemos: () => _scrollTo(_demosKey),
+              onAbout: () => _scrollTo(_aboutKey),
+              onContact: () => _scrollTo(_contactKey),
+              onMenu: _openMobileMenu,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1510,19 +1505,17 @@ class ThtSpacePage extends StatelessWidget {
               ),
           ],
         ),
-        body: const SelectionArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _ThtSpaceHero(),
-                _ThtCompanyOverview(),
-                _ThtProductsSection(),
-                _ThtImpactSection(),
-                _ThtVideoSection(),
-                _TeamSection(),
-                _ThtPageFooter(),
-              ],
-            ),
+        body: const SingleChildScrollView(
+          child: Column(
+            children: [
+              _ThtSpaceHero(),
+              _ThtCompanyOverview(),
+              _ThtProductsSection(),
+              _ThtImpactSection(),
+              _ThtVideoSection(),
+              _TeamSection(),
+              _ThtPageFooter(),
+            ],
           ),
         ),
       ),
@@ -2892,7 +2885,7 @@ class _MobileSolarSystem extends StatelessWidget {
             children: [
               const SizedBox(
                 width: 244,
-                height: 286,
+                height: 320,
                 child: _SunLeader(member: teamLeader),
               ),
               const SizedBox(height: 18),
