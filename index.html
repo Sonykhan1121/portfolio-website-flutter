@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -17,6 +17,7 @@
   <base href="/portfolio-website-flutter/">
 
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Sidratul Montaha is a Flutter software engineer building production Android and iOS apps, Bluetooth and IoT experiences, and maintainable mobile products.">
   <meta name="theme-color" content="#FFFFFF">
@@ -38,8 +39,120 @@
 
   <title>Sidratul Montaha — Flutter Software Engineer</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; background: #fff; }
+    #startup { position: fixed; inset: 0; z-index: 2147483647; overflow: auto; background: linear-gradient(125deg, #fff, #f0faf7 65%, #f5f7ff); color: #111827; font-family: Arial, sans-serif; transition: opacity 160ms ease-out; }
+    #startup * { box-sizing: border-box; }
+    #startup .bar { height: 76px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #dce3ec; background: #fff; }
+    #startup .identity { display: flex; align-items: center; gap: 12px; font-size: 13px; letter-spacing: 1px; }
+    #startup .mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: linear-gradient(115deg, #087f6b, #3158c9); font-size: 14px; letter-spacing: 0; }
+    #startup .intro { max-width: 1180px; margin: auto; padding: 78px 28px 64px; display: grid; grid-template-columns: 1.5fr 1fr; align-items: center; gap: 58px; }
+    #startup .eyebrow { display: inline-block; padding: 9px 13px; border: 1px solid #abd9d0; border-radius: 999px; color: #087f6b; background: #e8f5f1; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+    #startup h1 { font-size: clamp(43px, 5.4vw, 68px); line-height: 1.03; letter-spacing: -2.1px; margin: 22px 0 24px; }
+    #startup .bio { font-size: 18px; line-height: 1.65; color: #5e6b7d; margin: 0 0 34px; }
+    #startup .actions, #startup .socials { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    #startup a { color: #3158c9; text-underline-offset: 4px; }
+    #startup a:focus-visible { outline: 3px solid #3158c9; outline-offset: 4px; }
+    #startup .button { display: inline-block; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 700; border: 1px solid #dce3ec; color: #111827; background: #fff; }
+    #startup .primary { background: #087f6b; color: #fff; border-color: #087f6b; }
+    #startup .socials { margin-top: 26px; font-size: 14px; }
+    #startup .portrait-space { aspect-ratio: 0.79; border-radius: 38px; border: 2px solid #dce3ec; background: #f8fafc; box-shadow: 18px 22px 0 #d9e8f0; }
+    #startup .status { margin-top: 26px; font-size: 14px; line-height: 1.6; color: #5e6b7d; }
+    #startup.leaving { opacity: 0; pointer-events: none; }
+    #startup [hidden] { display: none; }
+    @media (max-width: 959px) { #startup .intro { display: block; padding: 56px 18px; } #startup .portrait-space { display: none; } }
+    @media (max-width: 480px) { #startup .identity span { display: none; } #startup .bar { padding: 0 24px; } }
+    @media (prefers-reduced-motion: reduce) { #startup { transition: none; } }
+  </style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Real links remain usable even when Flutter is slow or cannot start. -->
+  <div id="startup">
+    <header class="bar">
+      <div class="identity"><b class="mark">SM</b><span>SIDRATUL MONTAHA</span></div>
+      <a class="button" href="mailto:sonykhan1121@gmail.com">Let’s talk</a>
+    </header>
+    <main class="intro">
+      <div>
+        <div class="eyebrow">FLUTTER SOFTWARE ENGINEER</div>
+        <h1>I ship mobile products<br>that work in the real world.</h1>
+        <p class="bio">I’m Sidratul Montaha, a Flutter developer building reliable Android and iOS experiences across Bluetooth, IoT, real-time services, and polished product interfaces.</p>
+        <div class="actions">
+          <a class="button primary" href="https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing" target="_blank" rel="noopener">Download CV</a>
+          <a class="button" href="mailto:sonykhan1121@gmail.com">Contact me</a>
+        </div>
+        <div class="socials">
+          <a href="https://github.com/Sonykhan1121" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/sidratul-montaha-flutter/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <p class="status" role="status"><span id="startup-status">Opening the interactive portfolio…</span> <a id="startup-retry" href="" hidden>Try again</a></p>
+        <noscript><p>Enable JavaScript to explore the full portfolio. The CV and contact links above still work.</p></noscript>
+      </div>
+      <div class="portrait-space" aria-hidden="true"></div>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const shell = document.getElementById('startup');
+      let ready = false;
+      window.portfolioStartupFailed = () => {
+        if (ready) return;
+        document.getElementById('startup-status').textContent = 'The interactive view is taking longer than expected. My CV and contact links are ready above.';
+        document.getElementById('startup-retry').hidden = false;
+      };
+      const timeout = setTimeout(window.portfolioStartupFailed, 35000);
+      window.addEventListener('error', (event) => {
+        if (event.target instanceof HTMLScriptElement) window.portfolioStartupFailed();
+      }, true);
+      window.addEventListener('flutter-first-frame', () => {
+        ready = true;
+        clearTimeout(timeout);
+        // Keep the introduction until the engine has had a chance to paint.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          const restoreFocus = shell.contains(document.activeElement);
+          shell.setAttribute('aria-hidden', 'true');
+          shell.inert = true;
+          shell.classList.add('leaving');
+          if (restoreFocus) {
+            const view = document.querySelector('flutter-view');
+            if (view) { view.setAttribute('tabindex', '-1'); view.focus({preventScroll: true}); }
+          }
+          setTimeout(() => shell.remove(), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180);
+        }));
+      }, {once: true});
+    })();
+  </script>
+  <!-- Inline the versioned loader so an older cached bootstrap cannot delay an update. -->
+  <script>(()=>{var P=()=>navigator.vendor==="Google Inc."||navigator.agent==="Edg/",E=()=>typeof ImageDecoder>"u"?!1:P(),L=()=>typeof Intl.v8BreakIterator<"u"&&typeof Intl.Segmenter<"u",W=()=>{let n=[0,97,115,109,1,0,0,0,1,5,1,95,1,120,0];return WebAssembly.validate(new Uint8Array(n))},w={hasImageCodecs:E(),hasChromiumBreakIterators:L(),supportsWasmGC:W(),crossOriginIsolated:window.crossOriginIsolated};function l(...n){return new URL(C(...n),document.baseURI).toString()}function C(...n){return n.filter(t=>!!t).map((t,i)=>i===0?_(t):j(_(t))).filter(t=>t.length).join("/")}function j(n){let t=0;for(;t<n.length&&n.charAt(t)==="/";)t++;return n.substring(t)}function _(n){let t=n.length;for(;t>0&&n.charAt(t-1)==="/";)t--;return n.substring(0,t)}function T(n,t){return n.canvasKitBaseUrl?n.canvasKitBaseUrl:t.engineRevision&&!t.useLocalCanvasKit?C("https://www.gstatic.com/flutter-canvaskit",t.engineRevision):"canvaskit"}var v=class{constructor(){this._scriptLoaded=!1}setTrustedTypesPolicy(t){this._ttPolicy=t}async loadEntrypoint(t){let{entrypointUrl:i=l("main.dart.js"),onEntrypointLoaded:r,nonce:e}=t||{};return this._loadJSEntrypoint(i,r,e)}async load(t,i,r,e,a){a??=o=>{o.initializeEngine(r).then(c=>c.runApp())};let{entryPointBaseUrl:s}=r;if(t.compileTarget==="dart2wasm")return this._loadWasmEntrypoint(t,i,s,a);{let o=t.mainJsPath??"main.dart.js",c=l(s,o);return this._loadJSEntrypoint(c,a,e)}}didCreateEngineInitializer(t){typeof this._didCreateEngineInitializerResolve=="function"&&(this._didCreateEngineInitializerResolve(t),this._didCreateEngineInitializerResolve=null,delete _flutter.loader.didCreateEngineInitializer),typeof this._onEntrypointLoaded=="function"&&this._onEntrypointLoaded(t)}_loadJSEntrypoint(t,i,r){let e=typeof i=="function";if(!this._scriptLoaded){this._scriptLoaded=!0;let a=this._createScriptTag(t,r);if(e)console.debug("Injecting <script> tag. Using callback."),this._onEntrypointLoaded=i,document.head.append(a);else return new Promise((s,o)=>{console.debug("Injecting <script> tag. Using Promises. Use the callback approach instead!"),this._didCreateEngineInitializerResolve=s,a.addEventListener("error",o),document.head.append(a)})}}async _loadWasmEntrypoint(t,i,r,e){if(!this._scriptLoaded){this._scriptLoaded=!0,this._onEntrypointLoaded=e;let{mainWasmPath:a,jsSupportRuntimePath:s}=t,o=l(r,a),c=l(r,s);this._ttPolicy!=null&&(c=this._ttPolicy.createScriptURL(c));let d=(await import(c)).compileStreaming(fetch(o)),f;t.renderer==="skwasm"?f=(async()=>{let m=await i.skwasm;return window._flutter_skwasmInstance=m,{skwasm:m.wasmExports,skwasmWrapper:m,ffi:{memory:m.wasmMemory}}})():f=Promise.resolve({}),await(await(await d).instantiate(await f)).invokeMain()}}_createScriptTag(t,i){let r=document.createElement("script");r.type="application/javascript",i&&(r.nonce=i);let e=t;return this._ttPolicy!=null&&(e=this._ttPolicy.createScriptURL(t)),r.src=e,r}};async function I(n,t,i){if(t<0)return n;let r,e=new Promise((a,s)=>{r=setTimeout(()=>{s(new Error(`${i} took more than ${t}ms to resolve. Moving on.`,{cause:I}))},t)});return Promise.race([n,e]).finally(()=>{clearTimeout(r)})}var y=class{setTrustedTypesPolicy(t){this._ttPolicy=t}loadServiceWorker(t){if(!t)return console.debug("Null serviceWorker configuration. Skipping."),Promise.resolve();if(!("serviceWorker"in navigator)){let o="Service Worker API unavailable.";return window.isSecureContext||(o+=`
+The current context is NOT secure.`,o+=`
+Read more: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts`),Promise.reject(new Error(o))}let{serviceWorkerVersion:i,serviceWorkerUrl:r=l(`flutter_service_worker.js?v=${i}`),timeoutMillis:e=4e3}=t,a=r;this._ttPolicy!=null&&(a=this._ttPolicy.createScriptURL(a));let s=navigator.serviceWorker.register(a).then(o=>this._getNewServiceWorker(o,i)).then(this._waitForServiceWorkerActivation);return I(s,e,"prepareServiceWorker")}async _getNewServiceWorker(t,i){if(!t.active&&(t.installing||t.waiting))return console.debug("Installing/Activating first service worker."),t.installing||t.waiting;if(t.active.scriptURL.endsWith(i))return console.debug("Loading from existing service worker."),t.active;{let r=await t.update();return console.debug("Updating service worker."),r.installing||r.waiting||r.active}}async _waitForServiceWorkerActivation(t){if(!t||t.state==="activated")if(t){console.debug("Service worker already active.");return}else throw new Error("Cannot activate a null service worker!");return new Promise((i,r)=>{t.addEventListener("statechange",()=>{t.state==="activated"&&(console.debug("Activated new service worker."),i())})})}};var g=class{constructor(t,i="flutter-js"){let r=t||[/\.js$/,/\.mjs$/];window.trustedTypes&&(this.policy=trustedTypes.createPolicy(i,{createScriptURL:function(e){if(e.startsWith("blob:"))return e;let a=new URL(e,window.location),s=a.pathname.split("/").pop();if(r.some(c=>c.test(s)))return a.toString();console.error("URL rejected by TrustedTypes policy",i,":",e,"(download prevented)")}}))}};var k=n=>{let t=WebAssembly.compileStreaming(fetch(n));return(i,r)=>((async()=>{let e=await t,a=await WebAssembly.instantiate(e,i);r(a,e)})(),{})};var b=(n,t,i,r)=>(window.flutterCanvasKitLoaded=(async()=>{if(window.flutterCanvasKit)return window.flutterCanvasKit;let e=i.hasChromiumBreakIterators&&i.hasImageCodecs;if(!e&&t.canvasKitVariant=="chromium")throw"Chromium CanvasKit variant specifically requested, but unsupported in this browser";let a=e&&t.canvasKitVariant!=="full",s=r;a&&(s=l(s,"chromium"));let o=l(s,"canvaskit.js");n.flutterTT.policy&&(o=n.flutterTT.policy.createScriptURL(o));let c=k(l(s,"canvaskit.wasm")),p=await import(o);return window.flutterCanvasKit=await p.default({instantiateWasm:c}),window.flutterCanvasKit})(),window.flutterCanvasKitLoaded);var U=async(n,t,i,r)=>{let e=i.crossOriginIsolated&&!t.forceSingleThreadedSkwasm?"skwasm":"skwasm_st",s=l(r,`${e}.js`);n.flutterTT.policy&&(s=n.flutterTT.policy.createScriptURL(s));let o=k(l(r,`${e}.wasm`));return await(await import(s)).default({instantiateWasm:o,mainScriptUrlOrBlob:new Blob([`import '${s}'`],{type:"application/javascript"})})};var S=class{async loadEntrypoint(t){let{serviceWorker:i,...r}=t||{},e=new g,a=new y;a.setTrustedTypesPolicy(e.policy),await a.loadServiceWorker(i).catch(o=>{console.warn("Exception while loading service worker:",o)});let s=new v;return s.setTrustedTypesPolicy(e.policy),this.didCreateEngineInitializer=s.didCreateEngineInitializer.bind(s),s.loadEntrypoint(r)}async load({serviceWorkerSettings:t,onEntrypointLoaded:i,nonce:r,config:e}={}){e??={};let a=_flutter.buildConfig;if(!a)throw"FlutterLoader.load requires _flutter.buildConfig to be set";let s=u=>{switch(u){case"skwasm":return w.hasChromiumBreakIterators&&w.hasImageCodecs&&w.supportsWasmGC;default:return!0}},o=(u,m)=>{switch(u.renderer){case"auto":return m=="canvaskit"||m=="html";default:return u.renderer==m}},c=u=>u.compileTarget==="dart2wasm"&&!w.supportsWasmGC||e.renderer&&!o(u,e.renderer)?!1:s(u.renderer),p=a.builds.find(c);if(!p)throw"FlutterLoader could not find a build compatible with configuration and environment.";let d={};d.flutterTT=new g,t&&(d.serviceWorkerLoader=new y,d.serviceWorkerLoader.setTrustedTypesPolicy(d.flutterTT.policy),await d.serviceWorkerLoader.loadServiceWorker(t).catch(u=>{console.warn("Exception while loading service worker:",u)}));let f=T(e,a);p.renderer==="canvaskit"?d.canvasKit=b(d,e,w,f):p.renderer==="skwasm"&&(d.skwasm=U(d,e,w,f));let h=new v;return h.setTrustedTypesPolicy(d.flutterTT.policy),this.didCreateEngineInitializer=h.didCreateEngineInitializer.bind(h),h.load(p,d,e,r,i)}};window._flutter||(window._flutter={});window._flutter.loader||(window._flutter.loader=new S);})();
+//# sourceMappingURL=flutter.js.map
+
+if (!window._flutter) {
+  window._flutter = {};
+}
+_flutter.buildConfig = {"engineRevision":"18b71d647a292a980abb405ac7d16fe1f0b20434","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
+
+
+// Retain this project's existing versioned service-worker cache. Rendering
+// never waits for portfolio photos: they are requested by visible widgets.
+_flutter.loader.load({
+  serviceWorkerSettings: {
+    serviceWorkerVersion: "2018064616"
+  },
+  onEntrypointLoaded: async function(engineInitializer) {
+    try {
+      const appRunner = await engineInitializer.initializeEngine();
+      await appRunner.runApp();
+    } catch (error) {
+      window.portfolioStartupFailed?.();
+      console.error('Portfolio initialization failed', error);
+    }
+  }
+}).catch((error) => {
+  window.portfolioStartupFailed?.();
+  console.error('Portfolio loading failed', error);
+});
+</script>
 </body>
 </html>

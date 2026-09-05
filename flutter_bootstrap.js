@@ -9,8 +9,22 @@ if (!window._flutter) {
 _flutter.buildConfig = {"engineRevision":"18b71d647a292a980abb405ac7d16fe1f0b20434","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
 
+// Retain this project's existing versioned service-worker cache. Rendering
+// never waits for portfolio photos: they are requested by visible widgets.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "71953056"
+    serviceWorkerVersion: "2018064616"
+  },
+  onEntrypointLoaded: async function(engineInitializer) {
+    try {
+      const appRunner = await engineInitializer.initializeEngine();
+      await appRunner.runApp();
+    } catch (error) {
+      window.portfolioStartupFailed?.();
+      console.error('Portfolio initialization failed', error);
+    }
   }
+}).catch((error) => {
+  window.portfolioStartupFailed?.();
+  console.error('Portfolio loading failed', error);
 });
