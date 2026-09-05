@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:portfolio_website_flutter/models/repository_item.dart';
@@ -28,7 +29,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    for (final width in [360.0, 390.0, 768.0, 1024.0]) {
+    for (final width in [360.0, 390.0, 768.0, 1024.0, 1440.0]) {
       tester.view.physicalSize = Size(width, 844);
       await tester.pumpWidget(
         PortfolioApp(repositoryService: _FallbackRepositoryService()),
@@ -39,7 +40,63 @@ void main() {
         isNull,
         reason: 'Layout must fit $width px',
       );
+      expect(find.text('Take Off Programming Contest'), findsOneWidget);
+      expect(find.text('View profile'), findsNWidgets(4));
     }
+  });
+
+  testWidgets('competitive profile cards launch the personal CV links', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final launched = <String>[];
+    const channel = MethodChannel('plugins.flutter.io/url_launcher');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
+      if (call.method == 'launch') {
+        launched.add((call.arguments as Map)['url'] as String);
+      }
+      return true;
+    });
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        null,
+      ),
+    );
+    await tester.pumpWidget(
+      PortfolioApp(repositoryService: _FallbackRepositoryService()),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final jump = find.text('Explore my problem-solving journey ↓');
+    await Scrollable.ensureVisible(tester.element(jump), alignment: 0.4);
+    await tester.tap(jump);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(tester.getTopLeft(find.text('CHAMPION · 2019')).dy, lessThan(1000));
+    for (final name in ['Codeforces', 'LeetCode', 'InterviewBit', 'beecrowd']) {
+      final card = find.ancestor(
+        of: find.text(name),
+        matching: find.byType(InkWell),
+      );
+      await Scrollable.ensureVisible(tester.element(card), alignment: 0.4);
+      await tester.tap(card);
+      await tester.pump();
+    }
+    expect(launched, [
+      'https://codeforces.com/profile/Ibrahimovic_The_Lion',
+      'https://leetcode.com/u/sidratul15-11879/',
+      'https://www.interviewbit.com/profile/md-sidratul-montaha-183-15-11879/',
+      'https://judge.beecrowd.com/en/profile/294737',
+    ]);
+    expect(find.text('1200+'), findsOneWidget);
+    expect(find.text('187'), findsOneWidget);
+    expect(find.text('230+'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('portfolio surfaces production work', (tester) async {

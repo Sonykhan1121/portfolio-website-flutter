@@ -12,6 +12,8 @@ import 'models/repository_query.dart';
 import 'services/github_repository_service.dart';
 import 'widgets/screenshot_gallery.dart';
 
+part 'widgets/competitive_journey.dart';
+
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
 const _panel = Color(0xFFFFFFFF);
@@ -181,6 +183,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
   final _heroKey = GlobalKey();
   final _workKey = GlobalKey();
   final _projectsKey = GlobalKey();
+  final _competitiveKey = GlobalKey();
   final _demosKey = GlobalKey();
   final _archiveKey = GlobalKey();
   final _journeyKey = GlobalKey();
@@ -247,6 +250,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
       (_heroKey, 'Home'),
       (_workKey, 'Grozziie'),
       (_projectsKey, 'Projects'),
+      (_competitiveKey, 'Problem solving'),
       (_demosKey, 'Demos'),
       (_archiveKey, 'Archive'),
       (_aboutKey, 'About'),
@@ -296,61 +300,70 @@ class _PortfolioHomeState extends State<PortfolioHome>
       showDragHandle: true,
       builder:
           (sheetContext) => SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _MobileNavItem(
-                    label: 'Home',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_heroKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'Grozziie',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_workKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'Projects',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_projectsKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'Demos',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_demosKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'Archive',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_archiveKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'About',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_aboutKey);
-                    },
-                  ),
-                  _MobileNavItem(
-                    label: 'Contact',
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      _scrollTo(_contactKey);
-                    },
-                  ),
-                ],
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _MobileNavItem(
+                      label: 'Home',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_heroKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Grozziie',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_workKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Projects',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_projectsKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Problem solving',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_competitiveKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Demos',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_demosKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Archive',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_archiveKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'About',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_aboutKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Contact',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_contactKey);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -431,10 +444,15 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     onExplore: () => _scrollTo(_workKey),
                     onRepositories: () => _scrollTo(_archiveKey),
                     onJourney: () => _scrollTo(_journeyKey),
+                    onCompetitive: () => _scrollTo(_competitiveKey),
                   ),
                 ),
                 Container(key: _workKey, child: const _GrozziieSection()),
                 _FeaturedProjectsSection(key: _projectsKey),
+                Container(
+                  key: _competitiveKey,
+                  child: const _CompetitiveJourneySection(),
+                ),
                 Container(key: _demosKey, child: const _ProjectDemosSection()),
                 _RepositorySection(
                   key: _archiveKey,
@@ -495,6 +513,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
               onHome: () => _scrollTo(_heroKey),
               onWork: () => _scrollTo(_workKey),
               onProjects: () => _scrollTo(_projectsKey),
+              onCompetitive: () => _scrollTo(_competitiveKey),
               onDemos: () => _scrollTo(_demosKey),
               onArchive: () => _scrollTo(_archiveKey),
               onAbout: () => _scrollTo(_aboutKey),
@@ -514,6 +533,7 @@ class _NavigationBar extends StatelessWidget {
     required this.onHome,
     required this.onWork,
     required this.onProjects,
+    required this.onCompetitive,
     required this.onDemos,
     required this.onArchive,
     required this.onAbout,
@@ -524,6 +544,7 @@ class _NavigationBar extends StatelessWidget {
   final VoidCallback onHome;
   final VoidCallback onWork;
   final VoidCallback onProjects;
+  final VoidCallback onCompetitive;
   final VoidCallback onDemos;
   final VoidCallback onArchive;
   final String activeSection;
@@ -548,12 +569,14 @@ class _NavigationBar extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: _contentWidth),
+          constraints: const BoxConstraints(maxWidth: 1360),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final compact = constraints.maxWidth < 1100;
+                final compact =
+                    constraints.maxWidth < 1300 ||
+                    MediaQuery.textScalerOf(context).scale(14) > 17;
                 return Row(
                   children: [
                     _InteractiveCard(
@@ -623,6 +646,11 @@ class _NavigationBar extends StatelessWidget {
                         label: 'Projects',
                         onTap: onProjects,
                         active: activeSection == 'Projects',
+                      ),
+                      _NavLink(
+                        label: 'Problem solving',
+                        onTap: onCompetitive,
+                        active: activeSection == 'Problem solving',
                       ),
                       _NavLink(
                         label: 'Demos',
@@ -723,12 +751,14 @@ class _HeroSection extends StatelessWidget {
     required this.onExplore,
     required this.onRepositories,
     required this.onJourney,
+    required this.onCompetitive,
   });
 
   final int repositoryCount;
   final VoidCallback onExplore;
   final VoidCallback onRepositories;
   final VoidCallback onJourney;
+  final VoidCallback onCompetitive;
 
   @override
   Widget build(BuildContext context) {
@@ -743,7 +773,10 @@ class _HeroSection extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= 900;
-          final copy = _HeroCopy(onExplore: onExplore);
+          final copy = _HeroCopy(
+            onExplore: onExplore,
+            onCompetitive: onCompetitive,
+          );
           final visual = _ProfileVisual(compact: !wide);
 
           return Column(
@@ -777,9 +810,10 @@ class _HeroSection extends StatelessWidget {
 }
 
 class _HeroCopy extends StatelessWidget {
-  const _HeroCopy({required this.onExplore});
+  const _HeroCopy({required this.onExplore, required this.onCompetitive});
 
   final VoidCallback onExplore;
+  final VoidCallback onCompetitive;
 
   @override
   Widget build(BuildContext context) {
@@ -835,6 +869,13 @@ class _HeroCopy extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 28),
+        TextButton.icon(
+          onPressed: onCompetitive,
+          icon: const Icon(Icons.code_rounded, size: 20),
+          label: const Text('Explore my problem-solving journey ↓'),
+          style: TextButton.styleFrom(foregroundColor: _sky),
+        ),
+        const SizedBox(height: 12),
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
@@ -3532,7 +3573,7 @@ class _FeaturedProjectsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '03',
+            number: '02',
             eyebrow: 'SELECTED ENGINEERING WORK',
             title: 'Products, packages,\nand practical experiments.',
             description:
@@ -4645,34 +4686,6 @@ class _JourneySection extends StatelessWidget {
               )
             else
               Column(children: [work, const SizedBox(height: 16), education]),
-            const SizedBox(height: 18),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    _sky.withValues(alpha: 0.1),
-                    _mint.withValues(alpha: 0.07),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: _line),
-                boxShadow: _softShadow,
-              ),
-              child: const Wrap(
-                alignment: WrapAlignment.spaceAround,
-                runAlignment: WrapAlignment.center,
-                spacing: 34,
-                runSpacing: 20,
-                children: [
-                  _MiniStat(value: '1200+', label: 'Codeforces rating'),
-                  _MiniStat(value: '3', label: 'LeetCode badges'),
-                  _MiniStat(value: '220+', label: 'InterviewBit problems'),
-                  _MiniStat(value: '230+', label: 'beecrowd problems'),
-                ],
-              ),
-            ),
           ],
         );
       },
@@ -4791,39 +4804,6 @@ class _JourneyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         child: card,
       ),
-    );
-  }
-}
-
-class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: _text,
-            fontSize: 23,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: const TextStyle(
-            color: _muted,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
     );
   }
 }
