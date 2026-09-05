@@ -11,6 +11,7 @@ import 'models/repository_item.dart';
 import 'models/repository_query.dart';
 import 'services/github_repository_service.dart';
 import 'widgets/screenshot_gallery.dart';
+import 'widgets/progressive_asset_image.dart';
 
 part 'widgets/competitive_journey.dart';
 part 'widgets/grozziie_contributions.dart';
@@ -984,8 +985,8 @@ class _ProfileVisualState extends State<_ProfileVisual>
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(36),
-                    child: Image.asset(
-                      'assets/images/hero_portrait_2026.png',
+                    child: ProgressiveAssetImage(
+                      'assets/images/hero_portrait_2026_v2.webp',
                       semanticLabel: 'Portrait of Sidratul Montaha',
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
@@ -1360,7 +1361,7 @@ class _GrozziieIdentity extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(18),
-              child: Image.asset(
+              child: ProgressiveAssetImage(
                 'assets/images/projects/grozziie/icon.webp',
                 width: 74,
                 height: 74,
@@ -1809,7 +1810,7 @@ class _ThtSpaceHero extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(
+                    ProgressiveAssetImage(
                       'assets/images/company/tht-space-team-cover.jpg',
                       fit: BoxFit.cover,
                       alignment: const Alignment(0, -0.08),
@@ -2316,7 +2317,7 @@ class _GrozziieCompanyCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
+                child: ProgressiveAssetImage(
                   'assets/images/projects/grozziie/icon.webp',
                   width: 56,
                   height: 56,
@@ -2397,7 +2398,7 @@ class _GrozziieCompanyCard extends StatelessWidget {
                                 aspectRatio: 0.52,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(13),
-                                  child: Image.asset(
+                                  child: ProgressiveAssetImage(
                                     asset,
                                     fit: BoxFit.cover,
                                     alignment: Alignment.topCenter,
@@ -2644,7 +2645,7 @@ class _ThtVideoCard extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(
+                      ProgressiveAssetImage(
                         thumbnail,
                         fit: BoxFit.cover,
                         semanticLabel: '$title video preview',
@@ -3273,7 +3274,7 @@ class _SunLeader extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: ClipOval(
-                child: Image.asset(
+                child: ProgressiveAssetImage(
                   member.image,
                   fit: BoxFit.cover,
                   semanticLabel: '${member.name} portrait',
@@ -3501,7 +3502,7 @@ class _PlanetPortrait extends StatelessWidget {
               ],
             ),
             child: ClipOval(
-              child: Image.asset(
+              child: ProgressiveAssetImage(
                 member.image,
                 fit: BoxFit.cover,
                 semanticLabel: '${member.name} portrait',
@@ -3882,7 +3883,7 @@ class _ProjectDemoCard extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(
+                      ProgressiveAssetImage(
                         demo.thumbnail,
                         fit: BoxFit.cover,
                         alignment: demo.thumbnailAlignment,

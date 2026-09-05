@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'progressive_asset_image.dart';
 
 /// A paged strip keeps all eight images reachable with touch, mouse or keyboard.
 class ScreenshotGallery extends StatefulWidget {
@@ -226,7 +227,7 @@ class _ScreenshotTile extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
+              child: ProgressiveAssetImage(
                 item.$2,
                 fit: BoxFit.contain,
                 errorBuilder:
@@ -305,7 +306,7 @@ class _ScreenshotViewerState extends State<_ScreenshotViewer> {
                     key: ValueKey(_index),
                     minScale: 1,
                     maxScale: 4,
-                    child: Image.asset(
+                    child: ProgressiveAssetImage(
                       item.$2,
                       fit: BoxFit.contain,
                       semanticLabel:

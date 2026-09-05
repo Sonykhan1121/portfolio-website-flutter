@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -17,6 +17,7 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Sidratul Montaha is a Flutter software engineer building production Android and iOS apps, Bluetooth and IoT experiences, and maintainable mobile products.">
   <meta name="theme-color" content="#FFFFFF">
@@ -38,8 +39,90 @@
 
   <title>Sidratul Montaha — Flutter Software Engineer</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; background: #fff; }
+    #startup { position: fixed; inset: 0; z-index: 2147483647; overflow: auto; background: linear-gradient(125deg, #fff, #f0faf7 65%, #f5f7ff); color: #111827; font-family: Arial, sans-serif; transition: opacity 160ms ease-out; }
+    #startup * { box-sizing: border-box; }
+    #startup .bar { height: 76px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #dce3ec; background: #fff; }
+    #startup .identity { display: flex; align-items: center; gap: 12px; font-size: 13px; letter-spacing: 1px; }
+    #startup .mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: linear-gradient(115deg, #087f6b, #3158c9); font-size: 14px; letter-spacing: 0; }
+    #startup .intro { max-width: 1180px; margin: auto; padding: 78px 28px 64px; display: grid; grid-template-columns: 1.5fr 1fr; align-items: center; gap: 58px; }
+    #startup .eyebrow { display: inline-block; padding: 9px 13px; border: 1px solid #abd9d0; border-radius: 999px; color: #087f6b; background: #e8f5f1; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+    #startup h1 { font-size: clamp(43px, 5.4vw, 68px); line-height: 1.03; letter-spacing: -2.1px; margin: 22px 0 24px; }
+    #startup .bio { font-size: 18px; line-height: 1.65; color: #5e6b7d; margin: 0 0 34px; }
+    #startup .actions, #startup .socials { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    #startup a { color: #3158c9; text-underline-offset: 4px; }
+    #startup a:focus-visible { outline: 3px solid #3158c9; outline-offset: 4px; }
+    #startup .button { display: inline-block; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 700; border: 1px solid #dce3ec; color: #111827; background: #fff; }
+    #startup .primary { background: #087f6b; color: #fff; border-color: #087f6b; }
+    #startup .socials { margin-top: 26px; font-size: 14px; }
+    #startup .portrait-space { aspect-ratio: 0.79; border-radius: 38px; border: 2px solid #dce3ec; background: #f8fafc; box-shadow: 18px 22px 0 #d9e8f0; }
+    #startup .status { margin-top: 26px; font-size: 14px; line-height: 1.6; color: #5e6b7d; }
+    #startup.leaving { opacity: 0; pointer-events: none; }
+    #startup [hidden] { display: none; }
+    @media (max-width: 959px) { #startup .intro { display: block; padding: 56px 18px; } #startup .portrait-space { display: none; } }
+    @media (max-width: 480px) { #startup .identity span { display: none; } #startup .bar { padding: 0 24px; } }
+    @media (prefers-reduced-motion: reduce) { #startup { transition: none; } }
+  </style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Real links remain usable even when Flutter is slow or cannot start. -->
+  <div id="startup">
+    <header class="bar">
+      <div class="identity"><b class="mark">SM</b><span>SIDRATUL MONTAHA</span></div>
+      <a class="button" href="mailto:sonykhan1121@gmail.com">Let’s talk</a>
+    </header>
+    <main class="intro">
+      <div>
+        <div class="eyebrow">FLUTTER SOFTWARE ENGINEER</div>
+        <h1>I ship mobile products<br>that work in the real world.</h1>
+        <p class="bio">I’m Sidratul Montaha, a Flutter developer building reliable Android and iOS experiences across Bluetooth, IoT, real-time services, and polished product interfaces.</p>
+        <div class="actions">
+          <a class="button primary" href="https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing" target="_blank" rel="noopener">Download CV</a>
+          <a class="button" href="mailto:sonykhan1121@gmail.com">Contact me</a>
+        </div>
+        <div class="socials">
+          <a href="https://github.com/Sonykhan1121" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/sidratul-montaha-flutter/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <p class="status" role="status"><span id="startup-status">Opening the interactive portfolio…</span> <a id="startup-retry" href="" hidden>Try again</a></p>
+        <noscript><p>Enable JavaScript to explore the full portfolio. The CV and contact links above still work.</p></noscript>
+      </div>
+      <div class="portrait-space" aria-hidden="true"></div>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const shell = document.getElementById('startup');
+      let ready = false;
+      window.portfolioStartupFailed = () => {
+        if (ready) return;
+        document.getElementById('startup-status').textContent = 'The interactive view is taking longer than expected. My CV and contact links are ready above.';
+        document.getElementById('startup-retry').hidden = false;
+      };
+      const timeout = setTimeout(window.portfolioStartupFailed, 35000);
+      window.addEventListener('error', (event) => {
+        if (event.target instanceof HTMLScriptElement) window.portfolioStartupFailed();
+      }, true);
+      window.addEventListener('flutter-first-frame', () => {
+        ready = true;
+        clearTimeout(timeout);
+        // Keep the introduction until the engine has had a chance to paint.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          const restoreFocus = shell.contains(document.activeElement);
+          shell.setAttribute('aria-hidden', 'true');
+          shell.inert = true;
+          shell.classList.add('leaving');
+          if (restoreFocus) {
+            const view = document.querySelector('flutter-view');
+            if (view) { view.setAttribute('tabindex', '-1'); view.focus({preventScroll: true}); }
+          }
+          setTimeout(() => shell.remove(), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180);
+        }));
+      }, {once: true});
+    })();
+  </script>
+  <!-- Inline the versioned loader so an older cached bootstrap cannot delay an update. -->
+  <script>{{flutter_bootstrap_js}}</script>
 </body>
 </html>

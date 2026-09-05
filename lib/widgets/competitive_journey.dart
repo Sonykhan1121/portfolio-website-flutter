@@ -202,7 +202,12 @@ class _CompetitiveProfileCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Image.asset(asset, width: 36, height: 36, fit: BoxFit.contain),
+              ProgressiveAssetImage(
+                asset,
+                width: 36,
+                height: 36,
+                fit: BoxFit.contain,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
