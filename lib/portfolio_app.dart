@@ -1,12 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'data/portfolio_data.dart';
 import 'models/repository_item.dart';
+import 'models/repository_query.dart';
 import 'services/github_repository_service.dart';
+import 'widgets/screenshot_gallery.dart';
 
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
@@ -18,8 +22,6 @@ const _muted = Color(0xFF5E6B7D);
 const _line = Color(0xFFDCE3EC);
 const _onAccent = Color(0xFFFFFFFF);
 const _softFill = Color(0xFFF2F5F9);
-const _deviceFrame = Color(0xFF111827);
-const _deviceMuted = Color(0xFFB7C2D0);
 const _contentWidth = 1180.0;
 
 const _cardShadow = <BoxShadow>[
@@ -86,10 +88,29 @@ Future<void> _emailMe() async {
   await launchUrl(uri);
 }
 
-class PortfolioApp extends StatelessWidget {
+class PortfolioApp extends StatefulWidget {
   const PortfolioApp({super.key, this.repositoryService});
 
   final GitHubRepositoryService? repositoryService;
+
+  @override
+  State<PortfolioApp> createState() => _PortfolioAppState();
+}
+
+class _PortfolioAppState extends State<PortfolioApp> {
+  late final SemanticsHandle _semantics;
+
+  @override
+  void initState() {
+    super.initState();
+    _semantics = SemanticsBinding.instance.ensureSemantics();
+  }
+
+  @override
+  void dispose() {
+    _semantics.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +128,13 @@ class PortfolioApp extends StatelessWidget {
         colorScheme: scheme,
         scaffoldBackgroundColor: _ink,
         useMaterial3: true,
+        focusColor: _mint.withValues(alpha: 0.2),
+        filledButtonTheme: FilledButtonThemeData(style: _keyboardButtonStyle),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: _keyboardButtonStyle,
+        ),
+        textButtonTheme: TextButtonThemeData(style: _keyboardButtonStyle),
+        iconButtonTheme: IconButtonThemeData(style: _keyboardButtonStyle),
         textTheme: ThemeData.light().textTheme.apply(
           bodyColor: _text,
           displayColor: _text,
@@ -118,12 +146,23 @@ class PortfolioApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => PortfolioHome(repositoryService: repositoryService),
+        '/':
+            (context) =>
+                PortfolioHome(repositoryService: widget.repositoryService),
         _thtSpaceRoute: (context) => const ThtSpacePage(),
       },
     );
   }
 }
+
+final _keyboardButtonStyle = ButtonStyle(
+  side: WidgetStateProperty.resolveWith(
+    (states) =>
+        states.contains(WidgetState.focused)
+            ? const BorderSide(color: _sky, width: 3)
+            : null,
+  ),
+);
 
 class PortfolioHome extends StatefulWidget {
   const PortfolioHome({super.key, this.repositoryService});
@@ -134,7 +173,8 @@ class PortfolioHome extends StatefulWidget {
   State<PortfolioHome> createState() => _PortfolioHomeState();
 }
 
-class _PortfolioHomeState extends State<PortfolioHome> {
+class _PortfolioHomeState extends State<PortfolioHome>
+    with WidgetsBindingObserver {
   late final GitHubRepositoryService _repositoryService;
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
@@ -142,11 +182,16 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   final _workKey = GlobalKey();
   final _projectsKey = GlobalKey();
   final _demosKey = GlobalKey();
+  final _archiveKey = GlobalKey();
+  final _journeyKey = GlobalKey();
   final _aboutKey = GlobalKey();
   final _contactKey = GlobalKey();
 
   String _filter = 'All';
   String _query = '';
+  String _activeSection = 'Home';
+  RepositorySort _sort = RepositorySort.relevant;
+  bool _featuredOnly = false;
   bool _showAllRepositories = false;
   late List<RepositoryItem> _repositories;
   bool _isSyncingRepositories = true;
@@ -155,6 +200,8 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _scrollController.addListener(_updateActiveSection);
     _repositoryService =
         widget.repositoryService ??
         GitHubRepositoryService(username: 'Sonykhan1121');
@@ -164,6 +211,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -172,12 +220,47 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   Future<void> _scrollTo(GlobalKey key) async {
     final target = key.currentContext;
     if (target == null) return;
-    await Scrollable.ensureVisible(
-      target,
-      duration: const Duration(milliseconds: 720),
+    final box = target.findRenderObject() as RenderBox;
+    final offset = (_scrollController.offset +
+            box.localToGlobal(Offset.zero).dy -
+            96)
+        .clamp(0.0, _scrollController.position.maxScrollExtent);
+    await _scrollController.animateTo(
+      offset,
+      duration:
+          MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 650),
       curve: Curves.easeOutCubic,
-      alignment: 0.02,
     );
+  }
+
+  @override
+  void didChangeMetrics() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateActiveSection());
+  }
+
+  void _updateActiveSection() {
+    if (!mounted || !_scrollController.hasClients) return;
+    var active = 'Home';
+    for (final section in [
+      (_heroKey, 'Home'),
+      (_workKey, 'Grozziie'),
+      (_projectsKey, 'Projects'),
+      (_demosKey, 'Demos'),
+      (_archiveKey, 'Archive'),
+      (_aboutKey, 'About'),
+      (_contactKey, 'Contact'),
+    ]) {
+      final box = section.$1.currentContext?.findRenderObject();
+      if (box is RenderBox &&
+          box.hasSize &&
+          box.localToGlobal(Offset.zero).dy <= 150) {
+        active = section.$2;
+      }
+    }
+    if (_scrollController.position.extentAfter < 8) active = 'Contact';
+    if (active != _activeSection) setState(() => _activeSection = active);
   }
 
   Future<void> _syncRepositories() async {
@@ -247,6 +330,13 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     },
                   ),
                   _MobileNavItem(
+                    label: 'Archive',
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _scrollTo(_archiveKey);
+                    },
+                  ),
+                  _MobileNavItem(
                     label: 'About',
                     onTap: () {
                       Navigator.pop(sheetContext);
@@ -267,17 +357,40 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     );
   }
 
-  List<RepositoryItem> get _filteredRepositories {
-    final normalized = _query.trim().toLowerCase();
-    return _repositories.where((repo) {
-      final matchesFilter = _filter == 'All' || repo.language == _filter;
-      final haystack =
-          '${repo.name} ${repo.description} ${repo.language} ${repo.category}'
-              .toLowerCase();
-      return matchesFilter &&
-          (normalized.isEmpty || haystack.contains(normalized));
-    }).toList();
+  Set<String> get _featuredUrls =>
+      featuredProjects.map((p) => p.url.toLowerCase()).toSet();
+
+  List<RepositoryItem> get _filteredRepositories => queryRepositories(
+    _repositories,
+    query: _query,
+    language: _filter,
+    featuredOnly: _featuredOnly,
+    featuredUrls: _featuredUrls,
+    sort: _sort,
+  );
+
+  Map<String, int> get _filterCounts {
+    final matching = queryRepositories(
+      _repositories,
+      query: _query,
+      featuredOnly: _featuredOnly,
+      featuredUrls: _featuredUrls,
+    );
+    return {
+      'All': matching.length,
+      for (final language in _repositoryLanguages)
+        language: matching.where((repo) => repo.language == language).length,
+    };
   }
+
+  void _resetRepositoryFilters() => setState(() {
+    _searchController.clear();
+    _query = '';
+    _filter = 'All';
+    _featuredOnly = false;
+    _sort = RepositorySort.relevant;
+    _showAllRepositories = false;
+  });
 
   List<String> get _repositoryLanguages {
     const preferredOrder = [
@@ -316,12 +429,15 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                   child: _HeroSection(
                     repositoryCount: _repositories.length,
                     onExplore: () => _scrollTo(_workKey),
+                    onRepositories: () => _scrollTo(_archiveKey),
+                    onJourney: () => _scrollTo(_journeyKey),
                   ),
                 ),
                 Container(key: _workKey, child: const _GrozziieSection()),
                 _FeaturedProjectsSection(key: _projectsKey),
                 Container(key: _demosKey, child: const _ProjectDemosSection()),
                 _RepositorySection(
+                  key: _archiveKey,
                   searchController: _searchController,
                   selectedFilter: _filter,
                   repositories: _filteredRepositories,
@@ -329,6 +445,22 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                   showAll: _showAllRepositories,
                   isSyncing: _isSyncingRepositories,
                   syncFailed: _repositorySyncFailed,
+                  sort: _sort,
+                  featuredOnly: _featuredOnly,
+                  filterCounts: _filterCounts,
+                  onSort: (value) => setState(() => _sort = value),
+                  onFeatured:
+                      (value) => setState(() {
+                        _featuredOnly = value;
+                        _showAllRepositories = false;
+                      }),
+                  onClear:
+                      () => setState(() {
+                        _searchController.clear();
+                        _query = '';
+                        _showAllRepositories = false;
+                      }),
+                  onReset: _resetRepositoryFilters,
                   onSearch: (value) {
                     setState(() {
                       _query = value;
@@ -346,7 +478,10 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                         () => _showAllRepositories = !_showAllRepositories,
                       ),
                 ),
-                Container(key: _aboutKey, child: const _AboutSection()),
+                Container(
+                  key: _aboutKey,
+                  child: _AboutSection(journeyKey: _journeyKey),
+                ),
                 Container(key: _contactKey, child: const _ContactSection()),
               ],
             ),
@@ -356,10 +491,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
             left: 0,
             right: 0,
             child: _NavigationBar(
+              activeSection: _activeSection,
               onHome: () => _scrollTo(_heroKey),
               onWork: () => _scrollTo(_workKey),
               onProjects: () => _scrollTo(_projectsKey),
               onDemos: () => _scrollTo(_demosKey),
+              onArchive: () => _scrollTo(_archiveKey),
               onAbout: () => _scrollTo(_aboutKey),
               onContact: () => _scrollTo(_contactKey),
               onMenu: _openMobileMenu,
@@ -373,10 +510,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
 class _NavigationBar extends StatelessWidget {
   const _NavigationBar({
+    required this.activeSection,
     required this.onHome,
     required this.onWork,
     required this.onProjects,
     required this.onDemos,
+    required this.onArchive,
     required this.onAbout,
     required this.onContact,
     required this.onMenu,
@@ -386,6 +525,8 @@ class _NavigationBar extends StatelessWidget {
   final VoidCallback onWork;
   final VoidCallback onProjects;
   final VoidCallback onDemos;
+  final VoidCallback onArchive;
+  final String activeSection;
   final VoidCallback onAbout;
   final VoidCallback onContact;
   final VoidCallback onMenu;
@@ -412,10 +553,11 @@ class _NavigationBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final compact = constraints.maxWidth < 760;
+                final compact = constraints.maxWidth < 1100;
                 return Row(
                   children: [
-                    InkWell(
+                    _InteractiveCard(
+                      semanticLabel: 'Home — Sidratul Montaha',
                       onTap: onHome,
                       borderRadius: BorderRadius.circular(12),
                       child: Padding(
@@ -459,14 +601,49 @@ class _NavigationBar extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (compact && activeSection != 'Home') ...[
+                      const SizedBox(width: 16),
+                      Text(
+                        activeSection,
+                        style: const TextStyle(
+                          color: _mint,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                     const Spacer(),
                     if (!compact) ...[
-                      _NavLink(label: 'Grozziie', onTap: onWork),
-                      _NavLink(label: 'Projects', onTap: onProjects),
-                      _NavLink(label: 'Demos', onTap: onDemos),
-                      _NavLink(label: 'About', onTap: onAbout),
+                      _NavLink(
+                        label: 'Grozziie',
+                        onTap: onWork,
+                        active: activeSection == 'Grozziie',
+                      ),
+                      _NavLink(
+                        label: 'Projects',
+                        onTap: onProjects,
+                        active: activeSection == 'Projects',
+                      ),
+                      _NavLink(
+                        label: 'Demos',
+                        onTap: onDemos,
+                        active: activeSection == 'Demos',
+                      ),
+                      _NavLink(
+                        label: 'Archive',
+                        onTap: onArchive,
+                        active: activeSection == 'Archive',
+                      ),
+                      _NavLink(
+                        label: 'About',
+                        onTap: onAbout,
+                        active: activeSection == 'About',
+                      ),
                       const SizedBox(width: 10),
-                      _SmallCta(label: 'Let’s talk', onTap: onContact),
+                      Semantics(
+                        selected: activeSection == 'Contact',
+                        child: _SmallCta(label: 'Let’s talk', onTap: onContact),
+                      ),
                     ] else
                       IconButton(
                         tooltip: 'Open navigation',
@@ -485,23 +662,34 @@ class _NavigationBar extends StatelessWidget {
 }
 
 class _NavLink extends StatelessWidget {
-  const _NavLink({required this.label, required this.onTap});
+  const _NavLink({
+    required this.label,
+    required this.onTap,
+    this.active = false,
+  });
 
   final String label;
   final VoidCallback onTap;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: TextButton(
-        onPressed: onTap,
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: _muted,
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
+      child: Semantics(
+        selected: active,
+        child: TextButton(
+          onPressed: onTap,
+          style: TextButton.styleFrom(
+            backgroundColor: active ? const Color(0xFFE2F4EF) : null,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: active ? _mint : _muted,
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+            ),
           ),
         ),
       ),
@@ -530,10 +718,17 @@ class _MobileNavItem extends StatelessWidget {
 }
 
 class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.repositoryCount, required this.onExplore});
+  const _HeroSection({
+    required this.repositoryCount,
+    required this.onExplore,
+    required this.onRepositories,
+    required this.onJourney,
+  });
 
   final int repositoryCount;
   final VoidCallback onExplore;
+  final VoidCallback onRepositories;
+  final VoidCallback onJourney;
 
   @override
   Widget build(BuildContext context) {
@@ -568,7 +763,11 @@ class _HeroSection extends StatelessWidget {
                 visual,
               ],
               const SizedBox(height: 54),
-              _MetricStrip(repositoryCount: repositoryCount),
+              _MetricStrip(
+                repositoryCount: repositoryCount,
+                onRepositories: onRepositories,
+                onJourney: onJourney,
+              ),
             ],
           );
         },
@@ -589,16 +788,19 @@ class _HeroCopy extends StatelessWidget {
       children: [
         const _Eyebrow(label: 'FLUTTER SOFTWARE ENGINEER'),
         const SizedBox(height: 22),
-        Text(
-          'I ship mobile products\nthat work in the real world.',
-          style: TextStyle(
-            color: _text,
-            height: 1.03,
-            letterSpacing: -2.1,
-            fontWeight: FontWeight.w900,
-            fontSize: math.min(
-              68,
-              math.max(43, MediaQuery.sizeOf(context).width * 0.054),
+        Semantics(
+          header: true,
+          child: Text(
+            'I ship mobile products\nthat work in the real world.',
+            style: TextStyle(
+              color: _text,
+              height: 1.03,
+              letterSpacing: -2.1,
+              fontWeight: FontWeight.w900,
+              fontSize: math.min(
+                68,
+                math.max(43, MediaQuery.sizeOf(context).width * 0.054),
+              ),
             ),
           ),
         ),
@@ -738,6 +940,7 @@ class _ProfileVisualState extends State<_ProfileVisual>
                     borderRadius: BorderRadius.circular(36),
                     child: Image.asset(
                       'assets/images/hero_portrait_2026.png',
+                      semanticLabel: 'Portrait of Sidratul Montaha',
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     ),
@@ -844,17 +1047,43 @@ class _FloatingBadge extends StatelessWidget {
 }
 
 class _MetricStrip extends StatelessWidget {
-  const _MetricStrip({required this.repositoryCount});
+  const _MetricStrip({
+    required this.repositoryCount,
+    required this.onRepositories,
+    required this.onJourney,
+  });
 
   final int repositoryCount;
+  final VoidCallback onRepositories;
+  final VoidCallback onJourney;
 
   @override
   Widget build(BuildContext context) {
     final metrics = [
-      const ('50K+', 'Grozziie Android downloads'),
-      ('$repositoryCount', 'Public GitHub repositories'),
-      const ('2', 'Live mobile platforms'),
-      const ('2024', 'Production engineering since'),
+      (
+        '50K+',
+        'Grozziie Android downloads',
+        'View on Google Play',
+        () => _launch(_playStoreUrl),
+      ),
+      (
+        '$repositoryCount',
+        'Public GitHub repositories',
+        'Browse the archive',
+        onRepositories,
+      ),
+      (
+        '2',
+        'Live mobile platforms',
+        'Choose your platform',
+        () => _showPlatforms(context),
+      ),
+      (
+        '2024',
+        'Production engineering since',
+        'My professional journey',
+        onJourney,
+      ),
     ];
 
     return LayoutBuilder(
@@ -870,39 +1099,67 @@ class _MetricStrip extends StatelessWidget {
           children:
               metrics
                   .map(
-                    (metric) => Container(
+                    (metric) => SizedBox(
                       width: width,
-                      constraints: const BoxConstraints(minHeight: 102),
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: _inkSoft,
+                      child: _InteractiveCard(
+                        semanticLabel:
+                            '${metric.$1} ${metric.$2}. ${metric.$3}',
+                        onTap: metric.$4,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: _line),
-                        boxShadow: _softShadow,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            metric.$1,
-                            style: const TextStyle(
-                              fontSize: 27,
-                              fontWeight: FontWeight.w900,
-                              color: _mint,
-                              letterSpacing: -0.5,
-                            ),
+                        child: Container(
+                          constraints: const BoxConstraints(minHeight: 102),
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: _inkSoft,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: _line),
+                            boxShadow: _softShadow,
                           ),
-                          const SizedBox(height: 6),
-                          Text(
-                            metric.$2,
-                            style: const TextStyle(
-                              color: _muted,
-                              fontSize: 12,
-                              height: 1.35,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                metric.$1,
+                                style: const TextStyle(
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.w900,
+                                  color: _mint,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                metric.$2,
+                                style: const TextStyle(
+                                  color: _muted,
+                                  fontSize: 12,
+                                  height: 1.35,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      metric.$3,
+                                      style: const TextStyle(
+                                        color: _mint,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: _mint,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   )
@@ -911,6 +1168,33 @@ class _MetricStrip extends StatelessWidget {
       },
     );
   }
+}
+
+void _showPlatforms(BuildContext context) {
+  showDialog<void>(
+    context: context,
+    builder:
+        (context) => AlertDialog(
+          title: const Text('Grozziie on your platform'),
+          content: const Text('Explore the published Android or iOS app.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+            _StoreButton(
+              label: 'Google Play',
+              icon: FontAwesomeIcons.googlePlay,
+              onTap: () => _launch(_playStoreUrl),
+            ),
+            _StoreButton(
+              label: 'App Store',
+              icon: FontAwesomeIcons.apple,
+              onTap: () => _launch(_appStoreUrl),
+            ),
+          ],
+        ),
+  );
 }
 
 class _GrozziieSection extends StatelessWidget {
@@ -1006,53 +1290,7 @@ class _GrozziieSection extends StatelessWidget {
                   const SizedBox(height: 18),
                   const _FeatureGrid(),
                   const SizedBox(height: 42),
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'Official product screens',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.4,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _softFill,
-                          borderRadius: BorderRadius.circular(999),
-                          border: Border.all(color: _line),
-                        ),
-                        child: const Text(
-                          'Scroll to explore →',
-                          style: TextStyle(
-                            color: _muted,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).width < 650 ? 410 : 505,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: screenshots.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 18),
-                      itemBuilder: (context, index) {
-                        final item = screenshots[index];
-                        return _StoreScreenshot(label: item.$1, asset: item.$2);
-                      },
-                    ),
-                  ),
+                  const ScreenshotGallery(screenshots: screenshots),
                 ],
               ),
             ),
@@ -1195,13 +1433,15 @@ class _GrozziieMetrics extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  metric.$1,
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                    color: _text,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
+                Flexible(
+                  child: Text(
+                    metric.$1,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      color: _text,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ],
@@ -1365,68 +1605,6 @@ class _FeatureGrid extends StatelessWidget {
                   .toList(),
         );
       },
-    );
-  }
-}
-
-class _StoreScreenshot extends StatelessWidget {
-  const _StoreScreenshot({required this.label, required this.asset});
-
-  final String label;
-  final String asset;
-
-  @override
-  Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < 650;
-    return Container(
-      width: compact ? 190 : 232,
-      padding: const EdgeInsets.fromLTRB(9, 11, 9, 9),
-      decoration: BoxDecoration(
-        color: _deviceFrame,
-        borderRadius: BorderRadius.circular(27),
-        border: Border.all(color: const Color(0xFF2D394A)),
-        boxShadow: _cardShadow,
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 9),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  label == 'App Store'
-                      ? FontAwesomeIcons.apple
-                      : FontAwesomeIcons.googlePlay,
-                  color: _deviceMuted,
-                  size: 11,
-                ),
-                const SizedBox(width: 7),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: _deviceMuted,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(19),
-              child: Image.asset(
-                asset,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -2354,7 +2532,10 @@ class _ThtVideoCard extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(22),
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
+        child: _InteractiveCard(
+          semanticLabel:
+              'Watch $title on YouTube — opens a new tab. $description',
+          borderRadius: BorderRadius.circular(22),
           onTap: () => _launch(url),
           child: Container(
             decoration: BoxDecoration(
@@ -3377,7 +3558,7 @@ class _FeaturedProjectsSection extends StatelessWidget {
                         .map(
                           (project) => SizedBox(
                             width: itemWidth,
-                            height: 350,
+                            height: 394,
                             child: _FeaturedProjectCard(project: project),
                           ),
                         )
@@ -3401,7 +3582,9 @@ class _FeaturedProjectCard extends StatelessWidget {
     final colorA = Color(project.colors.first);
     final colorB = Color(project.colors.last);
     return _HoverLift(
-      child: InkWell(
+      child: _InteractiveCard(
+        semanticLabel:
+            'View ${project.title} on GitHub — opens a new tab. ${project.description} ${project.tags.join(', ')}',
         onTap: () => _launch(project.url),
         borderRadius: BorderRadius.circular(24),
         child: Container(
@@ -3443,7 +3626,7 @@ class _FeaturedProjectCard extends StatelessWidget {
                       border: Border.all(color: _line),
                     ),
                     child: const Icon(
-                      Icons.north_east_rounded,
+                      FontAwesomeIcons.github,
                       color: _text,
                       size: 19,
                     ),
@@ -3489,6 +3672,21 @@ class _FeaturedProjectCard extends StatelessWidget {
                     project.tags
                         .map((tag) => _Tag(label: tag, color: colorA))
                         .toList(),
+              ),
+              const SizedBox(height: 18),
+              const Row(
+                children: [
+                  Text(
+                    'View on GitHub',
+                    style: TextStyle(
+                      color: _mint,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.open_in_new, size: 15, color: _mint),
+                ],
               ),
             ],
           ),
@@ -3784,6 +3982,7 @@ class _ProjectDemoCard extends StatelessWidget {
 
 class _RepositorySection extends StatelessWidget {
   const _RepositorySection({
+    super.key,
     required this.searchController,
     required this.selectedFilter,
     required this.repositories,
@@ -3794,6 +3993,13 @@ class _RepositorySection extends StatelessWidget {
     required this.onSearch,
     required this.onFilter,
     required this.onToggleAll,
+    required this.sort,
+    required this.featuredOnly,
+    required this.filterCounts,
+    required this.onSort,
+    required this.onFeatured,
+    required this.onClear,
+    required this.onReset,
   });
 
   final TextEditingController searchController;
@@ -3806,6 +4012,13 @@ class _RepositorySection extends StatelessWidget {
   final ValueChanged<String> onSearch;
   final ValueChanged<String> onFilter;
   final VoidCallback onToggleAll;
+  final RepositorySort sort;
+  final bool featuredOnly;
+  final Map<String, int> filterCounts;
+  final ValueChanged<RepositorySort> onSort;
+  final ValueChanged<bool> onFeatured;
+  final VoidCallback onClear;
+  final VoidCallback onReset;
 
   @override
   Widget build(BuildContext context) {
@@ -3841,6 +4054,15 @@ class _RepositorySection extends StatelessWidget {
                   onChanged: onSearch,
                   style: const TextStyle(color: _text, fontSize: 15),
                   decoration: InputDecoration(
+                    labelText: 'Search repositories',
+                    suffixIcon:
+                        searchController.text.isEmpty
+                            ? null
+                            : IconButton(
+                              tooltip: 'Clear search',
+                              onPressed: onClear,
+                              icon: const Icon(Icons.close),
+                            ),
                     hintText:
                         'Search repositories, technologies, or categories',
                     hintStyle: const TextStyle(color: _muted),
@@ -3866,42 +4088,97 @@ class _RepositorySection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 15),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children:
-                        filters
-                            .map(
-                              (filter) => Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: ChoiceChip(
-                                  label: Text(filter),
-                                  selected: selectedFilter == filter,
-                                  onSelected: (_) => onFilter(filter),
-                                  backgroundColor: _ink,
-                                  selectedColor: _mint,
-                                  side: BorderSide(
-                                    color:
-                                        selectedFilter == filter
-                                            ? _mint
-                                            : _line,
-                                  ),
-                                  labelStyle: TextStyle(
-                                    color:
-                                        selectedFilter == filter
-                                            ? _onAccent
-                                            : _muted,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children:
+                      filters
+                          .map(
+                            (filter) => Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: ChoiceChip(
+                                label: Text(
+                                  '$filter (${filterCounts[filter] ?? 0})',
+                                ),
+                                selected: selectedFilter == filter,
+                                onSelected: (_) => onFilter(filter),
+                                backgroundColor: _ink,
+                                selectedColor: _mint,
+                                side: BorderSide(
+                                  color:
+                                      selectedFilter == filter ? _mint : _line,
+                                ),
+                                labelStyle: TextStyle(
+                                  color:
+                                      selectedFilter == filter
+                                          ? _onAccent
+                                          : _muted,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
                                 ),
                               ),
-                            )
-                            .toList(),
-                  ),
+                            ),
+                          )
+                          .toList(),
+                ),
+                const SizedBox(height: 18),
+                Wrap(
+                  spacing: 18,
+                  runSpacing: 12,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 215,
+                      child: DropdownButtonFormField<RepositorySort>(
+                        isExpanded: true,
+                        style: const TextStyle(color: _text, fontSize: 14),
+                        value: sort,
+                        decoration: const InputDecoration(
+                          labelText: 'Sort repositories',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: RepositorySort.relevant,
+                            child: Text('Most relevant'),
+                          ),
+                          DropdownMenuItem(
+                            value: RepositorySort.newest,
+                            child: Text('Newest created'),
+                          ),
+                          DropdownMenuItem(
+                            value: RepositorySort.starred,
+                            child: Text('Most starred'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) onSort(value);
+                        },
+                      ),
+                    ),
+                    FilterChip(
+                      label: const Text('Featured only'),
+                      selected: featuredOnly,
+                      onSelected: onFeatured,
+                      avatar: const Icon(Icons.auto_awesome, size: 17),
+                    ),
+                    if (searchController.text.isNotEmpty ||
+                        selectedFilter != 'All' ||
+                        featuredOnly ||
+                        sort != RepositorySort.relevant)
+                      TextButton.icon(
+                        onPressed: onReset,
+                        icon: const Icon(Icons.restart_alt, size: 18),
+                        label: const Text('Reset filters'),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -3909,12 +4186,15 @@ class _RepositorySection extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              Text(
-                '${repositories.length} repositories found',
-                style: const TextStyle(
-                  color: _muted,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  '${repositories.length} repositories found',
+                  style: const TextStyle(
+                    color: _muted,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -3968,13 +4248,18 @@ class _RepositorySection extends StatelessWidget {
                 border: Border.all(color: _line),
                 boxShadow: _cardShadow,
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Icon(Icons.search_off_rounded, color: _muted, size: 34),
-                  SizedBox(height: 12),
-                  Text(
+                  const Icon(Icons.search_off_rounded, color: _muted, size: 34),
+                  const SizedBox(height: 12),
+                  const Text(
                     'No repositories match this search.',
                     style: TextStyle(color: _text, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: onReset,
+                    child: const Text('Clear all filters'),
                   ),
                 ],
               ),
@@ -3999,7 +4284,7 @@ class _RepositorySection extends StatelessWidget {
                           .map(
                             (repo) => SizedBox(
                               width: itemWidth,
-                              height: 232,
+                              height: 266,
                               child: _RepositoryCard(repo: repo),
                             ),
                           )
@@ -4051,7 +4336,9 @@ class _RepositoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _HoverLift(
       distance: 4,
-      child: InkWell(
+      child: _InteractiveCard(
+        semanticLabel:
+            'View ${repo.name} on GitHub — opens a new tab. ${repo.description} ${repo.language}. Updated ${repo.updated}.${repo.stars == null ? '' : ' ${repo.stars} GitHub stars.'}',
         onTap: () => _launch(repo.url),
         borderRadius: BorderRadius.circular(18),
         child: Container(
@@ -4077,7 +4364,7 @@ class _RepositoryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(11),
                     ),
                     child: Icon(
-                      Icons.folder_open_rounded,
+                      FontAwesomeIcons.github,
                       color: _languageColor,
                       size: 20,
                     ),
@@ -4132,9 +4419,38 @@ class _RepositoryCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    repo.updated,
+                    'Updated ${repo.updated}',
                     style: const TextStyle(color: _muted, fontSize: 10.5),
                   ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Text(
+                    'View repository',
+                    style: TextStyle(
+                      color: _mint,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(Icons.open_in_new, size: 14, color: _mint),
+                  const Spacer(),
+                  if (repo.stars != null) ...[
+                    const Icon(
+                      Icons.star_outline_rounded,
+                      size: 16,
+                      color: _muted,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${repo.stars}',
+                      semanticsLabel: '${repo.stars} GitHub stars',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
                 ],
               ),
             ],
@@ -4146,7 +4462,8 @@ class _RepositoryCard extends StatelessWidget {
 }
 
 class _AboutSection extends StatelessWidget {
-  const _AboutSection();
+  const _AboutSection({required this.journeyKey});
+  final GlobalKey journeyKey;
 
   @override
   Widget build(BuildContext context) {
@@ -4165,7 +4482,7 @@ class _AboutSection extends StatelessWidget {
           const SizedBox(height: 42),
           const _CapabilityGrid(),
           const SizedBox(height: 72),
-          const _JourneySection(),
+          Container(key: journeyKey, child: const _JourneySection()),
         ],
       ),
     );
@@ -4445,12 +4762,14 @@ class _JourneyCard extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  actionLabel!,
-                  style: const TextStyle(
-                    color: _sky,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w900,
+                Flexible(
+                  child: Text(
+                    actionLabel!,
+                    style: const TextStyle(
+                      color: _sky,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 7),
@@ -4462,14 +4781,15 @@ class _JourneyCard extends StatelessWidget {
       ),
     );
     if (onTap == null) return card;
-    return Semantics(
-      button: true,
-      label: actionLabel,
-      child: Material(
-        color: Colors.transparent,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(22),
+      clipBehavior: Clip.antiAlias,
+      child: _InteractiveCard(
+        semanticLabel: '$actionLabel. $title. $subtitle. $description',
+        onTap: onTap!,
         borderRadius: BorderRadius.circular(22),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(onTap: onTap, child: card),
+        child: card,
       ),
     );
   }
@@ -4562,6 +4882,15 @@ class _ContactSection extends StatelessWidget {
                           height: 1.6,
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Based in Bangladesh · UTC+6\nEmail is the best way to reach me.',
+                        style: TextStyle(
+                          color: _muted,
+                          fontSize: 13,
+                          height: 1.7,
+                        ),
+                      ),
                     ],
                   );
                   final actions = Column(
@@ -4579,6 +4908,41 @@ class _ContactSection extends StatelessWidget {
                         icon: FontAwesomeIcons.linkedinIn,
                         onTap: () => _launch(_linkedinUrl),
                         expand: true,
+                      ),
+                      const SizedBox(height: 11),
+                      _OutlineButton(
+                        label: 'Download CV',
+                        icon: Icons.download_rounded,
+                        onTap: () => _launch(_cvUrl),
+                        expand: true,
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton.icon(
+                        onPressed: () async {
+                          try {
+                            await Clipboard.setData(
+                              const ClipboardData(text: _email),
+                            );
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Email address copied'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Could not copy. Select the email address below to copy it manually.',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.copy_rounded, size: 17),
+                        label: const Text('Copy email address'),
                       ),
                       const SizedBox(height: 18),
                       const SelectableText(
@@ -4768,14 +5132,17 @@ class _SectionHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 18),
-            Text(
-              title,
-              style: TextStyle(
-                color: _text,
-                fontSize: wide ? 48 : 37,
-                height: 1.08,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1.25,
+            Semantics(
+              header: true,
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: _text,
+                  fontSize: wide ? 48 : 37,
+                  height: 1.08,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -1.25,
+                ),
               ),
             ),
           ],
@@ -4828,13 +5195,15 @@ class _Eyebrow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: _mint,
-              fontSize: 10.5,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.25,
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: _mint,
+                fontSize: 10.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.25,
+              ),
             ),
           ),
         ],
@@ -4899,7 +5268,7 @@ class _OutlineButton extends StatelessWidget {
         side: const BorderSide(color: _line),
         textStyle: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
+      ).merge(_keyboardButtonStyle),
     );
     return expand ? SizedBox(width: double.infinity, child: button) : button;
   }
@@ -4940,7 +5309,7 @@ class _SocialPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return _InteractiveCard(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
       child: Container(
@@ -4993,7 +5362,7 @@ class _StoreButton extends StatelessWidget {
         side: const BorderSide(color: _line),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
         textStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5),
-      ),
+      ).merge(_keyboardButtonStyle),
     );
   }
 }
@@ -5041,7 +5410,7 @@ class _HoverLiftState extends State<_HoverLift> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: AnimatedContainer(
@@ -5049,11 +5418,71 @@ class _HoverLiftState extends State<_HoverLift> {
         curve: Curves.easeOutCubic,
         transform: Matrix4.translationValues(
           0,
-          _hovered ? -widget.distance : 0,
+          _hovered && !MediaQuery.disableAnimationsOf(context)
+              ? -widget.distance
+              : 0,
           0,
         ),
         child: widget.child,
       ),
     );
   }
+}
+
+/// An overlay keeps keyboard focus visible even over opaque card artwork.
+class _InteractiveCard extends StatefulWidget {
+  const _InteractiveCard({
+    required this.child,
+    required this.onTap,
+    required this.borderRadius,
+    this.semanticLabel,
+  });
+  final Widget child;
+  final VoidCallback onTap;
+  final BorderRadius borderRadius;
+  final String? semanticLabel;
+  @override
+  State<_InteractiveCard> createState() => _InteractiveCardState();
+}
+
+class _InteractiveCardState extends State<_InteractiveCard> {
+  bool _focused = false;
+  bool _hovered = false;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: widget.semanticLabel,
+    onTap: widget.semanticLabel == null ? null : widget.onTap,
+    excludeSemantics: widget.semanticLabel != null,
+    child: InkWell(
+      onTap: widget.onTap,
+      borderRadius: widget.borderRadius,
+      onFocusChange: (value) => setState(() => _focused = value),
+      onHover: (value) => setState(() => _hovered = value),
+      child: Stack(
+        children: [
+          widget.child,
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                decoration: BoxDecoration(
+                  borderRadius: widget.borderRadius,
+                  border: Border.all(
+                    color:
+                        _focused
+                            ? _sky
+                            : _hovered
+                            ? _mint
+                            : Colors.transparent,
+                    width: _focused ? 3 : 1.5,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

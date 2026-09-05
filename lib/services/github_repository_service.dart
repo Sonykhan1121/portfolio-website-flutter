@@ -73,6 +73,9 @@ class GitHubRepositoryService {
           repository['html_url']?.toString() ??
           'https://github.com/$username/$name',
       updated: _formatMonthYear(repository['updated_at']?.toString()),
+      stars: (repository['stargazers_count'] as num?)?.toInt(),
+      createdAt: DateTime.tryParse(repository['created_at']?.toString() ?? ''),
+      updatedAt: DateTime.tryParse(repository['updated_at']?.toString() ?? ''),
       category:
           curated?.category ??
           _inferCategory(

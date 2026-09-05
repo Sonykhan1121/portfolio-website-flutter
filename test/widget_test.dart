@@ -24,6 +24,24 @@ class _FallbackRepositoryService extends GitHubRepositoryService {
 }
 
 void main() {
+  testWidgets('home stays usable at phone and tablet widths', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    for (final width in [360.0, 390.0, 768.0, 1024.0]) {
+      tester.view.physicalSize = Size(width, 844);
+      await tester.pumpWidget(
+        PortfolioApp(repositoryService: _FallbackRepositoryService()),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(
+        tester.takeException(),
+        isNull,
+        reason: 'Layout must fit $width px',
+      );
+    }
+  });
+
   testWidgets('portfolio surfaces production work', (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1.0;

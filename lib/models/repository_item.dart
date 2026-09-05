@@ -8,6 +8,9 @@ class RepositoryItem {
     required this.url,
     required this.updated,
     required this.category,
+    this.stars,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final String name;
@@ -16,6 +19,9 @@ class RepositoryItem {
   final String url;
   final String updated;
   final String category;
+  final int? stars;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 }
 
 class FeaturedProject {

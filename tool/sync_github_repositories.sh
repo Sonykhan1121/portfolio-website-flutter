@@ -46,7 +46,7 @@ done
 
 mkdir -p "$(dirname "${output_path}")"
 jq \
-  '[.[] | {name, description, language, html_url, updated_at, topics, fork, archived}]' \
+  '[.[] | {name, description, language, html_url, created_at, updated_at, stargazers_count, topics, fork, archived}]' \
   "${sync_tmp_dir}/all.json" > "${output_path}"
 
 printf 'Wrote %s public repositories to %s\n' \

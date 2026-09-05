@@ -15,6 +15,8 @@ void main() {
             "language": "Dart",
             "html_url": "https://github.com/Sonykhan1121/known-project",
             "updated_at": "2026-08-24T10:00:00Z",
+            "created_at": "2024-01-01T00:00:00Z",
+            "stargazers_count": 12,
             "topics": ["flutter"],
             "fork": false,
             "archived": false
@@ -48,6 +50,9 @@ void main() {
     expect(repositories, hasLength(2));
     expect(repositories.first.description, 'Curated portfolio description');
     expect(repositories.first.updated, 'Aug 2026');
+    expect(repositories.first.stars, 12);
+    expect(repositories.first.createdAt, DateTime.utc(2024));
+    expect(repositories.last.stars, isNull);
     expect(repositories.last.name, 'new-api-project');
     expect(repositories.last.language, 'TypeScript');
     expect(repositories.last.description, 'A newly published API project');
