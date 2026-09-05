@@ -47,7 +47,7 @@ class _CompetitiveJourneySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _SectionHeader(
-          number: '03',
+          number: '04',
           eyebrow: 'COMPETITIVE PROGRAMMING & PROBLEM SOLVING',
           title: 'The practice behind\nthe products.',
           description:

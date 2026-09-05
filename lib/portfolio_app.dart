@@ -194,6 +194,8 @@ class _PortfolioHomeState extends State<PortfolioHome>
   final _demosKey = GlobalKey();
   final _archiveKey = GlobalKey();
   final _journeyKey = GlobalKey();
+  final _experienceKey = GlobalKey();
+  final _educationKey = GlobalKey();
   final _aboutKey = GlobalKey();
   final _contactKey = GlobalKey();
 
@@ -206,6 +208,19 @@ class _PortfolioHomeState extends State<PortfolioHome>
   late List<RepositoryItem> _repositories;
   bool _isSyncingRepositories = true;
   bool _repositorySyncFailed = false;
+
+  List<(GlobalKey, String)> get _sectionAnchors => [
+    (_heroKey, 'Home'),
+    (_workKey, 'Grozziie'),
+    (_projectsKey, 'Projects'),
+    (_demosKey, 'Demos'),
+    (_competitiveKey, 'Problem solving'),
+    (_archiveKey, 'Archive'),
+    (_aboutKey, 'About'),
+    (_experienceKey, 'Experience'),
+    (_educationKey, 'Education'),
+    (_contactKey, 'Contact'),
+  ];
 
   @override
   void initState() {
@@ -243,6 +258,21 @@ class _PortfolioHomeState extends State<PortfolioHome>
               : const Duration(milliseconds: 650),
       curve: Curves.easeOutCubic,
     );
+    if (!mounted) return;
+    // These cards share a row on desktop. Retain the link the visitor chose
+    // instead of always selecting the last card with the same vertical offset.
+    final targetBox = key.currentContext?.findRenderObject();
+    if (targetBox is RenderBox && targetBox.hasSize) {
+      final top = targetBox.localToGlobal(Offset.zero).dy;
+      if (top <= 150 && top + targetBox.size.height > 76) {
+        for (final section in _sectionAnchors) {
+          if (section.$1 == key && _activeSection != section.$2) {
+            setState(() => _activeSection = section.$2);
+            break;
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -253,21 +283,20 @@ class _PortfolioHomeState extends State<PortfolioHome>
   void _updateActiveSection() {
     if (!mounted || !_scrollController.hasClients) return;
     var active = 'Home';
-    for (final section in [
-      (_heroKey, 'Home'),
-      (_workKey, 'Grozziie'),
-      (_projectsKey, 'Projects'),
-      (_competitiveKey, 'Problem solving'),
-      (_demosKey, 'Demos'),
-      (_archiveKey, 'Archive'),
-      (_aboutKey, 'About'),
-      (_contactKey, 'Contact'),
-    ]) {
+    var nearestTop = double.negativeInfinity;
+    for (final section in _sectionAnchors) {
       final box = section.$1.currentContext?.findRenderObject();
-      if (box is RenderBox &&
-          box.hasSize &&
-          box.localToGlobal(Offset.zero).dy <= 150) {
-        active = section.$2;
+      if (box is RenderBox && box.hasSize) {
+        final top = box.localToGlobal(Offset.zero).dy;
+        if (top <= 150) {
+          if (top > nearestTop + 1) {
+            nearestTop = top;
+            active = section.$2;
+          } else if ((top - nearestTop).abs() <= 1 &&
+              section.$2 == _activeSection) {
+            active = section.$2;
+          }
+        }
       }
     }
     if (_scrollController.position.extentAfter < 8) active = 'Contact';
@@ -335,17 +364,17 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       },
                     ),
                     _MobileNavItem(
-                      label: 'Problem solving',
-                      onTap: () {
-                        Navigator.pop(sheetContext);
-                        _scrollTo(_competitiveKey);
-                      },
-                    ),
-                    _MobileNavItem(
                       label: 'Demos',
                       onTap: () {
                         Navigator.pop(sheetContext);
                         _scrollTo(_demosKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Problem solving',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_competitiveKey);
                       },
                     ),
                     _MobileNavItem(
@@ -360,6 +389,20 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       onTap: () {
                         Navigator.pop(sheetContext);
                         _scrollTo(_aboutKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Experience',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_experienceKey);
+                      },
+                    ),
+                    _MobileNavItem(
+                      label: 'Education',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _scrollTo(_educationKey);
                       },
                     ),
                     _MobileNavItem(
@@ -456,11 +499,11 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 ),
                 Container(key: _workKey, child: const _GrozziieSection()),
                 _FeaturedProjectsSection(key: _projectsKey),
+                Container(key: _demosKey, child: const _ProjectDemosSection()),
                 Container(
                   key: _competitiveKey,
                   child: const _CompetitiveJourneySection(),
                 ),
-                Container(key: _demosKey, child: const _ProjectDemosSection()),
                 _RepositorySection(
                   key: _archiveKey,
                   searchController: _searchController,
@@ -505,7 +548,11 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 ),
                 Container(
                   key: _aboutKey,
-                  child: _AboutSection(journeyKey: _journeyKey),
+                  child: _AboutSection(
+                    journeyKey: _journeyKey,
+                    experienceKey: _experienceKey,
+                    educationKey: _educationKey,
+                  ),
                 ),
                 Container(key: _contactKey, child: const _ContactSection()),
               ],
@@ -516,6 +563,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
             left: 0,
             right: 0,
             child: _NavigationBar(
+              key: const ValueKey('home-navigation'),
               activeSection: _activeSection,
               onHome: () => _scrollTo(_heroKey),
               onWork: () => _scrollTo(_workKey),
@@ -524,6 +572,8 @@ class _PortfolioHomeState extends State<PortfolioHome>
               onDemos: () => _scrollTo(_demosKey),
               onArchive: () => _scrollTo(_archiveKey),
               onAbout: () => _scrollTo(_aboutKey),
+              onExperience: () => _scrollTo(_experienceKey),
+              onEducation: () => _scrollTo(_educationKey),
               onContact: () => _scrollTo(_contactKey),
               onMenu: _openMobileMenu,
             ),
@@ -536,6 +586,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
 class _NavigationBar extends StatelessWidget {
   const _NavigationBar({
+    super.key,
     required this.activeSection,
     required this.onHome,
     required this.onWork,
@@ -544,6 +595,8 @@ class _NavigationBar extends StatelessWidget {
     required this.onDemos,
     required this.onArchive,
     required this.onAbout,
+    required this.onExperience,
+    required this.onEducation,
     required this.onContact,
     required this.onMenu,
   });
@@ -556,6 +609,8 @@ class _NavigationBar extends StatelessWidget {
   final VoidCallback onArchive;
   final String activeSection;
   final VoidCallback onAbout;
+  final VoidCallback onExperience;
+  final VoidCallback onEducation;
   final VoidCallback onContact;
   final VoidCallback onMenu;
 
@@ -576,14 +631,17 @@ class _NavigationBar extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1360),
+          constraints: const BoxConstraints(maxWidth: 1680),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: LayoutBuilder(
               builder: (context, constraints) {
+                final textScale = math.max(
+                  1.0,
+                  MediaQuery.textScalerOf(context).scale(14) / 14,
+                );
                 final compact =
-                    constraints.maxWidth < 1300 ||
-                    MediaQuery.textScalerOf(context).scale(14) > 17;
+                    constraints.maxWidth < 1380 * textScale || textScale > 1.2;
                 return Row(
                   children: [
                     _InteractiveCard(
@@ -616,8 +674,9 @@ class _NavigationBar extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 10),
-                            if (!compact)
+                            if (!compact &&
+                                constraints.maxWidth >= 1600 * textScale) ...[
+                              const SizedBox(width: 10),
                               const Text(
                                 'SIDRATUL MONTAHA',
                                 style: TextStyle(
@@ -627,18 +686,23 @@ class _NavigationBar extends StatelessWidget {
                                   letterSpacing: 1.2,
                                 ),
                               ),
+                            ],
                           ],
                         ),
                       ),
                     ),
                     if (compact && activeSection != 'Home') ...[
                       const SizedBox(width: 16),
-                      Text(
-                        activeSection,
-                        style: const TextStyle(
-                          color: _mint,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13,
+                      Flexible(
+                        child: Text(
+                          activeSection,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: _mint,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],
@@ -655,14 +719,14 @@ class _NavigationBar extends StatelessWidget {
                         active: activeSection == 'Projects',
                       ),
                       _NavLink(
-                        label: 'Problem solving',
-                        onTap: onCompetitive,
-                        active: activeSection == 'Problem solving',
-                      ),
-                      _NavLink(
                         label: 'Demos',
                         onTap: onDemos,
                         active: activeSection == 'Demos',
+                      ),
+                      _NavLink(
+                        label: 'Problem solving',
+                        onTap: onCompetitive,
+                        active: activeSection == 'Problem solving',
                       ),
                       _NavLink(
                         label: 'Archive',
@@ -673,6 +737,16 @@ class _NavigationBar extends StatelessWidget {
                         label: 'About',
                         onTap: onAbout,
                         active: activeSection == 'About',
+                      ),
+                      _NavLink(
+                        label: 'Experience',
+                        onTap: onExperience,
+                        active: activeSection == 'Experience',
+                      ),
+                      _NavLink(
+                        label: 'Education',
+                        onTap: onEducation,
+                        active: activeSection == 'Education',
                       ),
                       const SizedBox(width: 10),
                       Semantics(
@@ -717,6 +791,8 @@ class _NavLink extends StatelessWidget {
           onPressed: onTap,
           style: TextButton.styleFrom(
             backgroundColor: active ? const Color(0xFFE2F4EF) : null,
+            minimumSize: const Size(0, 44),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           ),
           child: Text(
             label,
@@ -3778,7 +3854,7 @@ class _ProjectDemosSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionHeader(
-            number: '04',
+            number: '03',
             eyebrow: 'PROJECT DEMOS',
             title: 'See the engineering\nin motion.',
             description:
@@ -4533,8 +4609,14 @@ class _RepositoryCard extends StatelessWidget {
 }
 
 class _AboutSection extends StatelessWidget {
-  const _AboutSection({required this.journeyKey});
+  const _AboutSection({
+    required this.journeyKey,
+    required this.experienceKey,
+    required this.educationKey,
+  });
   final GlobalKey journeyKey;
+  final GlobalKey experienceKey;
+  final GlobalKey educationKey;
 
   @override
   Widget build(BuildContext context) {
@@ -4553,7 +4635,13 @@ class _AboutSection extends StatelessWidget {
           const SizedBox(height: 42),
           const _CapabilityGrid(),
           const SizedBox(height: 72),
-          Container(key: journeyKey, child: const _JourneySection()),
+          Container(
+            key: journeyKey,
+            child: _JourneySection(
+              experienceKey: experienceKey,
+              educationKey: educationKey,
+            ),
+          ),
         ],
       ),
     );
@@ -4679,30 +4767,42 @@ class _CapabilityGrid extends StatelessWidget {
 }
 
 class _JourneySection extends StatelessWidget {
-  const _JourneySection();
+  const _JourneySection({
+    required this.experienceKey,
+    required this.educationKey,
+  });
+
+  final GlobalKey experienceKey;
+  final GlobalKey educationKey;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 860;
-        final work = _JourneyCard(
-          icon: Icons.work_outline_rounded,
-          eyebrow: 'DEC 2024 — PRESENT',
-          title: 'Software Engineer',
-          subtitle: 'THT-Space Electrical Company Ltd. • Bangladesh',
-          description:
-              'Building Grozziie’s connected-device features, multilingual voice chatbot, and real-time FaceAttendance workflows. I also manage Android and iOS publishing and updates through Google Play Console and App Store Connect.',
-          actionLabel: 'Explore THT-Space journey',
-          onTap: () => Navigator.of(context).pushNamed(_thtSpaceRoute),
+        final work = Container(
+          key: experienceKey,
+          child: _JourneyCard(
+            icon: Icons.work_outline_rounded,
+            eyebrow: 'DEC 2024 — PRESENT',
+            title: 'Software Engineer',
+            subtitle: 'THT-Space Electrical Company Ltd. • Bangladesh',
+            description:
+                'Building Grozziie’s connected-device features, multilingual voice chatbot, and real-time FaceAttendance workflows. I also manage Android and iOS publishing and updates through Google Play Console and App Store Connect.',
+            actionLabel: 'Explore THT-Space journey',
+            onTap: () => Navigator.of(context).pushNamed(_thtSpaceRoute),
+          ),
         );
-        const education = _JourneyCard(
-          icon: Icons.school_outlined,
-          eyebrow: '2018 — 2023',
-          title: 'BSc in Computer Science & Engineering',
-          subtitle: 'Daffodil International University • CGPA 3.82 / 4.00',
-          description:
-              'Built a strong computer-science foundation through software engineering and problem solving. Champion of the Take Off Programming Contest 2019.',
+        final education = Container(
+          key: educationKey,
+          child: const _JourneyCard(
+            icon: Icons.school_outlined,
+            eyebrow: '2018 — 2023',
+            title: 'BSc in Computer Science & Engineering',
+            subtitle: 'Daffodil International University • CGPA 3.82 / 4.00',
+            description:
+                'Built a strong computer-science foundation through software engineering and problem solving. Champion of the Take Off Programming Contest 2019.',
+          ),
         );
 
         return Column(
@@ -4723,7 +4823,7 @@ class _JourneySection extends StatelessWidget {
                 children: [
                   Expanded(child: work),
                   const SizedBox(width: 16),
-                  const Expanded(child: education),
+                  Expanded(child: education),
                 ],
               )
             else
