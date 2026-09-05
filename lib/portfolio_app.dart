@@ -15,6 +15,7 @@ import 'widgets/progressive_asset_image.dart';
 
 part 'widgets/competitive_journey.dart';
 part 'widgets/grozziie_contributions.dart';
+part 'widgets/tht_product_card.dart';
 
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
@@ -1999,24 +2000,40 @@ class _ThtProductsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     const products = [
       (
-        Icons.receipt_long_rounded,
-        'Thermal printers',
-        'Compact printing equipment for retail, logistics, and everyday business operations.',
+        icon: Icons.receipt_long_rounded,
+        category: 'Thermal printers',
+        name: 'Shipping label printer',
+        description:
+            '203 DPI thermal printing for shipping labels and barcodes, with USB and Bluetooth options.',
+        image: 'assets/images/company/product-thermal-printer.png',
+        url: 'https://printernoble.com/product/tp870-plus/',
       ),
       (
-        Icons.print_rounded,
-        'Dot-matrix printers',
-        'Reliable printing hardware designed for high-volume and operational environments.',
+        icon: Icons.print_rounded,
+        category: 'Dot-matrix printers',
+        name: 'Invoice printer',
+        description:
+            'Carbon-paper printing for invoices and forms, with USB, Bluetooth, and support for up to 1+5 copies.',
+        image: 'assets/images/company/product-dot-matrix-printer.png',
+        url: 'https://printernoble.com/product/td630plus/',
       ),
       (
-        Icons.fact_check_rounded,
-        'Attendance systems',
-        'Connected attendance devices supported by mobile and cloud-based workflows.',
+        icon: Icons.fact_check_rounded,
+        category: 'Attendance systems',
+        name: 'Punch-card time clock',
+        description:
+            'Employee time tracking with battery backup and black/red printing for attendance records.',
+        image: 'assets/images/company/product-attendance-machine.png',
+        url: 'https://printernoble.com/product/351-10/',
       ),
       (
-        Icons.menu_book_rounded,
-        'Binding equipment',
-        'Practical finishing equipment for office, education, and document workflows.',
+        icon: Icons.battery_charging_full_rounded,
+        category: 'Power banks',
+        name: 'Magnetic power bank',
+        description:
+            'Portable magnetic charging with wireless and cable options for phones and compatible devices.',
+        image: 'assets/images/company/product-magnetic-power-bank.png',
+        url: 'https://printernoble.com/product/cable-power-bank/',
       ),
     ];
     return _SectionShell(
@@ -2027,14 +2044,14 @@ class _ThtProductsSection extends StatelessWidget {
           const _SectionHeader(
             number: '02',
             eyebrow: 'WHAT THE COMPANY BUILDS',
-            title: 'Printing, attendance,\nand connected equipment.',
+            title: 'Printing, attendance,\nand everyday devices.',
             description:
-                'The company combines manufacturing experience with software-enabled products and exports equipment to markets across Asia.',
+                'Explore real products from the company’s official catalog, from business printing and time tracking to portable charging.',
           ),
           const SizedBox(height: 40),
           LayoutBuilder(
             builder: (context, constraints) {
-              final columns = constraints.maxWidth >= 900 ? 4 : 2;
+              final columns = constraints.maxWidth >= 1050 ? 4 : 2;
               final mobile = constraints.maxWidth < 620;
               final actualColumns = mobile ? 1 : columns;
               const gap = 16.0;
@@ -2044,62 +2061,19 @@ class _ThtProductsSection extends StatelessWidget {
               return Wrap(
                 spacing: gap,
                 runSpacing: gap,
-                children:
-                    products
-                        .map(
-                          (product) => Container(
-                            width: width,
-                            constraints: const BoxConstraints(minHeight: 235),
-                            padding: const EdgeInsets.all(23),
-                            decoration: BoxDecoration(
-                              color: _panel,
-                              borderRadius: BorderRadius.circular(22),
-                              border: Border.all(color: _line),
-                              boxShadow: _cardShadow,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 48,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFF087F6B), _sky],
-                                    ),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Icon(
-                                    product.$1,
-                                    color: Colors.white,
-                                    size: 24,
-                                  ),
-                                ),
-                                const SizedBox(height: 18),
-                                Text(
-                                  product.$2,
-                                  style: const TextStyle(
-                                    color: _text,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: -0.3,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  product.$3,
-                                  style: const TextStyle(
-                                    color: _muted,
-                                    fontSize: 13.5,
-                                    height: 1.55,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                        .toList(),
+                children: [
+                  for (var index = 0; index < products.length; index++)
+                    _ThtProductCard(
+                      key: ValueKey('tht-product-$index'),
+                      width: width,
+                      category: products[index].category,
+                      name: products[index].name,
+                      description: products[index].description,
+                      image: products[index].image,
+                      productUrl: products[index].url,
+                      icon: products[index].icon,
+                    ),
+                ],
               );
             },
           ),
