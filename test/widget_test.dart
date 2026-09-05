@@ -25,6 +25,112 @@ class _FallbackRepositoryService extends GitHubRepositoryService {
 }
 
 void main() {
+  testWidgets('Grozziie contribution link opens the relevant company section', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    for (final width in [390.0, 1440.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await tester.pumpWidget(
+        PortfolioApp(repositoryService: _FallbackRepositoryService()),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Voice interfaces'), findsOneWidget);
+      expect(find.text('Real-time communication'), findsOneWidget);
+      expect(find.text('View on pub.dev'), findsOneWidget);
+      final link = find.text('Explore my Grozziie contributions');
+      await Scrollable.ensureVisible(tester.element(link), alignment: 0.5);
+      await tester.tap(link);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Voice-enabled chatbot'), findsOneWidget);
+      expect(find.text('Real-time FaceAttendance'), findsOneWidget);
+      expect(find.text('Android & iOS release management'), findsOneWidget);
+      final heading = find.text('MY ROLE & PRODUCT IMPACT');
+      expect(tester.getTopLeft(heading).dy, inExclusiveRange(55, 900));
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.byTooltip('Back to portfolio'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(link, findsOneWidget);
+      expect(find.text('Voice-enabled chatbot'), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('company contributions fit narrow screens and enlarged text', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    for (final size in [
+      (360.0, 1.0),
+      (768.0, 1.0),
+      (1440.0, 1.0),
+      (390.0, 2.0),
+    ]) {
+      tester.view.physicalSize = Size(size.$1, 900);
+      await tester.pumpWidget(
+        MaterialApp(
+          builder:
+              (context, child) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(size.$2)),
+                child: child!,
+              ),
+          home: const ThtSpacePage(showContributions: true),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('speech_to_text'), findsOneWidget);
+      expect(find.text('flutter_tts'), findsOneWidget);
+      expect(find.text('STOMP'), findsOneWidget);
+      expect(
+        tester.takeException(),
+        isNull,
+        reason: 'Company page at ${size.$1}px and ${size.$2}x text',
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('published package card opens pub.dev', (tester) async {
+    tester.view.physicalSize = const Size(1440, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final launched = <String>[];
+    const channel = MethodChannel('plugins.flutter.io/url_launcher');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
+      if (call.method == 'launch') {
+        launched.add((call.arguments as Map)['url'] as String);
+      }
+      return true;
+    });
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        null,
+      ),
+    );
+    await tester.pumpWidget(
+      PortfolioApp(repositoryService: _FallbackRepositoryService()),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final link = find.text('View on pub.dev');
+    await Scrollable.ensureVisible(tester.element(link), alignment: 0.5);
+    await tester.tap(link);
+    await tester.pump();
+    expect(launched, ['https://pub.dev/packages/bd_sim_validator']);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('home stays usable at phone and tablet widths', (tester) async {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);

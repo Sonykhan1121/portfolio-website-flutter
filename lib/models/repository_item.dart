@@ -33,6 +33,7 @@ class FeaturedProject {
     required this.icon,
     required this.url,
     required this.colors,
+    this.linkLabel = 'View on GitHub',
   });
 
   final String title;
@@ -42,6 +43,7 @@ class FeaturedProject {
   final IconData icon;
   final String url;
   final List<int> colors;
+  final String linkLabel;
 }
 
 class ProjectDemo {

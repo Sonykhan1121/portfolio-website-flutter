@@ -13,6 +13,7 @@ import 'services/github_repository_service.dart';
 import 'widgets/screenshot_gallery.dart';
 
 part 'widgets/competitive_journey.dart';
+part 'widgets/grozziie_contributions.dart';
 
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
@@ -151,7 +152,11 @@ class _PortfolioAppState extends State<PortfolioApp> {
         '/':
             (context) =>
                 PortfolioHome(repositoryService: widget.repositoryService),
-        _thtSpaceRoute: (context) => const ThtSpacePage(),
+        _thtSpaceRoute:
+            (context) => ThtSpacePage(
+              showContributions:
+                  ModalRoute.of(context)?.settings.arguments == 'contributions',
+            ),
       },
     );
   }
@@ -1403,10 +1408,29 @@ class _GrozziieIdentity extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         const Text(
-          'My work focuses on developing and maintaining Flutter features for the live Android and iOS product, including Bluetooth and device-connected experiences, reusable UI, and reliable service integration.',
+          'I build Flutter features inside Grozziie—from connected-device workflows to its voice chatbot and FaceAttendance module—and manage publishing and updates on Google Play and the App Store.',
           style: TextStyle(color: _muted, fontSize: 15.5, height: 1.68),
         ),
         const SizedBox(height: 24),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _Tag(label: 'Voice chatbot', color: _mint),
+            _Tag(label: 'Real-time attendance', color: _mint),
+            _Tag(label: 'Android & iOS releases', color: _mint),
+          ],
+        ),
+        const SizedBox(height: 12),
+        TextButton.icon(
+          onPressed:
+              () => Navigator.of(
+                context,
+              ).pushNamed(_thtSpaceRoute, arguments: 'contributions'),
+          icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+          label: const Text('Explore my Grozziie contributions'),
+        ),
+        const SizedBox(height: 20),
         Wrap(
           spacing: 10,
           runSpacing: 10,
@@ -1650,8 +1674,29 @@ class _FeatureGrid extends StatelessWidget {
   }
 }
 
-class ThtSpacePage extends StatelessWidget {
-  const ThtSpacePage({super.key});
+class ThtSpacePage extends StatefulWidget {
+  const ThtSpacePage({super.key, this.showContributions = false});
+
+  final bool showContributions;
+
+  @override
+  State<ThtSpacePage> createState() => _ThtSpacePageState();
+}
+
+class _ThtSpacePageState extends State<ThtSpacePage> {
+  final _contributionsKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showContributions) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final target = _contributionsKey.currentContext;
+        if (target != null) Scrollable.ensureVisible(target);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1724,16 +1769,19 @@ class ThtSpacePage extends StatelessWidget {
               ),
           ],
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
-              _ThtSpaceHero(),
-              _ThtCompanyOverview(),
-              _ThtProductsSection(),
-              _ThtImpactSection(),
-              _ThtVideoSection(),
-              _TeamSection(),
-              _ThtPageFooter(),
+              const _ThtSpaceHero(),
+              const _ThtCompanyOverview(),
+              const _ThtProductsSection(),
+              Container(
+                key: _contributionsKey,
+                child: const _ThtImpactSection(),
+              ),
+              const _ThtVideoSection(),
+              const _TeamSection(),
+              const _ThtPageFooter(),
             ],
           ),
         ),
@@ -2138,9 +2186,9 @@ class _ThtImpactSection extends StatelessWidget {
                     SizedBox(height: 20),
                     _ThtImpactPoint(
                       icon: Icons.phone_android_rounded,
-                      title: 'Cross-platform delivery',
+                      title: 'Android & iOS release management',
                       description:
-                          'Production Flutter features for Android and iOS, from reusable UI to release workflows.',
+                          'I manage Grozziie publishing and updates through Google Play Console and App Store Connect, alongside production Flutter development.',
                     ),
                     _ThtImpactPoint(
                       icon: Icons.bluetooth_connected_rounded,
@@ -2152,7 +2200,7 @@ class _ThtImpactSection extends StatelessWidget {
                       icon: Icons.face_retouching_natural_rounded,
                       title: 'Attendance intelligence',
                       description:
-                          'Face-attendance experiences, REST APIs, WebSockets, Firebase, and offline-aware data flows.',
+                          'Face recognition, employee punch-in/out, administration, and real-time device synchronization inside Grozziie’s FaceAttendance module.',
                     ),
                     _ThtImpactPoint(
                       icon: Icons.account_tree_rounded,
@@ -2179,6 +2227,8 @@ class _ThtImpactSection extends StatelessWidget {
                   );
             },
           ),
+          const SizedBox(height: 40),
+          const _GrozziieModuleDetails(),
         ],
       ),
     );
@@ -2233,7 +2283,7 @@ class _ThtImpactPoint extends StatelessWidget {
                   description,
                   style: const TextStyle(
                     color: _muted,
-                    fontSize: 12.5,
+                    fontSize: 14,
                     height: 1.5,
                   ),
                 ),
@@ -2399,8 +2449,10 @@ class _DarkMetric extends StatelessWidget {
         borderRadius: BorderRadius.circular(13),
         border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        spacing: 7,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(
             value,
@@ -2410,7 +2462,6 @@ class _DarkMetric extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(width: 7),
           Text(
             label,
             style: const TextStyle(
@@ -2682,16 +2733,17 @@ class _ThtVideoCard extends StatelessWidget {
                             size: 15,
                           ),
                           SizedBox(width: 8),
-                          Text(
-                            'WATCH ON YOUTUBE',
-                            style: TextStyle(
-                              color: _text,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.8,
+                          Expanded(
+                            child: Text(
+                              'WATCH ON YOUTUBE',
+                              style: TextStyle(
+                                color: _text,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
                             ),
                           ),
-                          Spacer(),
                           Icon(
                             Icons.arrow_outward_rounded,
                             color: _muted,
@@ -3105,11 +3157,7 @@ class _MobileSolarSystem extends StatelessWidget {
           ),
           Column(
             children: [
-              const SizedBox(
-                width: 244,
-                height: 320,
-                child: _SunLeader(member: teamLeader),
-              ),
+              const SizedBox(width: 244, child: _SunLeader(member: teamLeader)),
               const SizedBox(height: 18),
               const _OrbitLegend(),
               const SizedBox(height: 24),
@@ -3126,7 +3174,6 @@ class _MobileSolarSystem extends StatelessWidget {
                       for (var index = 0; index < currentTeam.length; index++)
                         SizedBox(
                           width: itemWidth,
-                          height: 192,
                           child: _MobilePlanetCard(
                             member: currentTeam[index],
                             index: index,
@@ -3176,13 +3223,16 @@ class _SunLeader extends StatelessWidget {
                   size: 15,
                 ),
                 SizedBox(width: 7),
-                Text(
-                  'CENTER OF OUR GALAXY',
-                  style: TextStyle(
-                    color: Color(0xFFFFE4A3),
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.05,
+                Flexible(
+                  child: Text(
+                    'CENTER OF OUR GALAXY',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFFFFE4A3),
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.05,
+                    ),
                   ),
                 ),
               ],
@@ -3481,13 +3531,16 @@ class _OrbitLegend extends StatelessWidget {
         children: [
           Icon(Icons.blur_circular_rounded, color: Color(0xFF7DD3FC), size: 15),
           SizedBox(width: 7),
-          Text(
-            '6 SPECIALISTS · 3 ORBITS · 1 SHARED MISSION',
-            style: TextStyle(
-              color: Color(0xFFC5D4E8),
-              fontSize: 9.5,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.75,
+          Flexible(
+            child: Text(
+              '6 SPECIALISTS · 3 ORBITS · 1 SHARED MISSION',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFFC5D4E8),
+                fontSize: 9.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.75,
+              ),
             ),
           ),
         ],
@@ -3625,7 +3678,7 @@ class _FeaturedProjectCard extends StatelessWidget {
     return _HoverLift(
       child: _InteractiveCard(
         semanticLabel:
-            'View ${project.title} on GitHub — opens a new tab. ${project.description} ${project.tags.join(', ')}',
+            '${project.title}: ${project.linkLabel} — opens a new tab. ${project.description} ${project.tags.join(', ')}',
         onTap: () => _launch(project.url),
         borderRadius: BorderRadius.circular(24),
         child: Container(
@@ -3666,8 +3719,10 @@ class _FeaturedProjectCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: _line),
                     ),
-                    child: const Icon(
-                      FontAwesomeIcons.github,
+                    child: Icon(
+                      project.linkLabel == 'View on pub.dev'
+                          ? Icons.inventory_2_outlined
+                          : FontAwesomeIcons.github,
                       color: _text,
                       size: 19,
                     ),
@@ -3715,18 +3770,18 @@ class _FeaturedProjectCard extends StatelessWidget {
                         .toList(),
               ),
               const SizedBox(height: 18),
-              const Row(
+              Row(
                 children: [
                   Text(
-                    'View on GitHub',
-                    style: TextStyle(
+                    project.linkLabel,
+                    style: const TextStyle(
                       color: _mint,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.open_in_new, size: 15, color: _mint),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.open_in_new, size: 15, color: _mint),
                 ],
               ),
             ],
@@ -4552,13 +4607,25 @@ class _CapabilityGrid extends StatelessWidget {
         Icons.account_tree_rounded,
         'Architecture & data',
         'Clean application boundaries, reusable components, state, APIs, and persistence.',
-        ['MVVM', 'Provider', 'BLoC', 'REST', 'WebSockets'],
+        ['MVVM', 'Provider', 'BLoC', 'REST', 'Firebase'],
+      ),
+      (
+        Icons.sync_rounded,
+        'Real-time communication',
+        'Role-specific notifications, device synchronization, reconnection, and locally stored unread messages.',
+        ['STOMP', 'WebSockets', 'Local persistence'],
+      ),
+      (
+        Icons.mic_rounded,
+        'Voice interfaces',
+        'Multilingual voice input, live transcription, spoken responses, and coordinated recording and playback.',
+        ['Speech-to-text', 'Text-to-speech', 'Permissions'],
       ),
       (
         Icons.rocket_launch_rounded,
         'Production delivery',
-        'Performance-minded implementation, Git workflows, testing, and repeatable releases.',
-        ['GitFlow', 'CI/CD', 'Testing', 'Performance'],
+        'Manage Android and iOS publishing and updates, supported by Git workflows and continuous delivery.',
+        ['Google Play Console', 'App Store Connect', 'GitFlow', 'CI/CD'],
       ),
     ];
 
@@ -4611,7 +4678,7 @@ class _CapabilityGrid extends StatelessWidget {
                             style: const TextStyle(
                               color: _muted,
                               height: 1.55,
-                              fontSize: 13.5,
+                              fontSize: 14,
                             ),
                           ),
                           const SizedBox(height: 17),
@@ -4650,7 +4717,7 @@ class _JourneySection extends StatelessWidget {
           title: 'Software Engineer',
           subtitle: 'THT-Space Electrical Company Ltd. • Bangladesh',
           description:
-              'Developing and maintaining production Flutter features across Android and iOS. My work spans Bluetooth and IoT, face-attendance workflows, REST APIs, WebSockets, Firebase, reusable UI, and CI/CD practices.',
+              'Building Grozziie’s connected-device features, multilingual voice chatbot, and real-time FaceAttendance workflows. I also manage Android and iOS publishing and updates through Google Play Console and App Store Connect.',
           actionLabel: 'Explore THT-Space journey',
           onTap: () => Navigator.of(context).pushNamed(_thtSpaceRoute),
         );

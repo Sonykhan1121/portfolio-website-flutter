@@ -17,7 +17,7 @@ const featuredProjects = <FeaturedProject>[
     title: 'Hand Gesture Detector',
     kicker: 'COMPUTER VISION',
     description:
-        'A production-minded Flutter extension with custom gesture mappings, efficient state handling, and richer detection output.',
+        'A Flutter hand-detection extension using TensorFlow Lite and custom gesture mappings for gesture-driven interactions.',
     tags: ['Flutter', 'TFLite', 'Gestures', 'Package'],
     icon: Icons.pan_tool_alt_rounded,
     url: 'https://github.com/Sonykhan1121/flutter-hand-gesture-detector',
@@ -25,12 +25,13 @@ const featuredProjects = <FeaturedProject>[
   ),
   FeaturedProject(
     title: 'BD SIM Validator',
-    kicker: 'DART PACKAGE',
+    kicker: 'PUBLISHED DART PACKAGE',
     description:
-        'A reusable validator and operator detector for Bangladeshi mobile numbers across GP, Robi, Banglalink, Teletalk, and Airtel.',
+        'Published on pub.dev: a reusable validator and operator detector for Bangladeshi mobile numbers across GP, Robi, Banglalink, Teletalk, and Airtel.',
     tags: ['Dart', 'Validation', 'Open source', 'API'],
     icon: Icons.sim_card_rounded,
-    url: 'https://github.com/Sonykhan1121/bd_sim_validator',
+    url: 'https://pub.dev/packages/bd_sim_validator',
+    linkLabel: 'View on pub.dev',
     colors: [0xFF4CC9F0, 0xFF1764A8],
   ),
   FeaturedProject(
