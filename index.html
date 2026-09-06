@@ -42,79 +42,112 @@
   <link rel="preload" as="image" href="assets/assets/images/hero_portrait_2026_v2.webp" fetchpriority="high">
   <style>
     html, body { margin: 0; background: #fff; }
-    #startup { position: fixed; inset: 0; z-index: 2147483647; overflow: auto; background: linear-gradient(125deg, #fff, #f0faf7 65%, #f5f7ff); color: #111827; font-family: Arial, sans-serif; transition: opacity 160ms ease-out; }
+
+    #startup { --loader-teal: #087f6b; --loader-blue: #3158c9; --loader-speed: 2.7s; font-family: Arial, sans-serif; color: #111827; width: 100%; }
     #startup * { box-sizing: border-box; }
-    #startup .bar { height: 76px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #dce3ec; background: #fff; }
-    #startup .identity { display: flex; align-items: center; gap: 12px; font-size: 13px; letter-spacing: 1px; }
-    #startup .mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: linear-gradient(115deg, #087f6b, #3158c9); font-size: 14px; letter-spacing: 0; }
-    #startup .intro { max-width: 1180px; margin: auto; padding: 78px 28px 64px; display: grid; grid-template-columns: 1.5fr 1fr; align-items: center; gap: 58px; }
-    #startup .eyebrow { display: inline-block; padding: 9px 13px; border: 1px solid #abd9d0; border-radius: 999px; color: #087f6b; background: #e8f5f1; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-    #startup h1 { font-size: clamp(43px, 5.4vw, 68px); line-height: 1.03; letter-spacing: -2.1px; margin: 22px 0 24px; }
-    #startup .bio { font-size: 18px; line-height: 1.65; color: #5e6b7d; margin: 0 0 34px; }
-    #startup .actions, #startup .socials { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    #startup .loading-page { background: #fff; border: 1px solid #dce3ec; border-radius: 16px; overflow: hidden; }
+    #startup .page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 28px; border-bottom: 1px solid #edf0f5; }
+    #startup .identity { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+    #startup .mini-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #e8f5f1; color: var(--loader-teal); font-size: 12px; }
+    #startup .center-stage { min-height: 448px; padding: 42px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    #startup .orbit { position: relative; width: 212px; height: 212px; display: grid; place-items: center; margin-bottom: 34px; }
+    #startup .ring-guide { position: absolute; inset: 0; border-radius: 50%; border: 1px solid #e6eeef; }
+    #startup .inner-guide { inset: 24px; border-color: #e7ebf6; }
+    #startup .ring { position: absolute; inset: 0; border: 2px solid transparent; border-top-color: var(--loader-teal); border-right-color: var(--loader-teal); border-radius: 50%; animation: outline-orbit var(--loader-speed) linear infinite; }
+    #startup .ring::after { content: ''; position: absolute; top: 27px; right: 25px; width: 9px; height: 9px; background: var(--loader-teal); border-radius: 50%; box-shadow: 0 0 0 5px #087f6b0b; }
+    #startup .inner-ring { inset: 24px; border-top-color: var(--loader-blue); border-right-color: transparent; border-bottom-color: var(--loader-blue); animation-direction: reverse; animation-duration: calc(var(--loader-speed) * 1.4); }
+    #startup .inner-ring::after { top: 18px; right: 18px; width: 7px; height: 7px; background: var(--loader-blue); box-shadow: none; }
+    #startup .monogram { width: 100px; height: 100px; display: grid; place-items: center; border-radius: 28px; background: #f0f8f5; color: var(--loader-teal); font-size: 40px; letter-spacing: -2px; font-weight: 500; animation: outline-pulse 2.4s ease-in-out infinite; }
+    #startup .loading-title { margin: 0; font-size: 25px; line-height: 1.3; font-weight: 500; letter-spacing: -0.6px; }
+    #startup .loading-dots { display: inline-flex; gap: 4px; margin-left: 7px; vertical-align: middle; }
+    #startup .loading-dots i { display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--loader-teal); animation: outline-dot 1.4s ease-in-out infinite; }
+    #startup .loading-dots i:nth-child(2) { animation-delay: 160ms; }
+    #startup .loading-dots i:nth-child(3) { animation-delay: 320ms; }
+    #startup .subtitle { margin: 12px 0 0; color: #637083; font-size: 14px; line-height: 1.6; }
+    #startup .page-footer { padding: 20px 28px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #edf0f5; color: #637083; font-size: 12px; }
+    @keyframes outline-orbit { to { transform: rotate(360deg); } }
+    @keyframes outline-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.055); } }
+    @keyframes outline-dot { 0%, 75%, 100% { transform: translateY(0); opacity: 0.35; } 35% { transform: translateY(-4px); opacity: 1; } }
+    @media (max-width: 420px) {
+      #startup .page-header { padding: 18px; }
+      #startup .identity { font-size: 13px; }
+      #startup .center-stage { min-height: 426px; }
+      #startup .loading-title { font-size: 23px; }
+      #startup .page-footer { padding: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #startup .ring, #startup .monogram, #startup .loading-dots i { animation: none; }
+    }
+
+    #startup { position: fixed; inset: 0; z-index: 2147483647; overflow: auto; background: #fff; transition: opacity 240ms ease-out; }
+    #startup .loading-page { display: flex; flex-direction: column; min-height: 100%; border: none; border-radius: 0; overflow: visible; }
+    #startup .page-header, #startup .page-footer, #startup .startup-links { flex-shrink: 0; }
+    #startup .center-stage { flex: 1 0 auto; min-height: 370px; padding: 28px 20px; }
+    #startup .status { max-width: 520px; }
+    #startup .loading-title { font-size: clamp(1.5rem, 3vw, 1.875rem); }
+    #startup .subtitle, #startup .startup-links { font-size: 0.875rem; }
+    #startup .startup-links { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px 20px; padding: 6px 20px 14px; }
     #startup a { color: #3158c9; text-underline-offset: 4px; }
     #startup a:focus-visible { outline: 3px solid #3158c9; outline-offset: 4px; }
-    #startup .button { display: inline-block; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 700; border: 1px solid #dce3ec; color: #111827; background: #fff; }
-    #startup .primary { background: #087f6b; color: #fff; border-color: #087f6b; }
-    #startup .socials { margin-top: 26px; font-size: 14px; }
-    #startup .portrait-space { aspect-ratio: 0.79; border-radius: 38px; border: 2px solid #dce3ec; background-color: #f8fafc; background-size: cover; background-position: center top; overflow: hidden; position: relative; box-shadow: 18px 22px 0 #d9e8f0; }
-    /* portrait-preview:start */
-    #startup .portrait-space { background-image: url("data:image/webp;base64,UklGRm4DAABXRUJQVlA4IGIDAACQEACdASpAAFAAPtVao00oJSMiLNYN+QAaiUAaLKWvgcDfbtMTT4Q+Mb3FJiqanSLjJXqNI8p920X778zsCo2Y9CQf9roqz1TPpNZTfEwloSffRHeQOtUssH9vMQKkRfyr5xfBNQgtRvVAR4+NHLqBco81Lj5caqh9gg2N9YsCvBdjUfgiR064z1GTKlAA/viHm3sN5iQ3ObOfLyxLsXbOfNkluTmY+F3lLStk6+2FK1X7YN3tsENaRPMPKIu6GV96UfPSWYNRgFNnaIVoLaKfOiDI9LYPpFGe/UIcWnK726YJOShoGzJINZ09Y4FcL0QOhDpGMC/9BgohERx/WgQRmhIN4ARl4P7MwBm7IFQHeKMGr29RMl7ev1gQ08JJaRjQcEBp8wWJX5nwGpq/hr0GitKoLtH+g/f7SnmXPZRfpWEvndUk74/yAQmuxbU9BO2DPsG4qUZE2gDNnqu2ZqpKl2+S+DaC/xjWZM+M3Qci+DDfeiRCe70b1RVUfvcoQa+PB1FqY+8nNfRNVP64CEqBNO8F3dlcGqaWQhw+XGoefR6tqzoC1iKsJbgz0txxeqa21YkAzWDiq52tSMgPJSz+zkHmVNehfXXD2l7VW9yeJtwgr8rCTcFMXhlFzJ2iw2cVU9wunEMRNy782RAb18sB3GDzLI1XTSSaKqLNU41d3fvgrWjHY25+kgUrSuSXCdOf3uSjr3xKAImEFVHpOQV2VDBCofDySJYIZbMTkzGSgrMZ9SHdITbeKXQgqMR6tR+oWwXADlvw4MTXMKVwRA5FrQL+KU7d+BbO0hRautBD9Noi9tQ4KPVXS0fY+tmqrBxL7GSngLk1ELiybGW30D5Zcqv4Scazdy+6qEHqqJelph4I3tqgcpshGF4A8frVTEdQTDfcLJFEB6iBpkBHrTxgQ2eXPfoqOjSi+dp/g0Fp5/Wfi+/JHNxUgoNeQ0spie8v+1/A8GNFrG7K3MceFa1kJSojkK18XAzyKpPdSEtlTATLsZS8XEwllyNmxm8efc+pDQUJDrwXM6A7q6MfPhpQov0FGYkih7ZmRBQJt0duq5OwmY4br8Avh5KsJ400sVHV1K9SApFpftXjdEIiQO6T/Hwm+FnDG/mgIFUbrBaPcHOE/L2abSzqFomo+/opG+HIAA=="); }
-    /* portrait-preview:end */
-    #startup .portrait-space img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0; transition: opacity 260ms ease-out; }
-    #startup .portrait-space img.ready { opacity: 1; }
-    #startup .status { margin-top: 26px; font-size: 14px; line-height: 1.6; color: #5e6b7d; }
+    #startup .startup-links a { display: inline-flex; align-items: center; min-height: 44px; }
+    #startup .retry { display: inline-block; padding: 12px 22px; margin-top: 18px; border-radius: 12px; color: #fff; background: #087f6b; text-decoration: none; font-size: 0.875rem; }
+    #startup.has-loading-error .ring, #startup.has-loading-error .monogram, #startup.has-loading-error .loading-dots i { animation: none; }
+    #startup.has-loading-error .loading-dots { display: none; }
     #startup.leaving { opacity: 0; pointer-events: none; }
     #startup [hidden] { display: none; }
-    @media (max-width: 959px) { #startup .intro { display: block; padding: 56px 18px; } #startup .portrait-space { display: none; } }
-    @media (max-width: 480px) { #startup .identity span { display: none; } #startup .bar { padding: 0 24px; } }
-    @media (prefers-reduced-motion: reduce) { #startup, #startup .portrait-space img { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { #startup { transition: none; } }
   </style>
 </head>
 <body>
-  <!-- Real links remain usable even when Flutter is slow or cannot start. -->
+  <!-- CSS-only full-screen loader: no additional animation asset downloads. -->
   <div id="startup">
-    <header class="bar">
-      <div class="identity"><b class="mark">SM</b><span>SIDRATUL MONTAHA</span></div>
-      <a class="button" href="mailto:sonykhan1121@gmail.com">Let’s talk</a>
+    <section class="loading-page" aria-label="Portfolio loading screen">
+    <header class="page-header">
+      <div class="identity"><span class="mini-mark" aria-hidden="true">SM</span>Sidratul Montaha</div>
     </header>
-    <main class="intro">
-      <div>
-        <div class="eyebrow">FLUTTER SOFTWARE ENGINEER</div>
-        <h1>I ship mobile products<br>that work in the real world.</h1>
-        <p class="bio">I’m Sidratul Montaha, a Flutter developer building reliable Android and iOS experiences across Bluetooth, IoT, real-time services, and polished product interfaces.</p>
-        <div class="actions">
-          <a class="button primary" href="https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing" target="_blank" rel="noopener">Download CV</a>
-          <a class="button" href="mailto:sonykhan1121@gmail.com">Contact me</a>
-        </div>
-        <div class="socials">
+    <main class="center-stage">
+      <div class="orbit" aria-hidden="true">
+        <div class="ring-guide"></div>
+        <div class="ring-guide inner-guide"></div>
+        <div class="ring"></div>
+        <div class="ring inner-ring"></div>
+        <div class="monogram">SM</div>
+      </div>
+      <div class="status" role="status" aria-live="polite" aria-atomic="true">
+        <h1 class="loading-title"><span id="startup-title">Loading my portfolio</span><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span></h1>
+        <p id="startup-status" class="subtitle">Getting everything ready for you</p>
+      </div>
+      <a id="startup-retry" class="retry" href="" hidden>Try again</a>
+      <noscript>
+        <style>#startup .orbit, #startup .status { display: none; }</style>
+        <h1>Sidratul Montaha — Flutter Software Engineer</h1>
+        <p class="subtitle">Enable JavaScript to explore my Android, iOS, Bluetooth and IoT work. My CV and contact links below are available now.</p>
+      </noscript>
+    </main>
+    <nav class="startup-links" aria-label="Portfolio links available while loading">
+          <a href="https://drive.google.com/file/d/1TYH92znM8dSZ3sKT0-bnlcENmEEHdIwg/view?usp=sharing" target="_blank" rel="noopener">Download CV</a>
+          <a href="mailto:sonykhan1121@gmail.com">Contact me</a>
           <a href="https://github.com/Sonykhan1121" target="_blank" rel="noopener">GitHub</a>
           <a href="https://www.linkedin.com/in/sidratul-montaha-flutter/" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
-        <p class="status" role="status"><span id="startup-status">Opening the interactive portfolio…</span> <a id="startup-retry" href="" hidden>Try again</a></p>
-        <noscript><p>Enable JavaScript to explore the full portfolio. The CV and contact links above still work.</p></noscript>
-      </div>
-      <div class="portrait-space" role="img" aria-label="Portrait of Sidratul Montaha">
-        <img id="startup-portrait" src="assets/assets/images/hero_portrait_2026_v2.webp" alt="" fetchpriority="high" loading="eager" decoding="async">
-      </div>
-    </main>
+    </nav>
+    <footer class="page-footer"><span>Flutter software engineer</span><span>Android · iOS · Connected devices</span></footer>
+  </section>
   </div>
   <script>
     (() => {
       const shell = document.getElementById('startup');
-      const portrait = document.getElementById('startup-portrait');
-      const revealPortrait = async () => {
-        try {
-          await portrait.decode();
-          portrait.classList.add('ready');
-        } catch (_) { /* Keep the embedded photo if the full asset fails. */ }
-      };
-      portrait.addEventListener('load', revealPortrait, {once: true});
-      if (portrait.complete && portrait.naturalWidth) revealPortrait();
       let ready = false;
+      let failed = false;
+      window.portfolioStartupStage = (message) => {
+        if (ready || failed) return;
+        document.getElementById('startup-status').textContent = message;
+      };
       window.portfolioStartupFailed = () => {
         if (ready) return;
-        document.getElementById('startup-status').textContent = 'The interactive view is taking longer than expected. My CV and contact links are ready above.';
+        failed = true;
+        shell.classList.add('has-loading-error');
+        document.getElementById('startup-title').textContent = 'Taking a little longer';
+        document.getElementById('startup-status').textContent = 'The interactive view is taking longer than expected. My CV and contact links are available below.';
         document.getElementById('startup-retry').hidden = false;
       };
       const timeout = setTimeout(window.portfolioStartupFailed, 35000);
@@ -123,8 +156,10 @@
       }, true);
       window.addEventListener('flutter-first-frame', () => {
         ready = true;
+        document.getElementById('startup-title').textContent = 'Welcome';
+        document.getElementById('startup-status').textContent = 'Your portfolio is ready';
         clearTimeout(timeout);
-        // Keep the introduction until the engine has had a chance to paint.
+        // Reveal the actual first frame without waiting for every full-size image.
         requestAnimationFrame(() => requestAnimationFrame(() => {
           const restoreFocus = shell.contains(document.activeElement);
           shell.setAttribute('aria-hidden', 'true');
@@ -134,7 +169,7 @@
             const view = document.querySelector('flutter-view');
             if (view) { view.setAttribute('tabindex', '-1'); view.focus({preventScroll: true}); }
           }
-          setTimeout(() => shell.remove(), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180);
+          setTimeout(() => shell.remove(), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260);
         }));
       }, {once: true});
     })();
@@ -155,11 +190,13 @@ _flutter.buildConfig = {"engineRevision":"18b71d647a292a980abb405ac7d16fe1f0b204
 // never waits for portfolio photos: they are requested by visible widgets.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "2826523956"
+    serviceWorkerVersion: "2875573485"
   },
   onEntrypointLoaded: async function(engineInitializer) {
     try {
+      window.portfolioStartupStage?.('Preparing the interactive view…');
       const appRunner = await engineInitializer.initializeEngine();
+      window.portfolioStartupStage?.('Rendering the portfolio…');
       await appRunner.runApp();
     } catch (error) {
       window.portfolioStartupFailed?.();

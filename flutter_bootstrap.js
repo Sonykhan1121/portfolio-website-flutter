@@ -13,11 +13,13 @@ _flutter.buildConfig = {"engineRevision":"18b71d647a292a980abb405ac7d16fe1f0b204
 // never waits for portfolio photos: they are requested by visible widgets.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "2826523956"
+    serviceWorkerVersion: "2875573485"
   },
   onEntrypointLoaded: async function(engineInitializer) {
     try {
+      window.portfolioStartupStage?.('Preparing the interactive view…');
       const appRunner = await engineInitializer.initializeEngine();
+      window.portfolioStartupStage?.('Rendering the portfolio…');
       await appRunner.runApp();
     } catch (error) {
       window.portfolioStartupFailed?.();
