@@ -39,6 +39,7 @@
 
   <title>Sidratul Montaha — Flutter Software Engineer</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="preload" as="image" href="assets/assets/images/hero_portrait_2026_v2.webp" fetchpriority="high">
   <style>
     html, body { margin: 0; background: #fff; }
     #startup { position: fixed; inset: 0; z-index: 2147483647; overflow: auto; background: linear-gradient(125deg, #fff, #f0faf7 65%, #f5f7ff); color: #111827; font-family: Arial, sans-serif; transition: opacity 160ms ease-out; }
@@ -56,13 +57,18 @@
     #startup .button { display: inline-block; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 700; border: 1px solid #dce3ec; color: #111827; background: #fff; }
     #startup .primary { background: #087f6b; color: #fff; border-color: #087f6b; }
     #startup .socials { margin-top: 26px; font-size: 14px; }
-    #startup .portrait-space { aspect-ratio: 0.79; border-radius: 38px; border: 2px solid #dce3ec; background: #f8fafc; box-shadow: 18px 22px 0 #d9e8f0; }
+    #startup .portrait-space { aspect-ratio: 0.79; border-radius: 38px; border: 2px solid #dce3ec; background-color: #f8fafc; background-size: cover; background-position: center top; overflow: hidden; position: relative; box-shadow: 18px 22px 0 #d9e8f0; }
+    /* portrait-preview:start */
+    #startup .portrait-space { background-image: url("data:image/webp;base64,UklGRm4DAABXRUJQVlA4IGIDAACQEACdASpAAFAAPtVao00oJSMiLNYN+QAaiUAaLKWvgcDfbtMTT4Q+Mb3FJiqanSLjJXqNI8p920X778zsCo2Y9CQf9roqz1TPpNZTfEwloSffRHeQOtUssH9vMQKkRfyr5xfBNQgtRvVAR4+NHLqBco81Lj5caqh9gg2N9YsCvBdjUfgiR064z1GTKlAA/viHm3sN5iQ3ObOfLyxLsXbOfNkluTmY+F3lLStk6+2FK1X7YN3tsENaRPMPKIu6GV96UfPSWYNRgFNnaIVoLaKfOiDI9LYPpFGe/UIcWnK726YJOShoGzJINZ09Y4FcL0QOhDpGMC/9BgohERx/WgQRmhIN4ARl4P7MwBm7IFQHeKMGr29RMl7ev1gQ08JJaRjQcEBp8wWJX5nwGpq/hr0GitKoLtH+g/f7SnmXPZRfpWEvndUk74/yAQmuxbU9BO2DPsG4qUZE2gDNnqu2ZqpKl2+S+DaC/xjWZM+M3Qci+DDfeiRCe70b1RVUfvcoQa+PB1FqY+8nNfRNVP64CEqBNO8F3dlcGqaWQhw+XGoefR6tqzoC1iKsJbgz0txxeqa21YkAzWDiq52tSMgPJSz+zkHmVNehfXXD2l7VW9yeJtwgr8rCTcFMXhlFzJ2iw2cVU9wunEMRNy782RAb18sB3GDzLI1XTSSaKqLNU41d3fvgrWjHY25+kgUrSuSXCdOf3uSjr3xKAImEFVHpOQV2VDBCofDySJYIZbMTkzGSgrMZ9SHdITbeKXQgqMR6tR+oWwXADlvw4MTXMKVwRA5FrQL+KU7d+BbO0hRautBD9Noi9tQ4KPVXS0fY+tmqrBxL7GSngLk1ELiybGW30D5Zcqv4Scazdy+6qEHqqJelph4I3tqgcpshGF4A8frVTEdQTDfcLJFEB6iBpkBHrTxgQ2eXPfoqOjSi+dp/g0Fp5/Wfi+/JHNxUgoNeQ0spie8v+1/A8GNFrG7K3MceFa1kJSojkK18XAzyKpPdSEtlTATLsZS8XEwllyNmxm8efc+pDQUJDrwXM6A7q6MfPhpQov0FGYkih7ZmRBQJt0duq5OwmY4br8Avh5KsJ400sVHV1K9SApFpftXjdEIiQO6T/Hwm+FnDG/mgIFUbrBaPcHOE/L2abSzqFomo+/opG+HIAA=="); }
+    /* portrait-preview:end */
+    #startup .portrait-space img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0; transition: opacity 260ms ease-out; }
+    #startup .portrait-space img.ready { opacity: 1; }
     #startup .status { margin-top: 26px; font-size: 14px; line-height: 1.6; color: #5e6b7d; }
     #startup.leaving { opacity: 0; pointer-events: none; }
     #startup [hidden] { display: none; }
     @media (max-width: 959px) { #startup .intro { display: block; padding: 56px 18px; } #startup .portrait-space { display: none; } }
     @media (max-width: 480px) { #startup .identity span { display: none; } #startup .bar { padding: 0 24px; } }
-    @media (prefers-reduced-motion: reduce) { #startup { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { #startup, #startup .portrait-space img { transition: none; } }
   </style>
 </head>
 <body>
@@ -88,12 +94,23 @@
         <p class="status" role="status"><span id="startup-status">Opening the interactive portfolio…</span> <a id="startup-retry" href="" hidden>Try again</a></p>
         <noscript><p>Enable JavaScript to explore the full portfolio. The CV and contact links above still work.</p></noscript>
       </div>
-      <div class="portrait-space" aria-hidden="true"></div>
+      <div class="portrait-space" role="img" aria-label="Portrait of Sidratul Montaha">
+        <img id="startup-portrait" src="assets/assets/images/hero_portrait_2026_v2.webp" alt="" fetchpriority="high" loading="eager" decoding="async">
+      </div>
     </main>
   </div>
   <script>
     (() => {
       const shell = document.getElementById('startup');
+      const portrait = document.getElementById('startup-portrait');
+      const revealPortrait = async () => {
+        try {
+          await portrait.decode();
+          portrait.classList.add('ready');
+        } catch (_) { /* Keep the embedded photo if the full asset fails. */ }
+      };
+      portrait.addEventListener('load', revealPortrait, {once: true});
+      if (portrait.complete && portrait.naturalWidth) revealPortrait();
       let ready = false;
       window.portfolioStartupFailed = () => {
         if (ready) return;
@@ -138,7 +155,7 @@ _flutter.buildConfig = {"engineRevision":"18b71d647a292a980abb405ac7d16fe1f0b204
 // never waits for portfolio photos: they are requested by visible widgets.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "1768396661"
+    serviceWorkerVersion: "1826364747"
   },
   onEntrypointLoaded: async function(engineInitializer) {
     try {
