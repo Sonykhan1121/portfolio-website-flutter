@@ -9,7 +9,9 @@ _flutter.loader.load({
   },
   onEntrypointLoaded: async function(engineInitializer) {
     try {
+      window.portfolioStartupStage?.('Preparing the interactive view…');
       const appRunner = await engineInitializer.initializeEngine();
+      window.portfolioStartupStage?.('Rendering the portfolio…');
       await appRunner.runApp();
     } catch (error) {
       window.portfolioStartupFailed?.();

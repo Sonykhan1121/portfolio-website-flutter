@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/asset_image_previews.dart';
 
-/// Shows an embedded real-photo preview, then sharpens it near the viewport.
+/// Shows a real-photo preview, then reveals the full image from top to bottom.
 /// Image.asset keeps Flutter's normal image cache and the browser/SW HTTP cache.
 /// Watching every ancestor scroll position also handles nested screenshot pages.
 class ProgressiveAssetImage extends StatefulWidget {
@@ -196,18 +196,25 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
             return Stack(
               fit: StackFit.expand,
               children: [
-                // Keep the real preview underneath throughout the fade. Removing
+                // Keep the real preview underneath throughout the reveal. Removing
                 // it on the first decoded frame would briefly reveal an empty slot.
                 if (_showPreview)
                   ExcludeSemantics(excluding: loaded, child: _preview()),
-                AnimatedOpacity(
-                  opacity: loaded ? 1 : 0,
+                TweenAnimationBuilder<double>(
+                  key: ValueKey('reveal:${widget.asset}'),
+                  tween: Tween(begin: 0, end: loaded ? 1 : 0),
+                  curve: Curves.easeOutCubic,
                   duration:
                       MediaQuery.disableAnimationsOf(context)
                           ? Duration.zero
-                          : const Duration(milliseconds: 260),
+                          : const Duration(milliseconds: 520),
                   onEnd: loaded && _showPreview ? _finishPreview : null,
                   child: image,
+                  builder:
+                      (context, amount, child) => ClipRect(
+                        clipper: _TopToBottomImageClipper(amount),
+                        child: child,
+                      ),
                 ),
               ],
             );
@@ -223,4 +230,18 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
       },
     ),
   );
+}
+
+class _TopToBottomImageClipper extends CustomClipper<Rect> {
+  const _TopToBottomImageClipper(this.amount);
+
+  final double amount;
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTWH(0, 0, size.width, size.height * amount.clamp(0.0, 1.0));
+
+  @override
+  bool shouldReclip(_TopToBottomImageClipper oldClipper) =>
+      amount != oldClipper.amount;
 }

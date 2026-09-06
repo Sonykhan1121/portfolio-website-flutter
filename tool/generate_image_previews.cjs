@@ -46,12 +46,6 @@ ${Object.entries(previews).map(([asset, bytes]) => `  '${asset}': '${bytes}',`).
 };
 `;
   await fs.writeFile(path.join(root, 'lib/data/asset_image_previews.dart'), dart);
-  const htmlFile = path.join(root, 'web/index.html');
-  const html = await fs.readFile(htmlFile, 'utf8');
-  const marker = /\/\* portrait-preview:start \*\/[\s\S]*?\/\* portrait-preview:end \*\//;
-  if (!marker.test(html)) throw new Error('Missing portrait preview markers in web/index.html');
-  await fs.writeFile(htmlFile, html.replace(marker,
-    `/* portrait-preview:start */\n    #startup .portrait-space { background-image: url("data:image/webp;base64,${previews['assets/images/hero_portrait_2026_v2.webp']}"); }\n    /* portrait-preview:end */`));
   console.log(`Generated ${assets.length} real-image previews (${totalBytes} bytes before base64).`);
 }
 main().catch(error => {console.error(error); process.exitCode = 1;});

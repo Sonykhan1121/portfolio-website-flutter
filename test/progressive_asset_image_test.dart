@@ -38,25 +38,20 @@ void main() {
     },
   );
 
-  test('startup portrait has an embedded preview and a matching priority URL', () {
+  test('full-screen loader keeps the hero image prioritized', () {
     final html = File('web/index.html').readAsStringSync();
-    expect(
-      html,
-      contains(
-        'data:image/webp;base64,${assetImagePreviews['assets/images/hero_portrait_2026_v2.webp']}',
-      ),
-    );
+    expect(html, contains('<div class="monogram">SM</div>'));
+    expect(html, contains('<div class="ring inner-ring"></div>'));
     expect(
       html,
       contains(
         'as="image" href="assets/assets/images/hero_portrait_2026_v2.webp" fetchpriority="high"',
       ),
     );
+    expect(html, isNot(contains('id="startup-portrait"')));
     expect(
-      html,
-      contains(
-        'id="startup-portrait" src="assets/assets/images/hero_portrait_2026_v2.webp"',
-      ),
+      File('assets/images/hero_portrait_2026_v2.webp').existsSync(),
+      isTrue,
     );
   });
 
@@ -113,7 +108,7 @@ void main() {
 
   for (final reducedMotion in [false, true]) {
     testWidgets(
-      'preview stays beneath the complete image during fade (reduced motion: $reducedMotion)',
+      'preview stays beneath the top-down reveal (reduced motion: $reducedMotion)',
       (tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -137,7 +132,10 @@ void main() {
         final stack = frame as Stack;
         expect(stack.children.first, isA<ExcludeSemantics>());
         expect((stack.children.first as ExcludeSemantics).excluding, isTrue);
-        expect((stack.children.last as AnimatedOpacity).opacity, 1);
+        expect(
+          (stack.children.last as TweenAnimationBuilder<double>).tween.end,
+          1,
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -162,11 +160,21 @@ void main() {
                   false,
                 )
                 as Stack;
-        final fade = loaded.children.last as AnimatedOpacity;
+        final reveal = loaded.children.last as TweenAnimationBuilder<double>;
         expect(
-          fade.duration,
-          reducedMotion ? Duration.zero : const Duration(milliseconds: 260),
+          reveal.duration,
+          reducedMotion ? Duration.zero : const Duration(milliseconds: 520),
         );
+        // The full-size image is clipped, never resized or stretched as it reveals.
+        for (final amount in [0.0, 0.25, 0.5, 1.0]) {
+          final clipped =
+              reveal.builder(screenElement, amount, const SizedBox.expand())
+                  as ClipRect;
+          expect(
+            clipped.clipper!.getClip(const Size(250, 400)),
+            Rect.fromLTWH(0, 0, 250, 400 * amount),
+          );
+        }
         expect(
           screenImage.frameBuilder!(
             screenElement,
