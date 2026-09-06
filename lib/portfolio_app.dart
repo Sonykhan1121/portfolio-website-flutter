@@ -1064,6 +1064,7 @@ class _ProfileVisualState extends State<_ProfileVisual>
                     borderRadius: BorderRadius.circular(36),
                     child: ProgressiveAssetImage(
                       'assets/images/hero_portrait_2026_v2.webp',
+                      eager: true,
                       semanticLabel: 'Portrait of Sidratul Montaha',
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
@@ -1889,6 +1890,7 @@ class _ThtSpaceHero extends StatelessWidget {
                   children: [
                     ProgressiveAssetImage(
                       'assets/images/company/tht-space-team-cover.jpg',
+                      eager: true,
                       fit: BoxFit.cover,
                       alignment: const Alignment(0, -0.08),
                       semanticLabel: 'THT-Space software team',

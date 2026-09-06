@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Reserves the existing image slot, then requests the asset near the viewport.
+import '../data/asset_image_previews.dart';
+
+/// Shows an embedded real-photo preview, then sharpens it near the viewport.
 /// Image.asset keeps Flutter's normal image cache and the browser/SW HTTP cache.
 /// Watching every ancestor scroll position also handles nested screenshot pages.
 class ProgressiveAssetImage extends StatefulWidget {
@@ -14,6 +16,7 @@ class ProgressiveAssetImage extends StatefulWidget {
     this.semanticLabel,
     this.errorBuilder,
     this.preloadMargin = 200,
+    this.eager = false,
   });
 
   final String asset;
@@ -24,6 +27,7 @@ class ProgressiveAssetImage extends StatefulWidget {
   final String? semanticLabel;
   final ImageErrorWidgetBuilder? errorBuilder;
   final double preloadMargin;
+  final bool eager;
 
   @override
   State<ProgressiveAssetImage> createState() => _ProgressiveAssetImageState();
@@ -34,10 +38,12 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
   final _positions = <ScrollPosition>{};
   bool _requested = false;
   bool _checkScheduled = false;
+  bool _showPreview = true;
 
   @override
   void initState() {
     super.initState();
+    _requested = widget.eager;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -51,8 +57,10 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
   @override
   void didUpdateWidget(ProgressiveAssetImage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.asset != widget.asset) {
-      _requested = false;
+    if (oldWidget.asset != widget.asset) _showPreview = true;
+    if (oldWidget.asset != widget.asset || oldWidget.eager != widget.eager) {
+      _requested =
+          widget.eager || (oldWidget.asset == widget.asset && _requested);
       _watchScrollPositions();
       _scheduleVisibilityCheck();
     }
@@ -133,6 +141,39 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
     ),
   );
 
+  Widget _preview({bool failed = false}) {
+    final bytes = assetPreviewBytes(widget.asset);
+    if (bytes == null) return _placeholder(failed: failed);
+    return Semantics(
+      image: true,
+      label:
+          widget.semanticLabel == null
+              ? null
+              : '${widget.semanticLabel}, ${failed ? 'low-resolution preview; full image unavailable' : 'preview; full image loading'}',
+      child: Image.memory(
+        bytes,
+        key: ValueKey('preview:${widget.asset}'),
+        width: widget.width,
+        height: widget.height,
+        fit: widget.fit,
+        alignment: widget.alignment,
+        filterQuality: FilterQuality.medium,
+        excludeFromSemantics: true,
+        errorBuilder: (_, __, ___) => _placeholder(failed: failed),
+      ),
+    );
+  }
+
+  void _finishPreview() {
+    final asset = widget.asset;
+    // A zero-duration accessibility transition may end during Image.build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.asset != asset || !_showPreview) return;
+      setState(() => _showPreview = false);
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
   @override
   Widget build(BuildContext context) => SizedBox(
     width: widget.width,
@@ -140,7 +181,7 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
     child: LayoutBuilder(
       builder: (context, constraints) {
         _scheduleVisibilityCheck();
-        if (!_requested) return _placeholder();
+        if (!_requested) return _preview();
         return Image.asset(
           widget.asset,
           key: ValueKey(widget.asset),
@@ -155,20 +196,29 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
             return Stack(
               fit: StackFit.expand,
               children: [
-                if (!loaded) _placeholder(),
+                // Keep the real preview underneath throughout the fade. Removing
+                // it on the first decoded frame would briefly reveal an empty slot.
+                if (_showPreview)
+                  ExcludeSemantics(excluding: loaded, child: _preview()),
                 AnimatedOpacity(
                   opacity: loaded ? 1 : 0,
                   duration:
                       MediaQuery.disableAnimationsOf(context)
                           ? Duration.zero
-                          : const Duration(milliseconds: 180),
+                          : const Duration(milliseconds: 260),
+                  onEnd: loaded && _showPreview ? _finishPreview : null,
                   child: image,
                 ),
               ],
             );
           },
-          errorBuilder:
-              widget.errorBuilder ?? (_, __, ___) => _placeholder(failed: true),
+          errorBuilder: (context, error, stack) {
+            if (assetPreviewBytes(widget.asset) != null) {
+              return _preview(failed: true);
+            }
+            return widget.errorBuilder?.call(context, error, stack) ??
+                _placeholder(failed: true);
+          },
         );
       },
     ),

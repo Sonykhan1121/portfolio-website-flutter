@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio_website_flutter/data/asset_image_previews.dart';
 import 'package:portfolio_website_flutter/widgets/progressive_asset_image.dart';
 
 const _icon = 'assets/images/projects/grozziie/icon.webp';
@@ -13,6 +17,223 @@ Finder _requestedAsset(String asset) => find.byWidgetPredicate(
 );
 
 void main() {
+  test(
+    'every embedded preview is a valid small image for an existing asset',
+    () async {
+      var bytes = 0;
+      for (final asset in assetImagePreviews.keys) {
+        expect(File(asset).existsSync(), isTrue, reason: asset);
+        final preview = assetPreviewBytes(asset)!;
+        bytes += preview.length;
+        expect(identical(preview, assetPreviewBytes(asset)), isTrue);
+        final codec = await ui.instantiateImageCodec(preview);
+        final frame = await codec.getNextFrame();
+        expect(frame.image.width, lessThanOrEqualTo(80));
+        expect(frame.image.height, lessThanOrEqualTo(80));
+        frame.image.dispose();
+        codec.dispose();
+      }
+      expect(bytes, lessThan(30000));
+      expect(assetPreviewBytes('assets/unknown.webp'), isNull);
+    },
+  );
+
+  test('startup portrait has an embedded preview and a matching priority URL', () {
+    final html = File('web/index.html').readAsStringSync();
+    expect(
+      html,
+      contains(
+        'data:image/webp;base64,${assetImagePreviews['assets/images/hero_portrait_2026_v2.webp']}',
+      ),
+    );
+    expect(
+      html,
+      contains(
+        'as="image" href="assets/assets/images/hero_portrait_2026_v2.webp" fetchpriority="high"',
+      ),
+    );
+    expect(
+      html,
+      contains(
+        'id="startup-portrait" src="assets/assets/images/hero_portrait_2026_v2.webp"',
+      ),
+    );
+  });
+
+  testWidgets(
+    'real previews exist before offscreen full images are requested',
+    (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 2000),
+                  ProgressiveAssetImage(_screen, width: 250, height: 400),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_requestedAsset(_screen), findsNothing);
+      final preview = tester.widget<Image>(
+        find.byKey(const ValueKey('preview:$_screen')),
+      );
+      expect(preview.image, isA<MemoryImage>());
+      expect(find.byIcon(Icons.image_outlined), findsNothing);
+    },
+  );
+
+  testWidgets('priority images are requested in their first build', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 2000),
+                ProgressiveAssetImage(
+                  _icon,
+                  width: 74,
+                  height: 74,
+                  eager: true,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(_requestedAsset(_icon), findsOneWidget);
+  });
+
+  for (final reducedMotion in [false, true]) {
+    testWidgets(
+      'preview stays beneath the complete image during fade (reduced motion: $reducedMotion)',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: ProgressiveAssetImage(
+              _icon,
+              width: 74,
+              height: 74,
+              eager: true,
+            ),
+          ),
+        );
+        final image = tester.widget<Image>(_requestedAsset(_icon));
+        final element = tester.element(_requestedAsset(_icon));
+        // Exercise the exact first decoded frame with a controlled image child.
+        final frame = image.frameBuilder!(
+          element,
+          const SizedBox.expand(),
+          0,
+          false,
+        );
+        final stack = frame as Stack;
+        expect(stack.children.first, isA<ExcludeSemantics>());
+        expect((stack.children.first as ExcludeSemantics).excluding, isTrue);
+        expect((stack.children.last as AnimatedOpacity).opacity, 1);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: MediaQuery(
+              data: MediaQueryData(disableAnimations: reducedMotion),
+              child: const ProgressiveAssetImage(
+                _screen,
+                width: 250,
+                height: 400,
+                eager: true,
+              ),
+            ),
+          ),
+        );
+        final screenImage = tester.widget<Image>(_requestedAsset(_screen));
+        final screenElement = tester.element(_requestedAsset(_screen));
+        final loaded =
+            screenImage.frameBuilder!(
+                  screenElement,
+                  const SizedBox.expand(),
+                  0,
+                  false,
+                )
+                as Stack;
+        final fade = loaded.children.last as AnimatedOpacity;
+        expect(
+          fade.duration,
+          reducedMotion ? Duration.zero : const Duration(milliseconds: 260),
+        );
+        expect(
+          screenImage.frameBuilder!(
+            screenElement,
+            const SizedBox(key: ValueKey('cached')),
+            0,
+            true,
+          ),
+          isA<SizedBox>(),
+        );
+      },
+    );
+  }
+
+  testWidgets('failed full image retains the available real preview', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: ProgressiveAssetImage(
+          _icon,
+          width: 74,
+          height: 74,
+          eager: true,
+          semanticLabel: 'Grozziie',
+        ),
+      ),
+    );
+    final image = tester.widget<Image>(_requestedAsset(_icon));
+    final fallback = image.errorBuilder!(
+      tester.element(_requestedAsset(_icon)),
+      StateError('offline'),
+      null,
+    );
+    await tester.pumpWidget(
+      MaterialApp(home: SizedBox(width: 74, height: 74, child: fallback)),
+    );
+    expect(find.byKey(const ValueKey('preview:$_icon')), findsOneWidget);
+    expect(find.byIcon(Icons.broken_image_outlined), findsNothing);
+    expect(
+      (fallback as Semantics).properties.label,
+      contains('full image unavailable'),
+    );
+  });
+
+  testWidgets('changing an image also changes its preview', (tester) async {
+    Widget surface(String asset) => MaterialApp(
+      home: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 2000),
+            ProgressiveAssetImage(
+              asset,
+              key: const ValueKey('photo'),
+              width: 250,
+              height: 400,
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpWidget(surface(_icon));
+    expect(find.byKey(const ValueKey('preview:$_icon')), findsOneWidget);
+    await tester.pumpWidget(surface(_screen));
+    expect(find.byKey(const ValueKey('preview:$_icon')), findsNothing);
+    expect(find.byKey(const ValueKey('preview:$_screen')), findsOneWidget);
+  });
+
   testWidgets('offscreen assets wait for scrolling and retain their slot', (
     tester,
   ) async {

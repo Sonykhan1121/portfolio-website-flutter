@@ -36,14 +36,28 @@ void main() {
       await tester.pumpWidget(_companyPage(textScale: layout.$2));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('View product'), findsNWidgets(4));
-      // Product images are well below the cover: do not request them at entry.
+      // Show embedded previews, but do not request offscreen full assets.
       final firstPhoto = find.descendant(
         of: find.byKey(const ValueKey('tht-product-0')),
         matching: find.byType(ProgressiveAssetImage),
       );
       expect(
-        find.descendant(of: firstPhoto, matching: find.byType(Image)),
+        find.descendant(
+          of: firstPhoto,
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Image && widget.image is AssetImage,
+          ),
+        ),
         findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: firstPhoto,
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Image && widget.image is MemoryImage,
+          ),
+        ),
+        findsOneWidget,
       );
       for (var index = 0; index < 4; index++) {
         final card = find.byKey(ValueKey('tht-product-$index'));
