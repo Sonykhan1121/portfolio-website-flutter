@@ -329,23 +329,38 @@ void main() {
     expect(tester.binding.hasScheduledFrame, isFalse);
     await tester.pump(const Duration(milliseconds: 1));
     expect(find.byKey(_sleep), findsOneWidget);
-    expect(tester.getTopLeft(find.byKey(_sleep)), const Offset(202, 96));
+    expect(tester.getTopLeft(find.byKey(_sleep)), const Offset(170, 38));
     final letters = find.descendant(
       of: find.byKey(_sleep),
       matching: find.byType(Text),
     );
     expect(
       tester.widgetList<Text>(letters).map((text) => text.style!.fontSize),
-      [28.0, 32.0, 36.0],
+      [16.0, 28.0, 42.0],
     );
-    expect(tester.getTopLeft(letters.first), const Offset(204, 126));
+    expect(tester.getTopLeft(letters.first), const Offset(170, 126));
+    void expectGrowingUpward() {
+      final bounds = List.generate(
+        3,
+        (index) => tester.getRect(letters.at(index)),
+      );
+      expect(bounds[0].height, lessThan(bounds[1].height));
+      expect(bounds[2].height, greaterThan(bounds[0].height * 2));
+      expect(bounds[2].bottom, lessThan(bounds[1].top));
+      expect(bounds[1].bottom, lessThan(bounds[0].top));
+      expect(bounds[0].bottom, lessThan(150));
+      expect(bounds[0].center.dx, 200);
+      expect(150 - bounds[0].bottom, inInclusiveRange(8, 12));
+    }
+
+    expectGrowingUpward();
     expect(
       find.descendant(of: find.byKey(_sleep), matching: find.text('Z')),
-      findsOneWidget,
+      findsNWidgets(3),
     );
     expect(
       find.descendant(of: find.byKey(_sleep), matching: find.text('z')),
-      findsNWidgets(2),
+      findsNothing,
     );
     expect(
       find.ancestor(
@@ -376,6 +391,7 @@ void main() {
             .map((widget) => widget.top)
             .toList();
     expect(after, isNot(before));
+    expectGrowingUpward();
     await mouse.removePointer();
     await tester.pumpWidget(const SizedBox.shrink());
   });

@@ -268,16 +268,16 @@ class _MousePolishState extends State<MousePolish>
                   final viewport = MediaQuery.sizeOf(context);
                   // Keep the whole animation visible near viewport edges.
                   return Positioned(
-                    left: (position.dx + 2).clamp(
+                    left: (position.dx - 30).clamp(
                       4.0,
-                      math.max(4.0, viewport.width - 88),
+                      math.max(4.0, viewport.width - 76),
                     ),
-                    top: (position.dy - 54).clamp(
+                    top: (position.dy - 112).clamp(
                       4.0,
-                      math.max(4.0, viewport.height - 76),
+                      math.max(4.0, viewport.height - 116),
                     ),
-                    width: 84,
-                    height: 72,
+                    width: 72,
+                    height: 112,
                     child: IgnorePointer(
                       child: ExcludeSemantics(
                         child: RepaintBoundary(
@@ -296,7 +296,7 @@ class _MousePolishState extends State<MousePolish>
   }
 }
 
-/// Larger, spaced letters float beside the cursor; only this overlay rebuilds.
+/// A clear small-to-large stack above the cursor; only this overlay rebuilds.
 class _SleepingCursor extends StatelessWidget {
   const _SleepingCursor({required this.animation});
 
@@ -318,16 +318,19 @@ class _SleepingCursor extends StatelessWidget {
   Widget _letter(double progress, int index) {
     final float = (1 - math.cos(2 * math.pi * progress)) / 2;
     return Positioned(
-      left: 2 + 20.0 * index,
-      top: 6 + (2 - index) * 12 - 6 * float,
+      left: 4.0 * index,
+      top: const [88.0, 55.0, 6.0][index] - 4 * float,
+      width: 60,
       child: Opacity(
         opacity: 0.45 + 0.55 * float,
         child: Text(
-          index == 0 ? 'Z' : 'z',
+          // The same glyph makes the size progression visually unambiguous.
+          'Z',
+          textAlign: TextAlign.center,
           textScaler: TextScaler.noScaling,
           style: TextStyle(
             color: const Color(0xFF8E44AD),
-            fontSize: 28 + 4.0 * index,
+            fontSize: const [16.0, 28.0, 42.0][index],
             fontWeight: FontWeight.w700,
             height: 1,
             decoration: TextDecoration.none,
