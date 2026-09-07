@@ -694,22 +694,29 @@ class _NavigationBar extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (compact && activeSection != 'Home') ...[
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Text(
-                          activeSection,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: _mint,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
-                          ),
+                    // Reserve the entire middle slot so section-name changes
+                    // cannot move the compact menu away from the right edge.
+                    if (compact)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 12),
+                          child:
+                              activeSection == 'Home'
+                                  ? const SizedBox.shrink()
+                                  : Text(
+                                    activeSection,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: _mint,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                         ),
-                      ),
-                    ],
-                    const Spacer(),
+                      )
+                    else
+                      const Spacer(),
                     if (!compact) ...[
                       _NavLink(
                         label: 'Grozziie',
@@ -758,6 +765,7 @@ class _NavigationBar extends StatelessWidget {
                       ),
                     ] else
                       IconButton(
+                        key: const ValueKey('mobile-navigation-toggle'),
                         tooltip: 'Open navigation',
                         onPressed: onMenu,
                         icon: const Icon(Icons.menu_rounded, color: _text),

@@ -278,6 +278,65 @@ void main() {
     }
   });
 
+  testWidgets('compact menu stays pinned while scrolling and remains usable', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    for (final width in [390.0, 768.0, 1024.0, 1360.0]) {
+      tester.view.physicalSize = Size(width, 1000);
+      await tester.pumpWidget(
+        PortfolioApp(repositoryService: _OfflineRepositories()),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      final menu = find.byKey(const ValueKey('mobile-navigation-toggle'));
+      final initialMenu = tester.getRect(menu);
+      final initialHeader = tester.getRect(
+        find.byKey(const ValueKey('home-navigation')),
+      );
+      expect(width - initialMenu.right, lessThanOrEqualTo(30));
+      expect(initialHeader.top, 0);
+      for (final heading in [
+        'FEATURED RELEASE',
+        'SELECTED ENGINEERING WORK',
+        'PROJECT DEMOS',
+        'COMPETITIVE PROGRAMMING & PROBLEM SOLVING',
+        'ABOUT & CAPABILITIES',
+        'AVAILABLE FOR GOOD WORK',
+      ]) {
+        await Scrollable.ensureVisible(tester.element(find.text(heading)));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(
+          tester.getRect(menu),
+          initialMenu,
+          reason: '$width px at $heading',
+        );
+        expect(
+          tester.getRect(find.byKey(const ValueKey('home-navigation'))),
+          initialHeader,
+        );
+      }
+      await tester.tap(menu);
+      await _finishScroll(tester);
+      final home = find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.text('Home'),
+      );
+      await tester.tap(home);
+      await _finishScroll(tester);
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(tester.getRect(menu), initialMenu);
+      expect(
+        tester.getTopLeft(find.text('FEATURED RELEASE')).dy,
+        greaterThan(1000),
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
   testWidgets('expanded navigation fits desktop, mobile, and enlarged text', (
     tester,
   ) async {
@@ -288,6 +347,12 @@ void main() {
     await tester.pumpWidget(
       PortfolioApp(repositoryService: _OfflineRepositories()),
     );
+    await tester.pump(const Duration(milliseconds: 100));
+    // Capture a long active label rather than only testing Home's empty slot.
+    await Scrollable.ensureVisible(
+      tester.element(find.text('COMPETITIVE PROGRAMMING & PROBLEM SOLVING')),
+    );
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     final navigation = tester.widget(
       find.byKey(const ValueKey('home-navigation')),
@@ -322,6 +387,17 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 100));
+      final compactMenu = find.byKey(
+        const ValueKey('mobile-navigation-toggle'),
+      );
+      if (compactMenu.evaluate().isNotEmpty) {
+        final header = tester.getRect(
+          find.byKey(const ValueKey('home-navigation')),
+        );
+        final menu = tester.getRect(compactMenu);
+        expect(header.right - menu.right, lessThanOrEqualTo(30));
+        expect(menu.center.dy, closeTo(header.center.dy, 1));
+      }
       expect(
         tester.takeException(),
         isNull,
