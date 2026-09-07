@@ -13,6 +13,7 @@ import 'services/github_repository_service.dart';
 import 'widgets/screenshot_gallery.dart';
 import 'widgets/progressive_asset_image.dart';
 import 'widgets/project_hover_preview.dart';
+import 'widgets/mouse_polish.dart';
 
 part 'widgets/competitive_journey.dart';
 part 'widgets/grozziie_contributions.dart';
@@ -131,6 +132,7 @@ class _PortfolioAppState extends State<PortfolioApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sidratul Montaha — Flutter Software Engineer',
+      builder: (context, child) => MousePolish(child: child!),
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: scheme,
@@ -168,6 +170,15 @@ class _PortfolioAppState extends State<PortfolioApp> {
 }
 
 final _keyboardButtonStyle = ButtonStyle(
+  animationDuration: const Duration(milliseconds: 180),
+  overlayColor: WidgetStateProperty.resolveWith(
+    (states) =>
+        states.contains(WidgetState.hovered) ? const Color(0x183158C9) : null,
+  ),
+  shadowColor: const WidgetStatePropertyAll(Color(0x50087F6B)),
+  elevation: WidgetStateProperty.resolveWith(
+    (states) => states.contains(WidgetState.hovered) ? 3 : null,
+  ),
   side: WidgetStateProperty.resolveWith(
     (states) =>
         states.contains(WidgetState.focused)
@@ -781,7 +792,7 @@ class _NavigationBar extends StatelessWidget {
   }
 }
 
-class _NavLink extends StatelessWidget {
+class _NavLink extends StatefulWidget {
   const _NavLink({
     required this.label,
     required this.onTap,
@@ -793,25 +804,63 @@ class _NavLink extends StatelessWidget {
   final bool active;
 
   @override
+  State<_NavLink> createState() => _NavLinkState();
+}
+
+class _NavLinkState extends State<_NavLink> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
+    final hovered = _hovered && MousePolish.enabledOf(context);
+    final reducedMotion = MediaQuery.disableAnimationsOf(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: Semantics(
-        selected: active,
+        selected: widget.active,
         child: TextButton(
-          onPressed: onTap,
+          onPressed: widget.onTap,
+          onHover: (value) => setState(() => _hovered = value),
           style: TextButton.styleFrom(
-            backgroundColor: active ? const Color(0xFFE2F4EF) : null,
+            backgroundColor: widget.active ? const Color(0xFFE2F4EF) : null,
             minimumSize: const Size(0, 44),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: active ? _mint : _muted,
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Text(
+                widget.label,
+                style: TextStyle(
+                  color: widget.active || hovered ? _mint : _muted,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: -6,
+                child: IgnorePointer(
+                  child: AnimatedFractionallySizedBox(
+                    duration:
+                        reducedMotion
+                            ? Duration.zero
+                            : const Duration(milliseconds: 180),
+                    curve: Curves.easeOutCubic,
+                    alignment: Alignment.centerLeft,
+                    widthFactor: hovered ? 1 : 0,
+                    child: Container(
+                      height: 2,
+                      decoration: BoxDecoration(
+                        color: _mint,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -5605,7 +5654,7 @@ class _Tag extends StatelessWidget {
 }
 
 class _HoverLift extends StatefulWidget {
-  const _HoverLift({required this.child, this.distance = 7});
+  const _HoverLift({required this.child, this.distance = 4});
 
   final Widget child;
   final double distance;
@@ -5619,18 +5668,39 @@ class _HoverLiftState extends State<_HoverLift> {
 
   @override
   Widget build(BuildContext context) {
+    final hovered = _hovered && MousePolish.enabledOf(context);
     return MouseRegion(
       cursor: MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
+        duration:
+            MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          boxShadow:
+              hovered
+                  ? const [
+                    BoxShadow(
+                      color: Color(0x20087F6B),
+                      blurRadius: 26,
+                      spreadRadius: -5,
+                      offset: Offset(0, 12),
+                    ),
+                    BoxShadow(
+                      color: Color(0x160F172A),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ]
+                  : const [],
+        ),
         transform: Matrix4.translationValues(
           0,
-          _hovered && !MediaQuery.disableAnimationsOf(context)
-              ? -widget.distance
-              : 0,
+          hovered ? -widget.distance : 0,
           0,
         ),
         child: widget.child,
@@ -5685,10 +5755,10 @@ class _InteractiveCardState extends State<_InteractiveCard> {
                     color:
                         _focused
                             ? _sky
-                            : _hovered
+                            : _hovered && MousePolish.enabledOf(context)
                             ? _mint
                             : Colors.transparent,
-                    width: _focused ? 3 : 1.5,
+                    width: _focused ? 3 : 2,
                   ),
                 ),
               ),
