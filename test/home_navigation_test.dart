@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio_website_flutter/models/repository_item.dart';
 import 'package:portfolio_website_flutter/portfolio_app.dart';
@@ -20,6 +21,136 @@ Future<void> _finishScroll(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets(
+    'education card opens the official university from text and keyboard',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final launched = <String>[];
+      const channel = MethodChannel('plugins.flutter.io/url_launcher');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        if (call.method == 'launch') {
+          launched.add((call.arguments as Map)['url'] as String);
+        }
+        return true;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      for (final width in [1440.0, 390.0, 360.0]) {
+        tester.view.physicalSize = Size(width, 1000);
+        await tester.pumpWidget(
+          PortfolioApp(repositoryService: _OfflineRepositories()),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+        const degree = 'BSc in Computer Science & Engineering';
+        const university =
+            'Daffodil International University • CGPA 3.82 / 4.00';
+        expect(find.text('2018 — 2023'), findsOneWidget);
+        expect(find.text(university), findsOneWidget);
+        final semantics = tester.widget<Semantics>(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics &&
+                (widget.properties.label?.startsWith(
+                      'Visit university website.',
+                    ) ??
+                    false),
+          ),
+        );
+        expect(semantics.properties.link, isTrue);
+        expect(semantics.properties.button, isFalse);
+        expect(semantics.properties.label, contains('Opens in a new tab.'));
+        for (final label in [degree, university, 'Visit university website']) {
+          final target = find.text(label);
+          await Scrollable.ensureVisible(
+            tester.element(target),
+            alignment: 0.5,
+          );
+          await tester.pump();
+          await tester.tap(target);
+          await tester.pump();
+          expect(launched.last, 'https://daffodilvarsity.edu.bd/');
+        }
+        final title = find.text(degree);
+        await Scrollable.ensureVisible(tester.element(title), alignment: 0.5);
+        Focus.of(tester.element(title)).requestFocus();
+        await tester.pump();
+        for (final key in [
+          LogicalKeyboardKey.enter,
+          LogicalKeyboardKey.space,
+        ]) {
+          final count = launched.length;
+          await tester.sendKeyEvent(key);
+          await tester.pump();
+          expect(launched.length, count + 1);
+          expect(launched.last, 'https://daffodilvarsity.edu.bd/');
+        }
+        expect(find.text('Explore THT-Space journey'), findsOneWidget);
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: '$width px education card',
+        );
+        await tester.pumpWidget(const SizedBox.shrink());
+      }
+      expect(launched, List.filled(15, 'https://daffodilvarsity.edu.bd/'));
+    },
+  );
+
+  testWidgets('education link fits a narrow phone and enlarged text', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      PortfolioApp(repositoryService: _OfflineRepositories()),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final label = find.text('Visit university website');
+    final theme = Theme.of(tester.element(label));
+    final card = tester.widget<Material>(
+      find.ancestor(of: label, matching: find.byType(Material)).first,
+    );
+    for (final scale in [1.0, 2.0]) {
+      tester.view.physicalSize = const Size(320, 900);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: theme,
+          builder:
+              (context, child) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(scale)),
+                child: child!,
+              ),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(18),
+              child: card,
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Visit university website'), findsOneWidget);
+      expect(
+        tester.takeException(),
+        isNull,
+        reason: '320px education card at ${scale}x',
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
   testWidgets('home and desktop navigation follow the requested order', (
     tester,
   ) async {

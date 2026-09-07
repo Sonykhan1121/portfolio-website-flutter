@@ -76,6 +76,7 @@ const _thtLinkedInUrl = 'https://www.linkedin.com/company/thtuepz';
 const _thtMapUrl =
     'https://www.google.com/maps/search/?api=1&query=Uttara+Export+Processing+Zone+Nilphamari+Bangladesh';
 const _grozziieYoutubeUrl = 'https://www.youtube.com/@grozziie/videos';
+const _universityUrl = 'https://daffodilvarsity.edu.bd/';
 
 Future<void> _launch(String value) async {
   final uri = Uri.parse(value);
@@ -4856,13 +4857,16 @@ class _JourneySection extends StatelessWidget {
         );
         final education = Container(
           key: educationKey,
-          child: const _JourneyCard(
+          child: _JourneyCard(
             icon: Icons.school_outlined,
             eyebrow: '2018 — 2023',
             title: 'BSc in Computer Science & Engineering',
             subtitle: 'Daffodil International University • CGPA 3.82 / 4.00',
             description:
                 'Built a strong computer-science foundation through software engineering and problem solving. Champion of the Take Off Programming Contest 2019.',
+            actionLabel: 'Visit university website',
+            opensNewTab: true,
+            onTap: () => _launch(_universityUrl),
           ),
         );
 
@@ -4905,6 +4909,7 @@ class _JourneyCard extends StatelessWidget {
     required this.description,
     this.actionLabel,
     this.onTap,
+    this.opensNewTab = false,
   });
 
   final IconData icon;
@@ -4914,6 +4919,7 @@ class _JourneyCard extends StatelessWidget {
   final String description;
   final String? actionLabel;
   final VoidCallback? onTap;
+  final bool opensNewTab;
 
   @override
   Widget build(BuildContext context) {
@@ -4989,7 +4995,13 @@ class _JourneyCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 7),
-                const Icon(Icons.arrow_forward_rounded, color: _sky, size: 18),
+                Icon(
+                  opensNewTab
+                      ? Icons.open_in_new_rounded
+                      : Icons.arrow_forward_rounded,
+                  color: _sky,
+                  size: 18,
+                ),
               ],
             ),
           ],
@@ -5002,7 +5014,9 @@ class _JourneyCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       clipBehavior: Clip.antiAlias,
       child: _InteractiveCard(
-        semanticLabel: '$actionLabel. $title. $subtitle. $description',
+        semanticLabel:
+            '$actionLabel. $title. $subtitle. $description${opensNewTab ? ' Opens in a new tab.' : ''}',
+        isLink: opensNewTab,
         onTap: onTap!,
         borderRadius: BorderRadius.circular(22),
         child: card,
@@ -5619,11 +5633,13 @@ class _InteractiveCard extends StatefulWidget {
     required this.onTap,
     required this.borderRadius,
     this.semanticLabel,
+    this.isLink = false,
   });
   final Widget child;
   final VoidCallback onTap;
   final BorderRadius borderRadius;
   final String? semanticLabel;
+  final bool isLink;
   @override
   State<_InteractiveCard> createState() => _InteractiveCardState();
 }
@@ -5633,7 +5649,8 @@ class _InteractiveCardState extends State<_InteractiveCard> {
   bool _hovered = false;
   @override
   Widget build(BuildContext context) => Semantics(
-    button: true,
+    button: !widget.isLink,
+    link: widget.isLink,
     label: widget.semanticLabel,
     onTap: widget.semanticLabel == null ? null : widget.onTap,
     excludeSemantics: widget.semanticLabel != null,
