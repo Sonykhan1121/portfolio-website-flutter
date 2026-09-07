@@ -6,12 +6,15 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:portfolio_website_flutter/models/repository_item.dart';
 import 'package:portfolio_website_flutter/portfolio_app.dart';
 import 'package:portfolio_website_flutter/services/github_repository_service.dart';
+import 'package:portfolio_website_flutter/data/portfolio_data.dart';
+import 'package:portfolio_website_flutter/widgets/project_hover_preview.dart';
 
 class _FallbackRepositoryService extends GitHubRepositoryService {
   _FallbackRepositoryService() : super(username: 'Sonykhan1121');
@@ -25,6 +28,71 @@ class _FallbackRepositoryService extends GitHubRepositoryService {
 }
 
 void main() {
+  testWidgets(
+    'only selected work has previews and all six hovered links are preserved',
+    (tester) async {
+      tester.view.physicalSize = const Size(1440, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final launched = <String>[];
+      const channel = MethodChannel('plugins.flutter.io/url_launcher');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        if (call.method == 'launch') {
+          launched.add((call.arguments as Map)['url'] as String);
+        }
+        return true;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      await tester.pumpWidget(
+        PortfolioApp(repositoryService: _FallbackRepositoryService()),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(ProjectHoverPreview), findsNWidgets(6));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      for (final project in featuredProjects) {
+        final card = find.byWidgetPredicate(
+          (widget) =>
+              widget is ProjectHoverPreview && widget.title == project.title,
+        );
+        await Scrollable.ensureVisible(tester.element(card), alignment: 0.5);
+        await mouse.moveTo(tester.getCenter(card));
+        await tester.pump(const Duration(milliseconds: 200));
+        if (project.previewAsset != null) {
+          await tester.runAsync(
+            () => precacheImage(
+              AssetImage(project.previewAsset!),
+              tester.element(card),
+            ),
+          );
+        }
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(
+          find.byKey(ValueKey('preview-ready:${project.title}')),
+          findsOneWidget,
+        );
+        await mouse.down(tester.getCenter(card));
+        await mouse.up();
+        await mouse.moveTo(Offset.zero);
+        await tester.pump();
+        expect(launched.last, project.url, reason: project.title);
+        expect(tester.takeException(), isNull, reason: project.title);
+      }
+      expect(launched, featuredProjects.map((project) => project.url).toList());
+      await mouse.removePointer();
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
   testWidgets('Grozziie contribution link opens the relevant company section', (
     tester,
   ) async {
@@ -39,7 +107,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Voice interfaces'), findsOneWidget);
       expect(find.text('Real-time communication'), findsOneWidget);
-      expect(find.text('View on pub.dev'), findsOneWidget);
+      expect(find.text('Movie Explorer'), findsOneWidget);
       final link = find.text('Explore my Grozziie contributions');
       await Scrollable.ensureVisible(tester.element(link), alignment: 0.5);
       await tester.tap(link);
@@ -98,7 +166,9 @@ void main() {
     }
   });
 
-  testWidgets('published package card opens pub.dev', (tester) async {
+  testWidgets('movie card opens the completed Provider implementation', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -123,11 +193,13 @@ void main() {
       PortfolioApp(repositoryService: _FallbackRepositoryService()),
     );
     await tester.pump(const Duration(milliseconds: 100));
-    final link = find.text('View on pub.dev');
+    final link = find.text('Movie Explorer');
     await Scrollable.ensureVisible(tester.element(link), alignment: 0.5);
     await tester.tap(link);
     await tester.pump();
-    expect(launched, ['https://pub.dev/packages/bd_sim_validator']);
+    expect(launched, [
+      'https://github.com/Sonykhan1121/flutter-state-management-specialist/tree/provider',
+    ]);
     expect(tester.takeException(), isNull);
   });
 

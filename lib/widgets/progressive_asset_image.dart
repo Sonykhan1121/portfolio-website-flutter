@@ -17,6 +17,7 @@ class ProgressiveAssetImage extends StatefulWidget {
     this.errorBuilder,
     this.preloadMargin = 200,
     this.eager = false,
+    this.loadingPlaceholder,
   });
 
   final String asset;
@@ -28,6 +29,7 @@ class ProgressiveAssetImage extends StatefulWidget {
   final ImageErrorWidgetBuilder? errorBuilder;
   final double preloadMargin;
   final bool eager;
+  final Widget? loadingPlaceholder;
 
   @override
   State<ProgressiveAssetImage> createState() => _ProgressiveAssetImageState();
@@ -143,7 +145,11 @@ class _ProgressiveAssetImageState extends State<ProgressiveAssetImage>
 
   Widget _preview({bool failed = false}) {
     final bytes = assetPreviewBytes(widget.asset);
-    if (bytes == null) return _placeholder(failed: failed);
+    if (bytes == null) {
+      return !failed && widget.loadingPlaceholder != null
+          ? widget.loadingPlaceholder!
+          : _placeholder(failed: failed);
+    }
     return Semantics(
       image: true,
       label:

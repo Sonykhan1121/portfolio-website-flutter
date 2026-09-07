@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../models/repository_item.dart';
+import 'project_screenshots.dart';
 
 const featuredProjects = <FeaturedProject>[
   FeaturedProject(
     title: 'Money Mate',
+    previewAsset: 'assets/images/projects/hover-money-mate.webp',
+    screenshots: moneyMateScreenshots,
     kicker: 'PERSONAL FINANCE',
     description:
         'A focused Flutter experience for tracking transactions, organizing money, and keeping everyday finances clear.',
@@ -15,6 +18,9 @@ const featuredProjects = <FeaturedProject>[
   ),
   FeaturedProject(
     title: 'Hand Gesture Detector',
+    previewAsset: 'assets/images/projects/hover-hand-gesture.webp',
+    previewLabel: 'README APP SCREENSHOT',
+    screenshots: handGestureScreenshots,
     kicker: 'COMPUTER VISION',
     description:
         'A Flutter hand-detection extension using TensorFlow Lite and custom gesture mappings for gesture-driven interactions.',
@@ -24,18 +30,22 @@ const featuredProjects = <FeaturedProject>[
     colors: [0xFF8B7CFF, 0xFF4A43A8],
   ),
   FeaturedProject(
-    title: 'BD SIM Validator',
-    kicker: 'PUBLISHED DART PACKAGE',
+    title: 'Movie Explorer',
+    previewAsset: 'assets/images/projects/hover-movie-explorer.webp',
+    screenshots: movieExplorerScreenshots,
+    kicker: 'FLUTTER STATE MANAGEMENT',
     description:
-        'Published on pub.dev: a reusable validator and operator detector for Bangladeshi mobile numbers across GP, Robi, Banglalink, Teletalk, and Airtel.',
-    tags: ['Dart', 'Validation', 'Open source', 'API'],
-    icon: Icons.sim_card_rounded,
-    url: 'https://pub.dev/packages/bd_sim_validator',
-    linkLabel: 'View on pub.dev',
+        'Movie discovery with search, genre filters, ratings, details, and saved favorites. Built across Provider, Riverpod, and Bloc implementations.',
+    tags: ['Flutter', 'State management', 'API', 'SQLite'],
+    icon: Icons.movie_filter_rounded,
+    url:
+        'https://github.com/Sonykhan1121/flutter-state-management-specialist/tree/provider',
     colors: [0xFF4CC9F0, 0xFF1764A8],
   ),
   FeaturedProject(
     title: 'Deshi10',
+    previewAsset: 'assets/images/projects/hover-deshi10.webp',
+    screenshots: deshi10Screenshots,
     kicker: 'ANDROID ECOMMERCE',
     description:
         'A native Android shopping app with product discovery, cart management, account flows, and payment-oriented experiences.',
@@ -45,21 +55,26 @@ const featuredProjects = <FeaturedProject>[
     colors: [0xFFFFB86C, 0xFFB85B30],
   ),
   FeaturedProject(
-    title: 'Our Admin Panel',
-    kicker: 'WINDOWS DESKTOP',
+    title: 'Gentle Park',
+    previewAsset: 'assets/images/projects/hover-gentle-park.webp',
+    screenshots: gentleParkScreenshots,
+    kicker: 'KOTLIN + FIREBASE',
     description:
-        'A Flutter-based Windows administration surface for uploading and managing portfolio content from a desktop workflow.',
-    tags: ['Flutter', 'Windows', 'Admin', 'Desktop'],
-    icon: Icons.desktop_windows_rounded,
-    url: 'https://github.com/Sonykhan1121/OurAdminPanel',
+        'A native Android shopping app with authentication and a Firebase-backed product catalog for special collections, deals, and everyday browsing.',
+    tags: ['Kotlin', 'Firebase', 'MVVM', 'Android'],
+    icon: Icons.storefront_rounded,
+    url: 'https://github.com/Sonykhan1121/GentlePark',
     colors: [0xFF55A8FF, 0xFF3359B8],
   ),
   FeaturedProject(
     title: 'Face Recognition',
-    kicker: 'ON-DEVICE ML',
+    previewAsset: 'assets/images/projects/hover-face-recognition.webp',
+    previewLabel: 'ATTENDANCE DEMO — SIMULATED SCAN',
+    screenshots: faceAttendanceScreenshots,
+    kicker: 'FACE ATTENDANCE PREVIEW',
     description:
-        'Flutter and TensorFlow Lite experiments focused on face detection and recognition workflows for mobile applications.',
-    tags: ['Flutter', 'TFLite', 'ML', 'Mobile'],
+        'An attendance UI demo with a simulated face scan, punch confirmation, and local history. Original TFLite experiments are also in the repository.',
+    tags: ['Flutter', 'Attendance', 'Local storage', 'Demo'],
     icon: Icons.face_retouching_natural_rounded,
     url:
         'https://github.com/Sonykhan1121/Face-recognition-with-Tflite-and-flutter',

@@ -3,6 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'progressive_asset_image.dart';
 
+/// Reuses the existing accessible image viewer without constructing gallery
+/// images until the user explicitly opens the dialog.
+Future<void> showProjectScreenshots({
+  required BuildContext context,
+  required String title,
+  required List<(String, String)> screenshots,
+}) async {
+  if (screenshots.isEmpty) return;
+  await showDialog<void>(
+    context: context,
+    builder:
+        (_) => _ScreenshotViewer(
+          title: title,
+          screenshots: screenshots,
+          initialIndex: 0,
+          loadingPlaceholder: const Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Loading image…'),
+              ],
+            ),
+          ),
+        ),
+  );
+}
+
 /// A paged strip keeps all eight images reachable with touch, mouse or keyboard.
 class ScreenshotGallery extends StatefulWidget {
   const ScreenshotGallery({super.key, required this.screenshots});
@@ -246,7 +275,11 @@ class _ScreenshotViewer extends StatefulWidget {
   const _ScreenshotViewer({
     required this.screenshots,
     required this.initialIndex,
+    this.title = 'Grozziie',
+    this.loadingPlaceholder,
   });
+  final String title;
+  final Widget? loadingPlaceholder;
   final List<(String, String)> screenshots;
   final int initialIndex;
   @override
@@ -288,7 +321,7 @@ class _ScreenshotViewerState extends State<_ScreenshotViewer> {
                         header: true,
                         liveRegion: true,
                         child: Text(
-                          'Grozziie · ${item.$1} · ${_index + 1}/${widget.screenshots.length}',
+                          '${widget.title} · ${item.$1} · ${_index + 1}/${widget.screenshots.length}',
                           style: const TextStyle(fontWeight: FontWeight.w800),
                         ),
                       ),
@@ -308,9 +341,10 @@ class _ScreenshotViewerState extends State<_ScreenshotViewer> {
                     maxScale: 4,
                     child: ProgressiveAssetImage(
                       item.$2,
+                      loadingPlaceholder: widget.loadingPlaceholder,
                       fit: BoxFit.contain,
                       semanticLabel:
-                          'Grozziie ${item.$1} screenshot ${_index + 1}',
+                          '${widget.title} ${item.$1} screenshot ${_index + 1}',
                       errorBuilder:
                           (_, __, ___) =>
                               const Center(child: Text('Preview unavailable')),

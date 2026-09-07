@@ -18,7 +18,9 @@ async function dartSources(directory) {
 
 async function main() {
   const sources = (await dartSources(path.join(root, 'lib'))).join('\n');
-  const assets = [...new Set(sources.match(/assets\/images\/[\w/.-]+\.(?:png|jpe?g|webp)/g))].sort();
+  // On-demand covers and gallery screenshots stay out of the initial payload.
+  const assets = [...new Set(sources.match(/assets\/images\/[\w/.-]+\.(?:png|jpe?g|webp)/g))]
+    .filter(asset => !asset.includes('/hover-') && !asset.includes('/gallery-')).sort();
   const previews = {};
   let totalBytes = 0;
   for (const asset of assets) {

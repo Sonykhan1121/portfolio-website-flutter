@@ -12,6 +12,7 @@ import 'models/repository_query.dart';
 import 'services/github_repository_service.dart';
 import 'widgets/screenshot_gallery.dart';
 import 'widgets/progressive_asset_image.dart';
+import 'widgets/project_hover_preview.dart';
 
 part 'widgets/competitive_journey.dart';
 part 'widgets/grozziie_contributions.dart';
@@ -3697,6 +3698,15 @@ class _FeaturedProjectsSection extends StatelessWidget {
               const gap = 18.0;
               final itemWidth =
                   (constraints.maxWidth - gap * (columns - 1)) / columns;
+              // Reserve a full action row; narrow cards need more room for
+              // wrapped titles/tags without squeezing their descriptions.
+              final cardHeight =
+                  (itemWidth < 340 ? 440.0 : 420.0) +
+                  (MediaQuery.textScalerOf(context).scale(14) - 14).clamp(
+                        0.0,
+                        28.0,
+                      ) *
+                      14;
               return Wrap(
                 spacing: gap,
                 runSpacing: gap,
@@ -3705,7 +3715,7 @@ class _FeaturedProjectsSection extends StatelessWidget {
                         .map(
                           (project) => SizedBox(
                             width: itemWidth,
-                            height: 394,
+                            height: cardHeight,
                             child: _FeaturedProjectCard(project: project),
                           ),
                         )
@@ -3729,115 +3739,164 @@ class _FeaturedProjectCard extends StatelessWidget {
     final colorA = Color(project.colors.first);
     final colorB = Color(project.colors.last);
     return _HoverLift(
-      child: _InteractiveCard(
-        semanticLabel:
-            '${project.title}: ${project.linkLabel} — opens a new tab. ${project.description} ${project.tags.join(', ')}',
-        onTap: () => _launch(project.url),
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 330),
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color.lerp(_panel, colorB, 0.13)!, _panel],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+      child: ProjectHoverPreview(
+        title: project.title,
+        linkLabel: project.linkLabel,
+        accent: colorA,
+        asset: project.previewAsset,
+        code: project.previewCode,
+        label: project.previewLabel,
+        action:
+            project.screenshots.isEmpty
+                ? null
+                : Tooltip(
+                  message: 'Preview ${project.title} screenshots',
+                  child: TextButton.icon(
+                    key: ValueKey('project-gallery:${project.title}'),
+                    onPressed:
+                        () => showProjectScreenshots(
+                          context: context,
+                          title: project.title,
+                          screenshots: project.screenshots,
+                        ),
+                    icon: const Icon(Icons.photo_library_outlined, size: 17),
+                    label: const Text('Preview'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: _sky,
+                      backgroundColor: const Color(0xFFEAF0FF),
+                      minimumSize: const Size(0, 44),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Arial',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+        child: _InteractiveCard(
+          semanticLabel:
+              '${project.title}: ${project.linkLabel} — opens a new tab. ${project.description} ${project.tags.join(', ')}',
+          onTap: () => _launch(project.url),
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 330),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color.lerp(_panel, colorB, 0.13)!, _panel],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: colorA.withValues(alpha: 0.23)),
+              boxShadow: _cardShadow,
             ),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: colorA.withValues(alpha: 0.23)),
-            boxShadow: _cardShadow,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [colorA, colorB]),
-                      borderRadius: BorderRadius.circular(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [colorA, colorB]),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(project.icon, color: Colors.white, size: 25),
                     ),
-                    child: Icon(project.icon, color: Colors.white, size: 25),
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 38,
-                    height: 38,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _softFill,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _line),
+                    const Spacer(),
+                    Container(
+                      width: 38,
+                      height: 38,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _softFill,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _line),
+                      ),
+                      child: Icon(
+                        project.linkLabel == 'View on pub.dev'
+                            ? Icons.inventory_2_outlined
+                            : FontAwesomeIcons.github,
+                        color: _text,
+                        size: 19,
+                      ),
                     ),
-                    child: Icon(
-                      project.linkLabel == 'View on pub.dev'
-                          ? Icons.inventory_2_outlined
-                          : FontAwesomeIcons.github,
-                      color: _text,
-                      size: 19,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Text(
-                project.kicker,
-                style: TextStyle(
-                  color: colorA,
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                project.title,
-                style: const TextStyle(
-                  color: _text,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.4,
+                const SizedBox(height: 24),
+                Text(
+                  project.kicker,
+                  style: TextStyle(
+                    color: colorA,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: Text(
-                  project.description,
+                const SizedBox(height: 8),
+                Text(
+                  project.title,
                   style: const TextStyle(
-                    color: _muted,
-                    fontSize: 14,
-                    height: 1.55,
+                    color: _text,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.4,
                   ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              Wrap(
-                spacing: 7,
-                runSpacing: 7,
-                children:
-                    project.tags
-                        .map((tag) => _Tag(label: tag, color: colorA))
-                        .toList(),
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Text(
-                    project.linkLabel,
+                const SizedBox(height: 12),
+                Expanded(
+                  child: Text(
+                    project.description,
                     style: const TextStyle(
-                      color: _mint,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
+                      color: _muted,
+                      fontSize: 14,
+                      height: 1.55,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.open_in_new, size: 15, color: _mint),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 18),
+                Wrap(
+                  spacing: 7,
+                  runSpacing: 7,
+                  children:
+                      project.tags
+                          .map((tag) => _Tag(label: tag, color: colorA))
+                          .toList(),
+                ),
+                const SizedBox(height: 18),
+                SizedBox(
+                  height: 44,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: project.screenshots.isEmpty ? 0 : 112,
+                    ),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            project.linkLabel,
+                            style: const TextStyle(
+                              color: _mint,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.open_in_new, size: 15, color: _mint),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

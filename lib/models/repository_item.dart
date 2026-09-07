@@ -34,6 +34,10 @@ class FeaturedProject {
     required this.url,
     required this.colors,
     this.linkLabel = 'View on GitHub',
+    this.previewAsset,
+    this.previewCode,
+    this.previewLabel = 'APP SCREENSHOT',
+    this.screenshots = const [],
   });
 
   final String title;
@@ -44,6 +48,10 @@ class FeaturedProject {
   final String url;
   final List<int> colors;
   final String linkLabel;
+  final String? previewAsset;
+  final String? previewCode;
+  final String previewLabel;
+  final List<(String, String)> screenshots;
 }
 
 class ProjectDemo {
