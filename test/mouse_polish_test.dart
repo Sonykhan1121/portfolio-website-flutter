@@ -315,7 +315,7 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
-  testWidgets('sleep starts only after twenty seconds of actual mouse idle', (
+  testWidgets('sleep starts only after five seconds of actual mouse idle', (
     tester,
   ) async {
     await tester.pumpWidget(_app());
@@ -324,11 +324,21 @@ void main() {
     final mouse = await _mouse(tester);
     await mouse.moveTo(const Offset(200, 150));
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 19999));
+    await tester.pump(const Duration(milliseconds: 4999));
     expect(find.byKey(_sleep), findsNothing);
     expect(tester.binding.hasScheduledFrame, isFalse);
     await tester.pump(const Duration(milliseconds: 1));
     expect(find.byKey(_sleep), findsOneWidget);
+    expect(tester.getTopLeft(find.byKey(_sleep)), const Offset(202, 96));
+    final letters = find.descendant(
+      of: find.byKey(_sleep),
+      matching: find.byType(Text),
+    );
+    expect(
+      tester.widgetList<Text>(letters).map((text) => text.style!.fontSize),
+      [28.0, 32.0, 36.0],
+    );
+    expect(tester.getTopLeft(letters.first), const Offset(204, 126));
     expect(
       find.descendant(of: find.byKey(_sleep), matching: find.text('Z')),
       findsOneWidget,
@@ -389,13 +399,13 @@ void main() {
         ),
       );
       final mouse = await _mouse(tester);
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       final button = tester.getCenter(find.text('Tap me'));
       await mouse.moveTo(button);
       await tester.pump();
       expect(find.byKey(_sleep), findsNothing);
-      await tester.pump(const Duration(seconds: 19));
+      await tester.pump(const Duration(seconds: 4));
       expect(find.byKey(_sleep), findsNothing);
       await tester.pump(const Duration(seconds: 1));
       expect(find.byKey(_sleep), findsOneWidget);
@@ -405,7 +415,7 @@ void main() {
       expect(clicks, 1);
       expect(find.byKey(_sleep), findsNothing);
       expect(find.byKey(_burst), findsOneWidget);
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       tester.binding.handlePointerEvent(
         PointerScrollEvent(
@@ -417,7 +427,7 @@ void main() {
       await tester.pump();
       expect(scrollSignals, 1);
       expect(find.byKey(_sleep), findsNothing);
-      await tester.pump(const Duration(seconds: 19));
+      await tester.pump(const Duration(seconds: 4));
       expect(find.byKey(_sleep), findsNothing);
       await tester.pump(const Duration(seconds: 1));
       expect(find.byKey(_sleep), findsOneWidget);
@@ -431,7 +441,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(_app());
       final mouse = await _mouse(tester);
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
@@ -439,7 +449,7 @@ void main() {
       await tester.pump(const Duration(seconds: 25));
       expect(find.byKey(_sleep), findsNothing);
       await mouse.moveTo(const Offset(200, 150));
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       await tester.tap(find.text('Tap me'));
       await tester.pump();
@@ -447,7 +457,7 @@ void main() {
       await tester.pump(const Duration(seconds: 25));
       expect(find.byKey(_sleep), findsNothing);
       await mouse.moveTo(const Offset(250, 150));
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       await mouse.removePointer();
       await tester.pump();
@@ -463,7 +473,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(_app());
       final mouse = await _mouse(tester);
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       expect(find.byKey(_sleep), findsOneWidget);
       await tester.pumpWidget(_app(reducedMotion: true));
       expect(find.byKey(_sleep), findsNothing);
@@ -487,7 +497,7 @@ void main() {
     expect(find.byKey(_sleep), findsNothing);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await mouse.moveTo(const Offset(250, 150));
-    await tester.pump(const Duration(seconds: 20));
+    await tester.pump(const Duration(seconds: 5));
     expect(find.byKey(_sleep), findsOneWidget);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     await tester.pump();
@@ -511,7 +521,7 @@ void main() {
     await tester.pump(const Duration(seconds: 25));
     expect(find.byKey(_sleep), findsNothing);
     await mouse.up();
-    await tester.pump(const Duration(seconds: 19));
+    await tester.pump(const Duration(seconds: 4));
     expect(find.byKey(_sleep), findsNothing);
     await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(_sleep), findsOneWidget);
@@ -531,7 +541,7 @@ void main() {
       Offset(798, 598),
     ]) {
       await mouse.moveTo(position);
-      await tester.pump(const Duration(seconds: 20));
+      await tester.pump(const Duration(seconds: 5));
       final bounds = tester.getRect(find.byKey(_sleep));
       expect(bounds.left, greaterThanOrEqualTo(0));
       expect(bounds.top, greaterThanOrEqualTo(0));
@@ -561,7 +571,7 @@ void main() {
     );
     final mouse = await _mouse(tester);
     final initialBuilds = builds;
-    await tester.pump(const Duration(seconds: 20));
+    await tester.pump(const Duration(seconds: 5));
     for (var frame = 0; frame < 20; frame++) {
       await tester.pump(const Duration(milliseconds: 50));
     }

@@ -82,7 +82,7 @@ class _MousePolishState extends State<MousePolish>
   void _armSleep(Offset position) {
     _wake();
     // A single timer, with no animation frames until the full idle delay passes.
-    _sleepTimer = Timer(const Duration(seconds: 20), () {
+    _sleepTimer = Timer(const Duration(seconds: 5), () {
       if (!mounted ||
           !_mouseMode.value ||
           MediaQuery.disableAnimationsOf(context)) {
@@ -268,15 +268,15 @@ class _MousePolishState extends State<MousePolish>
                   final viewport = MediaQuery.sizeOf(context);
                   // Keep the whole animation visible near viewport edges.
                   return Positioned(
-                    left: (position.dx + 10).clamp(
+                    left: (position.dx + 2).clamp(
                       4.0,
-                      math.max(4.0, viewport.width - 76),
+                      math.max(4.0, viewport.width - 88),
                     ),
-                    top: (position.dy - 70).clamp(
+                    top: (position.dy - 54).clamp(
                       4.0,
                       math.max(4.0, viewport.height - 76),
                     ),
-                    width: 72,
+                    width: 84,
                     height: 72,
                     child: IgnorePointer(
                       child: ExcludeSemantics(
@@ -296,7 +296,7 @@ class _MousePolishState extends State<MousePolish>
   }
 }
 
-/// Three staggered letters drift up and fade; only this tiny overlay rebuilds.
+/// Larger, spaced letters float beside the cursor; only this overlay rebuilds.
 class _SleepingCursor extends StatelessWidget {
   const _SleepingCursor({required this.animation});
 
@@ -315,27 +315,27 @@ class _SleepingCursor extends StatelessWidget {
         ),
   );
 
-  Widget _letter(double progress, int index) => Positioned(
-    left: 4 + 26 * progress,
-    top: 45 - 42 * progress,
-    child: Opacity(
-      opacity: math.sin(math.pi * progress) * 0.9,
-      child: Transform.scale(
-        scale: 0.65 + progress * 0.45,
+  Widget _letter(double progress, int index) {
+    final float = (1 - math.cos(2 * math.pi * progress)) / 2;
+    return Positioned(
+      left: 2 + 20.0 * index,
+      top: 6 + (2 - index) * 12 - 6 * float,
+      child: Opacity(
+        opacity: 0.45 + 0.55 * float,
         child: Text(
           index == 0 ? 'Z' : 'z',
           textScaler: TextScaler.noScaling,
-          style: const TextStyle(
-            color: Color(0xFF8E44AD),
-            fontSize: 22,
+          style: TextStyle(
+            color: const Color(0xFF8E44AD),
+            fontSize: 28 + 4.0 * index,
             fontWeight: FontWeight.w700,
             height: 1,
             decoration: TextDecoration.none,
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// Short rounded rays echo the supplied purple click indicator.
