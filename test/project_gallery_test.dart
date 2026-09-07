@@ -33,6 +33,41 @@ Future<void> _finishTransition(WidgetTester tester) async {
   await tester.pump();
 }
 
+IconButton _arrow(WidgetTester tester, String tooltip) =>
+    tester.widget<IconButton>(
+      find.byWidgetPredicate(
+        (widget) => widget is IconButton && widget.tooltip == tooltip,
+      ),
+    );
+
+void _checkSideArrowLayout(WidgetTester tester) {
+  final stage = tester.getRect(
+    find.byKey(const ValueKey('screenshot-viewer-stage')),
+  );
+  final image = tester.getRect(find.byType(InteractiveViewer));
+  final left = find.byKey(const ValueKey('screenshot-side-previous'));
+  final right = find.byKey(const ValueKey('screenshot-side-next'));
+  final leftRect = tester.getRect(left);
+  final rightRect = tester.getRect(right);
+  expect(leftRect.center.dy, closeTo(stage.center.dy, 0.1));
+  expect(rightRect.center.dy, closeTo(stage.center.dy, 0.1));
+  expect(leftRect.right, lessThanOrEqualTo(image.left));
+  expect(rightRect.left, greaterThanOrEqualTo(image.right));
+  expect(leftRect.width, greaterThanOrEqualTo(48));
+  expect(rightRect.height, greaterThanOrEqualTo(48));
+  // Zooming/panning the screenshot cannot move the navigation controls.
+  expect(
+    find.ancestor(of: left, matching: find.byType(InteractiveViewer)),
+    findsNothing,
+  );
+  expect(
+    find.ancestor(of: right, matching: find.byType(InteractiveViewer)),
+    findsNothing,
+  );
+  expect(find.byTooltip('Previous image'), findsOneWidget);
+  expect(find.byTooltip('Next image'), findsOneWidget);
+}
+
 void main() {
   testWidgets(
     'six independent galleries browse all images without opening repositories',
@@ -103,6 +138,7 @@ void main() {
         await tester.pump();
         await _decode(tester, project.screenshots.first.$2);
         expect(find.byType(Dialog), findsOneWidget);
+        _checkSideArrowLayout(tester);
         expect(launched, isEmpty);
         expect(
           tester
@@ -119,6 +155,14 @@ void main() {
         for (var i = 0; i < project.screenshots.length; i++) {
           final current = project.screenshots[i];
           expect(
+            _arrow(tester, 'Previous screenshot').onPressed != null,
+            i > 0,
+          );
+          expect(
+            _arrow(tester, 'Next screenshot').onPressed != null,
+            i < project.screenshots.length - 1,
+          );
+          expect(
             find.text(
               '${project.title} · ${current.$1} · ${i + 1}/${project.screenshots.length}',
             ),
@@ -131,7 +175,9 @@ void main() {
           expect(image, findsOneWidget);
           expect(tester.widget<ProgressiveAssetImage>(image).asset, current.$2);
           if (i < project.screenshots.length - 1) {
-            await tester.tap(find.byTooltip('Next image'));
+            await tester.tap(
+              find.byTooltip(i.isEven ? 'Next screenshot' : 'Next image'),
+            );
             await tester.pump();
             await _decode(tester, project.screenshots[i + 1].$2);
           }
@@ -147,6 +193,19 @@ void main() {
               .onPressed,
           isNull,
         );
+        await tester.tap(find.byTooltip('Previous screenshot'));
+        await _decode(
+          tester,
+          project.screenshots[project.screenshots.length - 2].$2,
+        );
+        expect(
+          find.text(
+            '${project.screenshots.length - 1} / ${project.screenshots.length}',
+          ),
+          findsOneWidget,
+        );
+        await tester.tap(find.byTooltip('Next image'));
+        await _finishTransition(tester);
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
         await _finishTransition(tester);
         expect(
@@ -177,6 +236,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       for (final setting in [
         (const Size(360, 780), 1.0),
+        (const Size(320, 640), 1.0),
         (const Size(780, 360), 1.0),
         (const Size(390, 844), 2.0),
       ]) {
@@ -212,6 +272,13 @@ void main() {
         await tester.pump();
         await _decode(tester, featuredProjects[1].screenshots.first.$2);
         expect(find.byType(Dialog), findsOneWidget);
+        _checkSideArrowLayout(tester);
+        await tester.tap(find.byTooltip('Next screenshot'));
+        await _decode(tester, featuredProjects[1].screenshots[1].$2);
+        expect(find.text('2 / 15'), findsOneWidget);
+        await tester.tap(find.byTooltip('Previous screenshot'));
+        await _decode(tester, featuredProjects[1].screenshots.first.$2);
+        expect(find.text('1 / 15'), findsOneWidget);
         expect(tester.takeException(), isNull);
         await tester.tap(find.byTooltip('Close screenshot viewer'));
         await _finishTransition(tester);

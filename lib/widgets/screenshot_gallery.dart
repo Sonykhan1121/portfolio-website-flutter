@@ -335,20 +335,53 @@ class _ScreenshotViewerState extends State<_ScreenshotViewer> {
                   ],
                 ),
                 Expanded(
-                  child: InteractiveViewer(
-                    key: ValueKey(_index),
-                    minScale: 1,
-                    maxScale: 4,
-                    child: ProgressiveAssetImage(
-                      item.$2,
-                      loadingPlaceholder: widget.loadingPlaceholder,
-                      fit: BoxFit.contain,
-                      semanticLabel:
-                          '${widget.title} ${item.$1} screenshot ${_index + 1}',
-                      errorBuilder:
-                          (_, __, ___) =>
-                              const Center(child: Text('Preview unavailable')),
-                    ),
+                  child: Stack(
+                    key: const ValueKey('screenshot-viewer-stage'),
+                    fit: StackFit.expand,
+                    children: [
+                      // Keep the controls outside the zoom/pan surface and
+                      // reserve room so they never cover screenshot content.
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 56),
+                        child: InteractiveViewer(
+                          key: ValueKey(_index),
+                          minScale: 1,
+                          maxScale: 4,
+                          child: ProgressiveAssetImage(
+                            item.$2,
+                            loadingPlaceholder: widget.loadingPlaceholder,
+                            fit: BoxFit.contain,
+                            semanticLabel:
+                                '${widget.title} ${item.$1} screenshot ${_index + 1}',
+                            errorBuilder:
+                                (_, __, ___) => const Center(
+                                  child: Text('Preview unavailable'),
+                                ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: _ScreenshotSideArrow(
+                          key: const ValueKey('screenshot-side-previous'),
+                          tooltip: 'Previous screenshot',
+                          icon: Icons.chevron_left_rounded,
+                          onPressed: _index == 0 ? null : () => _move(-1),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: _ScreenshotSideArrow(
+                          key: const ValueKey('screenshot-side-next'),
+                          tooltip: 'Next screenshot',
+                          icon: Icons.chevron_right_rounded,
+                          onPressed:
+                              _index == widget.screenshots.length - 1
+                                  ? null
+                                  : () => _move(1),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -383,4 +416,32 @@ class _ScreenshotViewerState extends State<_ScreenshotViewer> {
       ),
     );
   }
+}
+
+class _ScreenshotSideArrow extends StatelessWidget {
+  const _ScreenshotSideArrow({
+    super.key,
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => IconButton.filled(
+    tooltip: tooltip,
+    onPressed: onPressed,
+    icon: Icon(icon, size: 32),
+    style: IconButton.styleFrom(
+      fixedSize: const Size(48, 48),
+      backgroundColor: const Color(0xFF142137),
+      foregroundColor: Colors.white,
+      disabledBackgroundColor: const Color(0xFFE1E6EE),
+      disabledForegroundColor: const Color(0xFF8794A7),
+      shape: const CircleBorder(),
+    ),
+  );
 }

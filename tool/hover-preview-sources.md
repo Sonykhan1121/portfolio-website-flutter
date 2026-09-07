@@ -6,10 +6,12 @@ The cover is non-interactive and the card still opens its repository. The
 separate, keyboard-accessible Preview button opens a screenshot dialog and
 never launches a repository. Touch visitors can use the same Preview button.
 
-Each dialog renders one screenshot at a time. Left/right buttons and arrow
+Each dialog renders one screenshot at a time. Centered left/right side buttons,
+the original bottom buttons, and arrow
 keys browse the images; Escape or Close dismisses it. Arrows disable at the
 ends, and focus returns to the triggering button. Pinch/zoom is supported in
-the viewer. A loading indicator appears while a requested image decodes.
+the viewer. Side buttons stay fixed while zooming and have reserved space so
+they do not cover the image. A loading indicator appears while a requested image decodes.
 Hover covers and gallery images are excluded from startup preloads and from
 `generate_image_previews.cjs`; normal Flutter/browser image caching still works.
 

@@ -50,6 +50,12 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(find.text('Grozziie · App Store · 2/3'), findsOneWidget);
+    await tester.tap(find.byTooltip('Previous screenshot'));
+    await tester.pumpAndSettle();
+    expect(find.text('Grozziie · Google Play · 1/3'), findsOneWidget);
+    await tester.tap(find.byTooltip('Next screenshot'));
+    await tester.pumpAndSettle();
+    expect(find.text('Grozziie · App Store · 2/3'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
     expect(find.byType(Dialog), findsNothing);
