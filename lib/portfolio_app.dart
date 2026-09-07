@@ -17,6 +17,7 @@ import 'widgets/project_hover_preview.dart';
 part 'widgets/competitive_journey.dart';
 part 'widgets/grozziie_contributions.dart';
 part 'widgets/tht_product_card.dart';
+part 'widgets/teaching_community_card.dart';
 
 const _ink = Color(0xFFFFFFFF);
 const _inkSoft = Color(0xFFF6F8FB);
@@ -4696,6 +4697,10 @@ class _AboutSection extends StatelessWidget {
           ),
           const SizedBox(height: 42),
           const _CapabilityGrid(),
+          const SizedBox(height: 28),
+          const _TeachingCommunityCard(
+            key: ValueKey('teaching-community-card'),
+          ),
           const SizedBox(height: 72),
           Container(
             key: journeyKey,

@@ -170,6 +170,7 @@ void main() {
       'COMPETITIVE PROGRAMMING & PROBLEM SOLVING',
       'COMPLETE GITHUB ARCHIVE',
       'ABOUT & CAPABILITIES',
+      'Sharing knowledge in Bengali',
       'Professional journey',
       'AVAILABLE FOR GOOD WORK',
     ]) {
