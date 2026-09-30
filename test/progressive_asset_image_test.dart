@@ -45,12 +45,12 @@ void main() {
     expect(
       html,
       contains(
-        'as="image" href="assets/assets/images/hero_portrait_2026_v2.webp" fetchpriority="high"',
+        'as="image" href="assets/assets/images/profile_portrait_2026.jpg" fetchpriority="high"',
       ),
     );
     expect(html, isNot(contains('id="startup-portrait"')));
     expect(
-      File('assets/images/hero_portrait_2026_v2.webp').existsSync(),
+      File('assets/images/profile_portrait_2026.jpg').existsSync(),
       isTrue,
     );
   });

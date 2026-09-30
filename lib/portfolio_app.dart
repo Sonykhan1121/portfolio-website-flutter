@@ -1123,7 +1123,7 @@ class _ProfileVisualState extends State<_ProfileVisual>
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(36),
                     child: ProgressiveAssetImage(
-                      'assets/images/hero_portrait_2026_v2.webp',
+                      'assets/images/profile_portrait_2026.jpg',
                       eager: true,
                       semanticLabel: 'Portrait of Sidratul Montaha',
                       fit: BoxFit.cover,

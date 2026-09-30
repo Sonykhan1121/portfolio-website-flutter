@@ -42,9 +42,9 @@ project remains pinned to Flutter 3.29.2 in the deployment workflow.
 request within 200 logical pixels of the viewport. It watches ancestor scroll
 positions (including nested galleries), supports resizing, and uses Flutter's
 normal image cache. Supply bounded parent constraints or explicit dimensions.
-The portrait uses `hero_portrait_2026_v2.webp` (70.5 KB); its original PNG is kept
-as source material. When replacing an image, use a new filename to avoid stale
-browser copies.
+The portrait uses `profile_portrait_2026.jpg` (optimized to 960 × 1200); its
+original PNG stays outside the repository as source material. When replacing an
+image, use a new filename to avoid stale browser copies.
 
 Run `flutter test` to check image deferral, nested scrolling, resizing, missing
 image fallbacks, gallery controls, and the existing portfolio interactions.

@@ -112,7 +112,9 @@ class _IntroPageState extends State<IntroPage> with SingleTickerProviderStateMix
             ),
             child: CircleAvatar(
               radius: widget.dynamicRadius.clamp(50.0, 100.0),
-              backgroundImage: const AssetImage('assets/images/me_edit.png'),
+              backgroundImage: const AssetImage(
+                'assets/images/profile_portrait_2026.jpg',
+              ),
             ),
           ),
         ),
