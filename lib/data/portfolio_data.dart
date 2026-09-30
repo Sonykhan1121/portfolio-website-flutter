@@ -84,6 +84,18 @@ const featuredProjects = <FeaturedProject>[
 
 const projectDemos = <ProjectDemo>[
   ProjectDemo(
+    title: 'From Feature Development to Customer Support',
+    kicker: 'GROZZIIE · TEAM COLLABORATION',
+    description:
+        'A behind-the-scenes look at how we develop new Grozziie app features and share them clearly with the Customer Support team.',
+    duration: '0:48',
+    thumbnail: 'assets/images/projects/demos/grozziie-feature-development.jpg',
+    thumbnailAlignment: Alignment.center,
+    url:
+        'https://www.linkedin.com/feed/update/urn:li:activity:7510952928438906880/',
+    tags: ['Grozziie', 'App development', 'Teamwork'],
+  ),
+  ProjectDemo(
     title: 'Gesture-Controlled Mobile Stand',
     kicker: 'COMPUTER VISION + IOT',
     description:
