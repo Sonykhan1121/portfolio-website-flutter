@@ -143,10 +143,10 @@ const RESOURCES = {"assets/assets/images/company/product-attendance-machine.png"
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "e249c096c55acbe7104ba8be19ccd7df",
 "main.dart.js": "96f94955d5f0ff7ca0a822441a5e4c26",
-"index.html": "64cd0179cb5b6d8ef32d3dd724634252",
-"/": "64cd0179cb5b6d8ef32d3dd724634252",
+"index.html": "0ab0b6b3c9e16a0cf9f8f1fec888e284",
+"/": "0ab0b6b3c9e16a0cf9f8f1fec888e284",
 "version.json": "6c9c33a00862dd1e5b5e7f4bc4d6f9e7",
-"flutter_bootstrap.js": "4c2a04c7b06c8b348523630aa1113ae1"};
+"flutter_bootstrap.js": "b73a0a612b7f21af7b2b8b45f5e6c848"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
