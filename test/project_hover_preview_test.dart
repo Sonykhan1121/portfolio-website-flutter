@@ -67,8 +67,8 @@ Future<TestGesture> _hover(WidgetTester tester) async {
 }
 
 void main() {
-  test('all six cards have sourced previews and gallery assets', () {
-    expect(featuredProjects.length, 6);
+  test('all featured cards have sourced previews and gallery assets', () {
+    expect(featuredProjects.length, 7);
     var totalBytes = 0;
     for (final project in featuredProjects) {
       if (project.previewAsset != null) {
@@ -87,6 +87,7 @@ void main() {
       2,
       6,
       9,
+      8,
       2,
     ]);
     for (final project in featuredProjects) {

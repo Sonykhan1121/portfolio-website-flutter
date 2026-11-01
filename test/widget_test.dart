@@ -29,7 +29,7 @@ class _FallbackRepositoryService extends GitHubRepositoryService {
 
 void main() {
   testWidgets(
-    'only selected work has previews and all six hovered links are preserved',
+    'only selected work has previews and all featured hovered links are preserved',
     (tester) async {
       tester.view.physicalSize = const Size(1440, 1000);
       tester.view.devicePixelRatio = 1;
@@ -55,7 +55,7 @@ void main() {
         PortfolioApp(repositoryService: _FallbackRepositoryService()),
       );
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.byType(ProjectHoverPreview), findsNWidgets(6));
+      expect(find.byType(ProjectHoverPreview), findsNWidgets(7));
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
       for (final project in featuredProjects) {

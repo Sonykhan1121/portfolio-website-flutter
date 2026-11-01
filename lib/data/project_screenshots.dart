@@ -79,3 +79,33 @@ const faceAttendanceScreenshots = <(String, String)>[
     'assets/images/projects/gallery-face-mobile.webp',
   ),
 ];
+
+// Sample-data UI renders from gesture-control-demo; no personal camera frames.
+const gestureControlDemoScreenshots = <(String, String)>[
+  (
+    'YouTube practice — sample UI',
+    'assets/images/projects/gallery-gesture-demo-01.webp',
+  ),
+  (
+    'Fist tutorial — camera region blank',
+    'assets/images/projects/gallery-gesture-demo-02.webp',
+  ),
+  (
+    'Face-mode Home — sample UI',
+    'assets/images/projects/gallery-gesture-demo-03.webp',
+  ),
+  (
+    'Camera position setup — camera region blank',
+    'assets/images/projects/gallery-gesture-demo-04.webp',
+  ),
+  (
+    'Choose physical hand',
+    'assets/images/projects/gallery-gesture-demo-05.webp',
+  ),
+  ('Settings', 'assets/images/projects/gallery-gesture-demo-06.webp'),
+  ('Local demo login', 'assets/images/projects/gallery-gesture-demo-07.webp'),
+  (
+    'YouTube Shorts practice — landscape',
+    'assets/images/projects/gallery-gesture-demo-08.webp',
+  ),
+];

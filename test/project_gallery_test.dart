@@ -70,7 +70,7 @@ void _checkSideArrowLayout(WidgetTester tester) {
 
 void main() {
   testWidgets(
-    'six independent galleries browse all images without opening repositories',
+    'featured project galleries browse all images without opening repositories',
     (tester) async {
       tester.view.physicalSize = const Size(1440, 1000);
       tester.view.devicePixelRatio = 1;

@@ -67,6 +67,19 @@ const featuredProjects = <FeaturedProject>[
     colors: [0xFF55A8FF, 0xFF3359B8],
   ),
   FeaturedProject(
+    title: 'Gesture Control Demo',
+    previewAsset: 'assets/images/projects/hover-gesture-demo.webp',
+    previewLabel: 'DEMO UI — REAL CAMERA RECOGNITION IN APP',
+    screenshots: gestureControlDemoScreenshots,
+    kicker: 'ON-DEVICE COMPUTER VISION',
+    description:
+        'An offline Flutter demo with real hand and face recognition, guided gesture training, and YouTube-style practice. Login and stand setup are simulated.',
+    tags: ['Flutter', 'MediaPipe', 'Camera', 'Demo'],
+    icon: Icons.gesture_rounded,
+    url: 'https://github.com/Sonykhan1121/gesture-control-demo',
+    colors: [0xFFB9E600, 0xFF3B6F41],
+  ),
+  FeaturedProject(
     title: 'Face Recognition',
     previewAsset: 'assets/images/projects/hover-face-recognition.webp',
     previewLabel: 'ATTENDANCE DEMO — SIMULATED SCAN',
