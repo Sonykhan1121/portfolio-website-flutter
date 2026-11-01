@@ -42,7 +42,7 @@ project remains pinned to Flutter 3.29.2 in the deployment workflow.
 request within 200 logical pixels of the viewport. It watches ancestor scroll
 positions (including nested galleries), supports resizing, and uses Flutter's
 normal image cache. Supply bounded parent constraints or explicit dimensions.
-The portrait uses `profile_portrait_2026.jpg` (optimized to 960 × 1200); its
+The portrait uses `profile_portrait_2026_11.jpg` (optimized to 957 × 1200); its
 original PNG stays outside the repository as source material. When replacing an
 image, use a new filename to avoid stale browser copies.
 
