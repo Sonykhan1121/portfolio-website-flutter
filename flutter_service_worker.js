@@ -121,7 +121,7 @@ const RESOURCES = {"assets/assets/images/company/product-attendance-machine.png"
 "assets/assets/icons/state_management_tag.png": "9efdd1756df1f6e7b91deb77525d8e62",
 "assets/assets/icons/html_tag.png": "6dc21fd9ff3358c8aeedf8c71cbe9a00",
 "assets/assets/icons/facebook_logo.png": "8c89ef8ab45d47ae9a954822532889f7",
-"assets/assets/data/github_repositories.json": "d9de07b4299f3a8f360d5aeaf58b8052",
+"assets/assets/data/github_repositories.json": "fd00c7d8a5b214eb921cf77b0d437b82",
 "assets/NOTICES": "09f8afd72c9c1f41d605e05015544c27",
 "assets/fonts/MaterialIcons-Regular.otf": "b581abbc68f45941b67bb7cae6676bab",
 "assets/AssetManifest.json": "0f8aa1816136a05ebcebfe2f39ae4211",
@@ -153,10 +153,10 @@ const RESOURCES = {"assets/assets/images/company/product-attendance-machine.png"
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "e249c096c55acbe7104ba8be19ccd7df",
 "main.dart.js": "6c31be68220789c9076c8cad5f9d0e8f",
-"index.html": "14ef62c6fa25919d6925b6e76d0dcda0",
-"/": "14ef62c6fa25919d6925b6e76d0dcda0",
+"index.html": "c750edbc4a3af4c7172e0ca1bde378b9",
+"/": "c750edbc4a3af4c7172e0ca1bde378b9",
 "version.json": "6c9c33a00862dd1e5b5e7f4bc4d6f9e7",
-"flutter_bootstrap.js": "215c1201916ec728aa36cd378650e3fe"};
+"flutter_bootstrap.js": "c4d68b3acb0aca80d7d6fc42bc040222"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
